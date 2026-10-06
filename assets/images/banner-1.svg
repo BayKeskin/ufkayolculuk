@@ -1,0 +1,76 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 420" width="100%" height="100%">
+  <defs>
+    <linearGradient id="bgGrad1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0284C7"/>
+      <stop offset="40%" stop-color="#0369A1"/>
+      <stop offset="100%" stop-color="#0B2B6F"/>
+    </linearGradient>
+    <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FDE047"/>
+      <stop offset="100%" stop-color="#F59E0B"/>
+    </linearGradient>
+    <filter id="shadow1" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="12" stdDeviation="16" flood-color="#000" flood-opacity="0.25"/>
+    </filter>
+  </defs>
+
+  <!-- Arka Plan -->
+  <rect width="1200" height="420" rx="16" fill="url(#bgGrad1)"/>
+  
+  <!-- Dekoratif Işık Halkaları -->
+  <circle cx="1050" cy="210" r="260" fill="#38BDF8" opacity="0.15"/>
+  <circle cx="950" cy="210" r="180" fill="#BAE6FD" opacity="0.2"/>
+  <circle cx="150" cy="50" r="140" fill="#38BDF8" opacity="0.08"/>
+
+  <!-- Sol Metin Alanı -->
+  <g transform="translate(80, 80)">
+    <!-- Pill Badge -->
+    <rect width="150" height="32" rx="16" fill="#F5A623"/>
+    <text x="75" y="21" font-family="'Plus Jakarta Sans', sans-serif" font-size="13" font-weight="800" fill="#0F172A" text-anchor="middle" letter-spacing="1">12. YARIŞMA</text>
+    
+    <!-- Ana Başlık -->
+    <text x="0" y="90" font-family="'Plus Jakarta Sans', sans-serif" font-size="44" font-weight="900" fill="#FFFFFF">
+      <tspan x="0" dy="0">Oku, keşfet,</tspan>
+      <tspan x="0" dy="52" fill="#FDE047">öğren, kazan!</tspan>
+    </text>
+    
+    <!-- Alt Açıklama -->
+    <text x="0" y="200" font-family="'Plus Jakarta Sans', sans-serif" font-size="18" font-weight="500" fill="#E0F2FE">
+      Kitap oku, soruları çöz, puan topla ve birbirinden değerli ödüller kazan!
+    </text>
+
+    <!-- Buton -->
+    <g transform="translate(0, 235)">
+      <rect width="240" height="48" rx="10" fill="#F5A623" filter="url(#shadow1)"/>
+      <text x="20" y="30" font-family="'Plus Jakarta Sans', sans-serif" font-size="16" font-weight="800" fill="#0F172A" text-anchor="start">Ücretsiz Kayıt Ol</text>
+      <path d="M204 18l8 6-8 6M212 24h-18" stroke="#0F172A" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </g>
+  </g>
+
+  <!-- Sağ 3D Görsel Kompozisyonu -->
+  <g transform="translate(760, 60)" filter="url(#shadow1)">
+    <!-- Açık Kitap Tabanı -->
+    <path d="M50 240 Q190 220 200 160 Q210 220 350 240 L370 290 Q210 270 200 230 Q190 270 30 290 Z" fill="#F8FAFC"/>
+    <path d="M50 240 Q190 220 200 160 L200 230 Q190 270 30 290 Z" fill="#E2E8F0"/>
+    <path d="M350 240 Q210 220 200 160 L200 230 Q210 270 370 290 Z" fill="#F1F5F9"/>
+
+    <!-- Dağlar ve Doğa -->
+    <polygon points="120,160 170,70 220,160" fill="#10B981"/>
+    <polygon points="170,160 230,40 290,160" fill="#059669"/>
+    <polygon points="70,180 120,100 170,180" fill="#34D399"/>
+    
+    <!-- Güneş / Işık -->
+    <circle cx="200" cy="50" r="30" fill="url(#goldGrad)"/>
+
+    <!-- Kupa / Ödül -->
+    <g transform="translate(260, 40)">
+      <path d="M15 15h40v20c0 12-8 20-20 20s-20-8-20-20V15z" fill="url(#goldGrad)"/>
+      <path d="M5 20c-5 0-5 12 5 12h5v-12H5zM65 20c5 0 5 12-5 12h-5v-12h5z" fill="url(#goldGrad)"/>
+      <path d="M35 55v15M20 70h30" stroke="#F59E0B" stroke-width="6" stroke-linecap="round"/>
+    </g>
+
+    <!-- Uçan Kuşlar -->
+    <path d="M100 40 Q110 30 120 40 Q130 30 140 40" stroke="#FFFFFF" stroke-width="2.5" fill="none" opacity="0.8"/>
+    <path d="M140 60 Q148 52 156 60 Q164 52 172 60" stroke="#FFFFFF" stroke-width="2" fill="none" opacity="0.6"/>
+  </g>
+</svg>

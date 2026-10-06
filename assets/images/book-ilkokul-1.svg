@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 280" fill="none">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FEF3C7"/>
+      <stop offset="50%" stop-color="#FDE68A"/>
+      <stop offset="100%" stop-color="#D97706"/>
+    </linearGradient>
+    <linearGradient id="birdGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0284C7"/>
+      <stop offset="70%" stop-color="#0369A1"/>
+      <stop offset="100%" stop-color="#D97706"/>
+    </linearGradient>
+  </defs>
+  <!-- Cover Background -->
+  <rect width="200" height="280" rx="8" fill="url(#bgGrad)"/>
+  
+  <!-- Subtle Sunlight/Pattern -->
+  <circle cx="100" cy="110" r="70" fill="#FFFBEB" opacity="0.6"/>
+
+  <!-- Branch -->
+  <path d="M 0 210 Q 70 180 170 200 L 200 215" stroke="#78350F" stroke-width="8" stroke-linecap="round" fill="none"/>
+  <path d="M 90 190 Q 110 170 130 185" stroke="#78350F" stroke-width="4" stroke-linecap="round" fill="none"/>
+  <!-- Green Leaves -->
+  <path d="M 120 170 Q 135 160 140 175 Q 125 185 120 170 Z" fill="#15803D"/>
+  <path d="M 70 185 Q 85 175 90 190 Q 75 200 70 185 Z" fill="#16A34A"/>
+
+  <!-- Cute Bluebird Body -->
+  <g transform="translate(85, 110)">
+    <!-- Tail -->
+    <path d="M -15 50 L -35 80 L -15 70 Z" fill="#0369A1"/>
+    <!-- Body -->
+    <ellipse cx="10" cy="35" rx="22" ry="30" fill="url(#birdGrad)"/>
+    <!-- Orange Breast -->
+    <ellipse cx="20" cy="40" rx="14" ry="20" fill="#EA580C"/>
+    <!-- Head -->
+    <circle cx="20" cy="10" r="16" fill="#0284C7"/>
+    <!-- Eye -->
+    <circle cx="25" cy="8" r="3.5" fill="#0F172A"/>
+    <circle cx="26" cy="7" r="1.2" fill="#FFFFFF"/>
+    <!-- Beak -->
+    <polygon points="34,10 44,12 34,16" fill="#F59E0B"/>
+    <!-- Wing -->
+    <path d="M 0 25 C -5 50 15 55 10 70 C -5 60 -10 40 0 25 Z" fill="#0C4A6E"/>
+  </g>
+
+  <!-- Title / Spine simulation -->
+  <rect x="0" y="0" width="8" height="280" fill="#92400E" opacity="0.3"/>
+</svg>

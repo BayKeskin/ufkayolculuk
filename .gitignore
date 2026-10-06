@@ -1,0 +1,24 @@
+# CodeIgniter 4 gitignore
+writable/cache/*
+!writable/cache/index.html
+!writable/cache/.gitkeep
+writable/session/*
+!writable/session/index.html
+!writable/session/.gitkeep
+writable/logs/*
+!writable/logs/index.html
+!writable/logs/.gitkeep
+writable/debugbar/*
+!writable/debugbar/index.html
+!writable/debugbar/.gitkeep
+writable/uploads/*
+!writable/uploads/index.html
+!writable/uploads/.gitkeep
+
+# Environment & IDE
+.env
+.idea/
+.vscode/
+*.log
+Thumbs.db
+Desktop.ini

@@ -1,0 +1,10 @@
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    # Allow direct access to frontend/ backup directory or public assets
+    RewriteCond %{REQUEST_URI} (^|/)(public|frontend)/ [NC]
+    RewriteRule ^ - [L]
+
+    # Rewrite all other requests to public/
+    RewriteRule ^(.*)$ public/$1 [L,QSA]
+</IfModule>

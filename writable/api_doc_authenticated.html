@@ -1,0 +1,2342 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ufka Yolculuk - REST API Rehberi &amp; Servis Dokümantasyonu</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-body: #0c1017;
+            --bg-sidebar: #070a0f;
+            --bg-card: #121824;
+            --bg-card-hover: #161e2e;
+            --bg-code: #070a10;
+            --border: #1e293b;
+            --border-light: #283548;
+            --text-main: #e2e8f0;
+            --text-muted: #94a3b8;
+            --text-dim: #64748b;
+            --primary: #0d9488;
+            --primary-glow: rgba(59, 130, 246, 0.2);
+            --accent-green: #10b981;
+            --accent-cyan: #06b6d4;
+            --accent-amber: #f59e0b;
+            --accent-rose: #f43f5e;
+            --accent-purple: #8b5cf6;
+            --accent-teal: #0d9488;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        a {
+            color: var(--primary);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+        a:hover {
+            filter: brightness(1.2);
+        }
+
+        .layout {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* SIDEBAR */
+        .sidebar {
+            width: 300px;
+            background-color: var(--bg-sidebar);
+            border-right: 1px solid var(--border);
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            overflow-y: auto;
+            padding: 24px 16px;
+            z-index: 100;
+        }
+
+        .sidebar-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 16px;
+        }
+
+        .brand-badge {
+            width: 42px;
+            height: 42px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #0d9488, #0284c7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 17px;
+            color: #fff;
+            box-shadow: 0 4px 16px rgba(13, 148, 136, 0.35);
+            flex-shrink: 0;
+        }
+
+        .brand-info h1 {
+            font-size: 15px;
+            font-weight: 700;
+            color: #fff;
+            letter-spacing: -0.3px;
+            line-height: 1.2;
+        }
+        .brand-info span {
+            font-size: 11px;
+            color: var(--text-dim);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            display: block;
+            margin-top: 3px;
+        }
+
+        /* USER SESSION CARD */
+        .user-session-card {
+            margin-bottom: 12px;
+            padding: 9px 12px;
+            background: rgba(13, 148, 136, 0.08);
+            border: 1px solid rgba(13, 148, 136, 0.25);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+        }
+        .user-session-left {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            min-width: 0;
+        }
+        .user-session-avatar {
+            width: 28px;
+            height: 28px;
+            border-radius: 6px;
+            background: #0f232b;
+            color: #2dd4bf;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            flex-shrink: 0;
+        }
+        .user-session-name {
+            font-size: 12px;
+            font-weight: 700;
+            color: #fff;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: block;
+        }
+        .user-session-sub {
+            font-size: 10px;
+            color: var(--text-dim);
+            display: block;
+        }
+        .btn-logout {
+            font-size: 11px;
+            color: #fb7185;
+            text-decoration: none;
+            padding: 3px 8px;
+            border-radius: 5px;
+            background: rgba(244, 63, 94, 0.1);
+            border: 1px solid rgba(244, 63, 94, 0.25);
+            font-weight: 600;
+            transition: all 0.15s;
+            flex-shrink: 0;
+        }
+        .btn-logout:hover {
+            background: rgba(244, 63, 94, 0.2);
+            color: #fff;
+        }
+
+        .pill-badge {
+            font-size: 10px;
+            padding: 2px 6px;
+            border-radius: 4px;
+            background: rgba(255, 255, 255, 0.08);
+            font-family: 'Fira Code', monospace;
+        }
+
+        .search-box {
+            margin-bottom: 20px;
+        }
+        .search-input {
+            width: 100%;
+            background: #0d131d;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 9px 12px;
+            font-size: 13px;
+            color: var(--text-main);
+            outline: none;
+            transition: all 0.2s;
+        }
+        .search-input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px var(--primary-glow);
+        }
+
+        .nav-group {
+            margin-bottom: 20px;
+        }
+        .nav-group-title {
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            color: var(--text-dim);
+            padding: 4px 10px 8px 10px;
+        }
+        .nav-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 13px;
+            color: var(--text-muted);
+            margin-bottom: 2px;
+            transition: all 0.15s;
+        }
+        .nav-item:hover, .nav-item.active {
+            background: rgba(255, 255, 255, 0.06);
+            color: #fff;
+        }
+        .nav-item .method-badge {
+            font-size: 10px;
+            font-weight: 700;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'Fira Code', monospace;
+        }
+        .badge-post { background: rgba(59, 130, 246, 0.2); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.4); }
+        .badge-get { background: rgba(16, 185, 129, 0.2); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.4); }
+        .badge-new { background: rgba(245, 158, 11, 0.2); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.4); }
+
+        /* MAIN CONTENT */
+        .content {
+            margin-left: 300px;
+            flex: 1;
+            padding: 40px 60px;
+            max-width: 1260px;
+        }
+
+        /* HEADER HERO */
+        .hero {
+            background: linear-gradient(135deg, rgba(30, 41, 59, 0.6), rgba(15, 23, 42, 0.85));
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 32px;
+            margin-bottom: 36px;
+            position: relative;
+            overflow: hidden;
+        }
+        .hero::before {
+            content: "";
+            position: absolute;
+            top: -60px;
+            right: -60px;
+            width: 240px;
+            height: 240px;
+            background: radial-gradient(circle, var(--primary-glow) 0%, rgba(0, 0, 0, 0) 70%);
+            border-radius: 50%;
+        }
+        .hero-top-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(13, 148, 136, 0.15);
+            border: 1px solid rgba(13, 148, 136, 0.35);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            color: #2dd4bf;
+            margin-bottom: 14px;
+        }
+        .hero-title {
+            font-size: 30px;
+            font-weight: 800;
+            color: #fff;
+            margin-bottom: 8px;
+            letter-spacing: -0.5px;
+        }
+        .hero-subtitle {
+            font-size: 15px;
+            color: var(--text-muted);
+            max-width: 820px;
+            margin-bottom: 22px;
+            line-height: 1.6;
+        }
+        .hero-badges {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border-light);
+            color: var(--text-main);
+        }
+        .pill-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: var(--accent-green);
+        }
+        .pill-active-project {
+            background: rgba(13, 148, 136, 0.2);
+            border-color: rgba(13, 148, 136, 0.4);
+            color: #2dd4bf;
+            font-weight: 600;
+        }
+
+        /* SECTION STYLING */
+        .section {
+            margin-bottom: 40px;
+        }
+        .section-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--border);
+        }
+        .section-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: #fff;
+            letter-spacing: -0.3px;
+        }
+        .section-tag {
+            font-size: 12px;
+            color: var(--text-dim);
+            font-weight: 500;
+            background: var(--bg-card);
+            padding: 3px 8px;
+            border-radius: 6px;
+            border: 1px solid var(--border);
+        }
+
+        /* CARDS */
+        .api-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            margin-bottom: 24px;
+            overflow: hidden;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        .api-card:hover {
+            border-color: var(--border-light);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35);
+        }
+
+        .api-card-header {
+            padding: 16px 20px;
+            background: rgba(255, 255, 255, 0.02);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+        .endpoint-def {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        .http-badge {
+            font-size: 11px;
+            font-weight: 700;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-family: 'Fira Code', monospace;
+        }
+        .endpoint-url {
+            font-family: 'Fira Code', monospace;
+            font-size: 14px;
+            font-weight: 600;
+            color: #f1f5f9;
+        }
+        .endpoint-desc-brief {
+            font-size: 13px;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        .api-card-body {
+            padding: 20px;
+        }
+        .desc-text {
+            font-size: 14px;
+            color: var(--text-muted);
+            margin-bottom: 18px;
+            line-height: 1.6;
+        }
+
+        /* PARAMETER TABLE */
+        .param-table-wrapper {
+            overflow-x: auto;
+            margin-bottom: 18px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+        }
+        .param-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+            text-align: left;
+        }
+        .param-table th {
+            background: #0c121c;
+            color: var(--text-dim);
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 11px;
+            letter-spacing: 0.5px;
+            padding: 10px 14px;
+            border-bottom: 1px solid var(--border);
+        }
+        .param-table td {
+            padding: 10px 14px;
+            border-bottom: 1px solid var(--border);
+            color: var(--text-main);
+        }
+        .param-table tr:last-child td {
+            border-bottom: none;
+        }
+        .param-name {
+            font-family: 'Fira Code', monospace;
+            font-weight: 600;
+            color: #38bdf8;
+        }
+        .param-req {
+            color: var(--accent-rose);
+            font-size: 11px;
+            font-weight: 600;
+        }
+        .param-opt {
+            color: var(--text-dim);
+            font-size: 11px;
+        }
+
+        /* CODE BLOCKS */
+        .code-block {
+            background: var(--bg-code);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            position: relative;
+            margin-top: 14px;
+            overflow: hidden;
+        }
+        .code-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #080c14;
+            padding: 8px 14px;
+            border-bottom: 1px solid var(--border);
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--text-dim);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .copy-btn {
+            background: transparent;
+            border: 1px solid var(--border-light);
+            color: var(--text-muted);
+            border-radius: 4px;
+            padding: 2px 8px;
+            font-size: 11px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .copy-btn:hover {
+            color: #fff;
+            border-color: var(--primary);
+        }
+        pre {
+            margin: 0;
+            padding: 14px;
+            overflow-x: auto;
+            font-family: 'Fira Code', monospace;
+            font-size: 12.5px;
+            line-height: 1.5;
+            color: #e2e8f0;
+        }
+
+        /* QUICK TESTER */
+        .tester-box {
+            background: #0b111a;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 36px;
+        }
+        .tester-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1.5fr;
+            gap: 14px;
+            margin-bottom: 16px;
+        }
+        .field-group label {
+            display: block;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-muted);
+            margin-bottom: 6px;
+        }
+        .field-input {
+            width: 100%;
+            background: #070b10;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 8px 12px;
+            color: var(--text-main);
+            font-size: 13px;
+            outline: none;
+        }
+        .field-input:focus {
+            border-color: var(--primary);
+        }
+        .btn-test {
+            background: var(--primary);
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            padding: 10px 18px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+        .btn-test:hover {
+            opacity: 0.9;
+        }
+
+        /* NOTICE BOXES */
+        .notice-box {
+            border-radius: 8px;
+            padding: 16px 20px;
+            margin-bottom: 24px;
+            font-size: 13.5px;
+            line-height: 1.5;
+        }
+        .notice-info {
+            background: rgba(59, 130, 246, 0.08);
+            border: 1px solid rgba(59, 130, 246, 0.25);
+            color: #93c5fd;
+        }
+        .notice-warning {
+            background: rgba(245, 158, 11, 0.08);
+            border: 1px solid rgba(245, 158, 11, 0.25);
+            color: #fde68a;
+        }
+
+        @media (max-width: 960px) {
+            .sidebar {
+                display: none;
+            }
+            .content {
+                margin-left: 0;
+                padding: 24px 20px;
+            }
+            .tester-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="layout">
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+        <div class="sidebar-brand">
+            <div class="brand-badge">UY</div>
+            <div class="brand-info">
+                <h1>Ufka Yolculuk</h1>
+                <span>REST API REHBERİ</span>
+            </div>
+        </div>
+
+                    <div class="user-session-card">
+                <div class="user-session-left">
+                    <div class="user-session-avatar">👤</div>
+                    <div>
+                        <span class="user-session-name">uy_Rest-Worker</span>
+                        <span class="user-session-sub">Giriş Yapıldı</span>
+                    </div>
+                </div>
+                <a href="javascript:void(0)" onclick="doLogout()" class="btn-logout" title="Oturumu Kapat">Çıkış ✕</a>
+            </div>
+        
+        <!-- SEARCH -->
+        <div class="search-box">
+            <input type="text" id="apiSearch" class="search-input" placeholder="Servis veya fonksiyon ara..." oninput="filterEndpoints()">
+        </div>
+
+        <nav id="sidebarNav">
+            <div class="nav-group">
+                <div class="nav-group-title">Genel Kılavuz</div>
+                <a href="#auth" class="nav-item">
+                    <span>Kimlik Doğrulama</span>
+                    <span class="method-badge badge-post">AUTH</span>
+                </a>
+                <a href="#security" class="nav-item">
+                    <span>Güvenlik & WAF</span>
+                    <span class="method-badge badge-new">KORUMA</span>
+                </a>
+                <a href="#tester" class="nav-item">
+                    <span>Hızlı Test Aracı</span>
+                    <span class="method-badge badge-get">CURL</span>
+                </a>
+            </div>
+
+                                                <div class="nav-group">
+                        <div class="nav-group-title">Sınavlar ve Yarışma Yönetimi</div>
+                                                    <a href="#endpoint-getExams" class="nav-item" data-name="getexams aktif sınavları listele sadece hem yayında (ispublished) hem de web sitesinde yayında (iswebsitepublished) olan aktif sınavları listeler.">
+                                <span>getExams</span>
+                                <span class="method-badge badge-post">POST</span>
+                            </a>
+                                            </div>
+                                    <div class="nav-group">
+                        <div class="nav-group-title">Soru Havuzu ve Sınav Kategorileri</div>
+                                                    <a href="#endpoint-getQuestions" class="nav-item" data-name="getquestions soru havuzunu getir (kategori zorunlu) yayınlanmış soruları belirtilen kategoriye göre filtreleyerek çeker. category_id zorunludur.">
+                                <span>getQuestions</span>
+                                <span class="method-badge badge-post">POST</span>
+                            </a>
+                                                    <a href="#endpoint-getExamCategories" class="nav-item" data-name="getexamcategories sınav ve yarışma kategorilerini listele aktif olan sınav kategorilerini sıralı olarak döner (İlkokul, ortaokul, lise, yetişkin vb.).">
+                                <span>getExamCategories</span>
+                                <span class="method-badge badge-get">POST</span>
+                            </a>
+                                            </div>
+                                    <div class="nav-group">
+                        <div class="nav-group-title">Web İçerikleri ve Ödül Yönetimi</div>
+                                                    <a href="#endpoint-getWebContents" class="nav-item" data-name="getwebcontents web İçerikleri ve duyuruları listele web sitesindeki aktif içerikleri, duyuruları, haberleri ve bağlı kategorilerini toplu olarak döner.">
+                                <span>getWebContents</span>
+                                <span class="method-badge badge-new">POST</span>
+                            </a>
+                                                    <a href="#endpoint-getAwards" class="nav-item" data-name="getawards yarışma Ödüllerini detaylı listele türkiye geneli ve il bazlı yarışma ödüllerini kategori ve derece detaylarıyla döner. İle göre filtrelenebilir.">
+                                <span>getAwards</span>
+                                <span class="method-badge badge-new">POST</span>
+                            </a>
+                                                    <a href="#endpoint-getWebCategories" class="nav-item" data-name="getwebcategories web kategorilerini listele web sitesindeki aktif kategorileri, alt kategorileri ve içerik sayılarıyla döner.">
+                                <span>getWebCategories</span>
+                                <span class="method-badge badge-new">POST</span>
+                            </a>
+                                                    <a href="#endpoint-webCategories" class="nav-item" data-name="webcategories web kategorileri (kısayol / alias) getwebcategories servisiyle aynı işlevi görür.">
+                                <span>webCategories</span>
+                                <span class="method-badge badge-get">POST</span>
+                            </a>
+                                            </div>
+                                    <div class="nav-group">
+                        <div class="nav-group-title">Soru Cevaplama Servisleri</div>
+                                                    <a href="#endpoint-createQuestionForm" class="nav-item" data-name="createquestionform yeni sınav/deneme formu aç kullanıcı ve sınav id değerleriyle yeni bir question_forms oturum kaydı oluşturur.">
+                                <span>createQuestionForm</span>
+                                <span class="method-badge badge-post">POST</span>
+                            </a>
+                                                    <a href="#endpoint-postAnswer" class="nav-item" data-name="postanswer tekil soru cevabını kaydet kullanıcının tek bir soruya verdiği yanıtı sunucuya kaydeder.">
+                                <span>postAnswer</span>
+                                <span class="method-badge badge-post">POST</span>
+                            </a>
+                                            </div>
+                                    <div class="nav-group">
+                        <div class="nav-group-title">Yarışma Kitapları ve Okuma Takibi</div>
+                                                    <a href="#endpoint-getBookCategories" class="nav-item" data-name="getbookcategories kitap kategorileri ve kitaplarını listele yarışma kitaplarının kategorilerini ve her kategorideki kitap listesini döner.">
+                                <span>getBookCategories</span>
+                                <span class="method-badge badge-get">POST</span>
+                            </a>
+                                                    <a href="#endpoint-getBooks" class="nav-item" data-name="getbooks tüm aktif kitapları listele tüm kitapları, mobil kapak görselleri, ses dosyaları, pdf linkleri ve sayfa dosya boyutlarıyla döner.">
+                                <span>getBooks</span>
+                                <span class="method-badge badge-get">POST</span>
+                            </a>
+                                                    <a href="#endpoint-getBook" class="nav-item" data-name="getbook tekil kitap detayı ve sayfa resimleri belirtilen kitabın tüm sayfalarının resim linklerini ve sayfa boyutlarını liste olarak döner.">
+                                <span>getBook</span>
+                                <span class="method-badge badge-post">POST</span>
+                            </a>
+                                                    <a href="#endpoint-saveUserPage" class="nav-item" data-name="saveuserpage kullanıcının kitapta kaldığı sayfayı kaydet Öğrencinin kitap okurken kaldığı son sayfayı sunucuya senkronize eder.">
+                                <span>saveUserPage</span>
+                                <span class="method-badge badge-post">POST</span>
+                            </a>
+                                            </div>
+                                    <div class="nav-group">
+                        <div class="nav-group-title">Yarışmacı Kullanıcı ve Profil Servisleri</div>
+                                                    <a href="#endpoint-getUfkaYolculukUser" class="nav-item" data-name="getufkayolculukuser yarışmacı kullanıcı sorgulama & doğrulama telefon numarası ve doğum tarihi ile kayıtlı yarışmacı profilini sorgular.">
+                                <span>getUfkaYolculukUser</span>
+                                <span class="method-badge badge-post">POST</span>
+                            </a>
+                                                    <a href="#endpoint-getUserData" class="nav-item" data-name="getuserdata kullanıcının okuma ve sepet verileri kullanıcının okuduğu kitap sayfalarını ve sepet/aktivite geçmişini döner.">
+                                <span>getUserData</span>
+                                <span class="method-badge badge-post">POST</span>
+                            </a>
+                                                    <a href="#endpoint-getProfileMenu" class="nav-item" data-name="getprofilemenu dinamik profil menüsü kullanıcının giriş durumuna göre özelleştirilmiş profil menü bağlantılarını ve svg ikonlarını döner.">
+                                <span>getProfileMenu</span>
+                                <span class="method-badge badge-post">POST</span>
+                            </a>
+                                                    <a href="#endpoint-getPage" class="nav-item" data-name="getpage bilgilendirme sayfası İçeriği yarışma şartnamesi, kuralları veya duyuru sayfalarının başlık ve gövde metnini döner.">
+                                <span>getPage</span>
+                                <span class="method-badge badge-post">POST</span>
+                            </a>
+                                            </div>
+                                    <div class="nav-group">
+                        <div class="nav-group-title">Genel Sistem Servisleri</div>
+                                                    <a href="#endpoint-getCities" class="nav-item" data-name="getcities türkiye İller listesi kayıt ve okul seçiminde kullanılan 81 ilin alfabetik listesini döner.">
+                                <span>getCities</span>
+                                <span class="method-badge badge-get">POST</span>
+                            </a>
+                                                    <a href="#endpoint-getMenu" class="nav-item" data-name="getmenu navigasyon menüsü header ve footer menü ağacını döner.">
+                                <span>getMenu</span>
+                                <span class="method-badge badge-get">POST</span>
+                            </a>
+                                            </div>
+                                    </nav>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="content">
+
+        <!-- HERO BANNER -->
+        <section class="hero">
+            <div class="hero-top-badge badge-uy">
+                <span>●</span>
+                <span>Proje Kapsamı: Ufka Yolculuk</span>
+            </div>
+            <h1 class="hero-title">Ufka Yolculuk REST API Rehberi</h1>
+            <p class="hero-subtitle">
+                Ufka Yolculuk Bilgi ve Kültür Yarışması; Sınav Yönetimi, Canlı Sınav, Soru Setleri, Kitaplar ve Katılımcı Servisleri            </p>
+            <div class="hero-badges">
+                <span class="pill pill-active-project">
+                    <span class="pill-dot"></span>
+                    Aktif Kapsam: project_ufkayolculuk                </span>
+                <span class="pill">🛡️ WAF Korumalı</span>
+                <span class="pill">⚡ Sliding-Window Rate Limit (120/dk)</span>
+                <span class="pill">🔒 HTTP Basic Auth & POST</span>
+                <span class="pill">🌐 UTF-8 JSON</span>
+            </div>
+        </section>
+
+        <!-- AUTHENTICATION GUIDE -->
+        <section id="auth" class="section">
+            <div class="section-header">
+                <h2 class="section-title">1. Kimlik Doğrulama & Proje Yetkilendirmesi</h2>
+                <span class="section-tag">Zorunlu</span>
+            </div>
+            <div class="notice-box notice-info">
+                Tüm API servisleri güvenlidir ve <strong>rest_users</strong> tablosunda tanımlı, bu projeye özel yetkilendirilmiş bir kullanıcı hesabı gerektirir. İstekler iki yöntemle doğrulanabilir:
+            </div>
+            <div class="notice-box notice-success" style="background: rgba(16, 185, 129, 0.1); border-left: 4px solid var(--accent); padding: 14px 18px; border-radius: 6px; margin-bottom: 18px;">
+                <strong style="color: #34d399;">🔑 Proje API Kimlik Doğrulama:</strong><br>
+                <div style="margin-top: 6px; font-size: 12px; color: var(--text-muted);">
+                    Bu servise erişmek için <strong>Ufka Yolculuk</strong> projesi için yetkilendirilmiş kullanıcı hesabınızı kullanınız.
+                </div>
+                <div style="margin-top: 6px; font-size: 11px; color: var(--text-muted);"><span style="color: #38bdf8;">🛡️ Proje İzolasyonu:</span> Her kullanıcı yalnızca yetkilendirildiği projenin servislerine erişebilir.</div>
+                <div style="margin-top: 4px; font-size: 11px; color: var(--text-dim);">📝 Tüm gelen REST istekleri (IP, kullanıcı adı, süre, parametreler ve yanıt gövdesi) otomatik olarak <strong>rest_logs</strong> tablosunda arşivlenir.</div>
+            </div>
+            <div class="api-card">
+                <div class="api-card-header">
+                    <span class="endpoint-url">A) HTTP Basic Auth (Önerilen Yöntem)</span>
+                    <span class="http-badge badge-post">RFC 7617</span>
+                </div>
+                <div class="api-card-body">
+                    <p class="desc-text">İstek başlığında standart Authorization header gönderilir:</p>
+                    <div class="code-block">
+                        <div class="code-header">
+                            <span>HTTP Header</span>
+                            <button class="copy-btn" onclick="copyCode(this)">Kopyala</button>
+                        </div>
+                        <pre><code>Authorization: Basic dXlfUmVzdC1Xb3JrZXI6VWZrQV9Zb2wtMTQ0OA==</code></pre>
+                    </div>
+                </div>
+            </div>
+            <div class="api-card">
+                <div class="api-card-header">
+                    <span class="endpoint-url">B) Form Body ile Kimlik Doğrulama</span>
+                    <span class="http-badge badge-post">POST DATA</span>
+                </div>
+                <div class="api-card-body">
+                    <p class="desc-text">İstek gövdesine <code>username</code> ve <code>password</code> parametreleri eklenir:</p>
+                    <div class="code-block">
+                        <div class="code-header">
+                            <span>cURL Örneği</span>
+                            <button class="copy-btn" onclick="copyCode(this)">Kopyala</button>
+                        </div>
+                                                <pre><code>curl -X POST "https://ufkayolculuk.com/rest/get/getExams" \
+  -d "username=uy_Rest-Worker" \
+  -d "password=UfkA_Yol-1448"</code></pre>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECURITY & RATE LIMITING -->
+        <section id="security" class="section">
+            <div class="section-header">
+                <h2 class="section-title">2. Güvenlik, WAF ve Hız Sınırları</h2>
+                <span class="section-tag">Güvenlik Duvarı</span>
+            </div>
+            <div class="notice-box notice-warning">
+                API uç noktaları DDoS, kaba kuvvet ve enjeksiyon saldırılarına karşı aktif <strong>WAF (Web Application Firewall)</strong> ile korunur.
+            </div>
+            <div class="param-table-wrapper">
+                <table class="param-table">
+                    <thead>
+                        <tr>
+                            <th>Kural / Koruma</th>
+                            <th>Açıklama</th>
+                            <th>Engelleme Davranışı</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Hız Sınırı (Rate Limit)</strong></td>
+                            <td>Her istemci IP'si için dakikada maksimum 120 istek hakkı.</td>
+                            <td><code>HTTP 429 Too Many Requests</code> (X-RateLimit başlıkları döner)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Brute-Force Koruması</strong></td>
+                            <td>10 dakika içinde 5 kez üst üste hatalı kimlik bilgisi gönderen IP'ler 15 dakika boyunca kilitlenir.</td>
+                            <td><code>HTTP 429</code> (Kalan saniye döner)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>WAF Filtreleme</strong></td>
+                            <td>SQL Injection, XSS, Path Traversal, Null-Byte ve şüpheli güvenlik tarayıcıları (sqlmap vb.) anında engellenir.</td>
+                            <td><code>HTTP 403 Forbidden</code></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- QUICK TESTER / CURL GENERATOR -->
+        <section id="tester" class="section">
+            <div class="section-header">
+                <h2 class="section-title">3. Canlı Test Aracı & cURL Oluşturucu</h2>
+                <span class="section-tag">İnteraktif Test</span>
+            </div>
+            <div class="tester-box">
+                                <div class="tester-grid">
+                    <div class="field-group">
+                        <label>API Kullanıcı Adı (Otomatik)</label>
+                        <input type="text" id="testUser" class="field-input" value="uy_Rest-Worker" placeholder="örn: api_user">
+                    </div>
+                    <div class="field-group">
+                        <label>API Şifresi (Otomatik)</label>
+                        <input type="password" id="testPass" class="field-input" value="UfkA_Yol-1448" placeholder="••••••••">
+                    </div>
+                    <div class="field-group">
+                        <label>Test Edilecek Uç Nokta</label>
+                        <select id="testEndpoint" class="field-input" onchange="updateGeneratedCurl()">
+                                                            <optgroup label="Ufka Yolculuk">
+                                                                                                                        <option value="getExams">getExams (Aktif Sınavları Listele)</option>
+                                                                                                                                                                <option value="getQuestions">getQuestions (Soru Havuzunu Getir (Kategori Zorunlu))</option>
+                                                                                    <option value="getExamCategories">getExamCategories (Sınav ve Yarışma Kategorilerini Listele)</option>
+                                                                                                                                                                <option value="getWebContents">getWebContents (Web İçerikleri ve Duyuruları Listele)</option>
+                                                                                    <option value="getAwards">getAwards (Yarışma Ödüllerini Detaylı Listele)</option>
+                                                                                    <option value="getWebCategories">getWebCategories (Web Kategorilerini Listele)</option>
+                                                                                    <option value="webCategories">webCategories (Web Kategorileri (Kısayol / Alias))</option>
+                                                                                                                                                                <option value="createQuestionForm">createQuestionForm (Yeni Sınav/Deneme Formu Aç)</option>
+                                                                                    <option value="postAnswer">postAnswer (Tekil Soru Cevabını Kaydet)</option>
+                                                                                                                                                                <option value="getBookCategories">getBookCategories (Kitap Kategorileri ve Kitaplarını Listele)</option>
+                                                                                    <option value="getBooks">getBooks (Tüm Aktif Kitapları Listele)</option>
+                                                                                    <option value="getBook">getBook (Tekil Kitap Detayı ve Sayfa Resimleri)</option>
+                                                                                    <option value="saveUserPage">saveUserPage (Kullanıcının Kitapta Kaldığı Sayfayı Kaydet)</option>
+                                                                                                                                                                <option value="getUfkaYolculukUser">getUfkaYolculukUser (Yarışmacı Kullanıcı Sorgulama &amp; Doğrulama)</option>
+                                                                                    <option value="getUserData">getUserData (Kullanıcının Okuma ve Sepet Verileri)</option>
+                                                                                    <option value="getProfileMenu">getProfileMenu (Dinamik Profil Menüsü)</option>
+                                                                                    <option value="getPage">getPage (Bilgilendirme Sayfası İçeriği)</option>
+                                                                                                                                                                <option value="getCities">getCities (Türkiye İller Listesi)</option>
+                                                                                    <option value="getMenu">getMenu (Navigasyon Menüsü)</option>
+                                                                                                            </optgroup>
+                                                    </select>
+                    </div>
+                </div>
+
+                <div class="code-block" style="margin-bottom: 12px;">
+                    <div class="code-header">
+                        <span>Oluşturulan cURL Komutu</span>
+                        <button class="copy-btn" onclick="copyCode(this)">Kopyala</button>
+                    </div>
+                                        <pre><code id="generatedCurl">curl -X POST "https://ufkayolculuk.com/rest/get/getExams" -u "uy_Rest-Worker:UfkA_Yol-1448"</code></pre>
+                </div>
+
+                <button type="button" class="btn-test" onclick="runLiveTest()">Tarayıcıda Canlı Test Et</button>
+
+                <div id="testResult" style="display:none; margin-top: 14px;">
+                    <div class="code-block">
+                        <div class="code-header">
+                            <span>Yanıt Çıktısı</span>
+                            <span id="testStatus"></span>
+                        </div>
+                        <pre><code id="testResponseJson">{}</code></pre>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================================== -->
+        <!-- ENDPOINT CARDS (DYNAMIC PER PROJECT) -->
+        <!-- ============================================== -->
+                    <div class="project-endpoints-container" id="project-block-project_ufkayolculuk">
+                                    <section class="section">
+                        <div class="section-header">
+                            <h2 class="section-title">Sınavlar ve Yarışma Yönetimi</h2>
+                            <span class="section-tag">Ufka Yolculuk</span>
+                        </div>
+
+                                                    <div id="endpoint-getExams" class="api-card endpoint-card" data-search="getexams aktif sınavları listele sadece hem yayında (ispublished) hem de web sitesinde yayında (iswebsitepublished) olan aktif sınavları listeler. ufka yolculuk yarışma ve deneme sınavlarını çeker. gizli olan veya yayında olmayan sınavlar filtrelenir.">
+                                <div class="api-card-header">
+                                    <div class="endpoint-def">
+                                        <span class="http-badge badge-post">POST | GET</span>
+                                        <span class="endpoint-url">https://ufkayolculuk.com/rest/get/getExams</span>
+                                        <span class="pill-badge">UY</span>
+                                    </div>
+                                    <span class="endpoint-desc-brief">Sadece hem yayında (isPublished) hem de web sitesinde yayında (iswebsitepublished) olan aktif sınavları listeler.</span>
+                                </div>
+                                <div class="api-card-body">
+                                    <p class="desc-text">Ufka Yolculuk yarışma ve deneme sınavlarını çeker. Gizli olan veya yayında olmayan sınavlar filtrelenir.</p>
+
+                                                                            <p class="desc-text" style="color: var(--text-dim); font-size: 12.5px;"><em>Bu uç nokta ek bir parametre gerektirmez.</em></p>
+                                    
+                                    <!-- cURL Command -->
+                                    <div class="code-block">
+                                        <div class="code-header">
+                                            <span>Örnek cURL Çağrısı</span>
+                                            <button class="copy-btn" onclick="copyCode(this)">Kopyala</button>
+                                        </div>
+                                        <pre><code>curl -X POST &quot;https://ufkayolculuk.com/rest/get/getExams&quot; -u &quot;USER:PASS&quot;</code></pre>
+                                    </div>
+
+                                    <!-- Sample Response -->
+                                                                            <div class="code-block">
+                                            <div class="code-header">
+                                                <span>Örnek JSON Yanıtı (200 OK)</span>
+                                                <button class="copy-btn" onclick="copyCode(this)">Kopyala</button>
+                                            </div>
+                                            <pre><code>[
+    {
+        "id": "78",
+        "title": "11. Ufka Yolculuk Deneme Sınavı",
+        "duration": "50",
+        "rest_time_duration": "10",
+        "publish_time": "2026-04-10 10:00:00",
+        "end_time": "2026-04-10 20:00:00",
+        "is_published": "1",
+        "is_website_published": "1",
+        "question_number": "40"
+    }
+]</code></pre>
+                                        </div>
+                                                                    </div>
+                            </div>
+                                            </section>
+                                    <section class="section">
+                        <div class="section-header">
+                            <h2 class="section-title">Soru Havuzu ve Sınav Kategorileri</h2>
+                            <span class="section-tag">Ufka Yolculuk</span>
+                        </div>
+
+                                                    <div id="endpoint-getQuestions" class="api-card endpoint-card" data-search="getquestions soru havuzunu getir (kategori zorunlu) yayınlanmış soruları belirtilen kategoriye göre filtreleyerek çeker. category_id zorunludur. Öğrencilerin çözmesi için hazırlanan soru havuzunu döner. tüm soruların toplu çekilmesini engellemek için category_id zorunludur.">
+                                <div class="api-card-header">
+                                    <div class="endpoint-def">
+                                        <span class="http-badge badge-post">POST | GET</span>
+                                        <span class="endpoint-url">https://ufkayolculuk.com/rest/get/getQuestions</span>
+                                        <span class="pill-badge">UY</span>
+                                    </div>
+                                    <span class="endpoint-desc-brief">Yayınlanmış soruları belirtilen kategoriye göre filtreleyerek çeker. category_id zorunludur.</span>
+                                </div>
+                                <div class="api-card-body">
+                                    <p class="desc-text">Öğrencilerin çözmesi için hazırlanan soru havuzunu döner. Tüm soruların toplu çekilmesini engellemek için category_id zorunludur.</p>
+
+                                                                            <div class="param-table-wrapper">
+                                            <table class="param-table">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Parametre</th>
+                                                        <th>Tür</th>
+                                                        <th>Zorunlu?</th>
+                                                        <th>Açıklama</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                                                                            <tr>
+                                                            <td class="param-name">category_id</td>
+                                                            <td>int (Zorunlu)</td>
+                                                            <td>
+                                                                                                                                    <span class="param-req">Zorunlu</span>
+                                                                                                                            </td>
+                                                            <td>Ufka Yolculuk yarışma kategorisi ID (Örn: 1, 2, 3)</td>
+                                                        </tr>
+                                                                                                            <tr>
+                                                            <td class="param-name">type</td>
+                                                            <td>string (Varsayılan: mini-deneme)</td>
+                                                            <td>
+                                                                                                                                    <span class="param-opt">Opsiyonel</span>
+                                                                                                                            </td>
+                                                            <td>Soru tipi: mini-deneme, final vb.</td>
+                                                        </tr>
+                                                                                                    </tbody>
+                                            </table>
+                                        </div>
+                                    
+                                    <!-- cURL Command -->
+                                    <div class="code-block">
+                                        <div class="code-header">
+                                            <span>Örnek cURL Çağrısı</span>
+                                            <button class="copy-btn" onclick="copyCode(this)">Kopyala</button>
+                                        </div>
+                                        <pre><code>curl -X POST &quot;https://ufkayolculuk.com/rest/get/getQuestions/3&quot; -u &quot;USER:PASS&quot;</code></pre>
+                                    </div>
+
+                                    <!-- Sample Response -->
+                                                                            <div class="code-block">
+                                            <div class="code-header">
+                                                <span>Örnek JSON Yanıtı (200 OK)</span>
+                                                <button class="copy-btn" onclick="copyCode(this)">Kopyala</button>
+                                            </div>
+                                            <pre><code>[
+    {
+        "id": "101",
+        "body": "Soru metni burada yer alır...",
+        "a": "Cevap A",
+        "b": "Cevap B",
+        "c": "Cevap C",
+        "d": "Cevap D",
+        "categories": [
+            {
+                "id": "3",
+                "name": "Ortaokul Kategorisi"
+            }
+        ]
+    }
+]</code></pre>
+                                        </div>
+                                                                    </div>
+                            </div>
+                                                    <div id="endpoint-getExamCategories" class="api-card endpoint-card" data-search="getexamcategories sınav ve yarışma kategorilerini listele aktif olan sınav kategorilerini sıralı olarak döner (İlkokul, ortaokul, lise, yetişkin vb.). yarışmacının dahil olduğu yaş/okul kategorisini belirlemek ve sınav listesini filtrelemek için kullanılır.">
+                                <div class="api-card-header">
+                                    <div class="endpoint-def">
+                                        <span class="http-badge badge-get">POST | GET</span>
+                                        <span class="endpoint-url">https://ufkayolculuk.com/rest/get/getExamCategories</span>
+                                        <span class="pill-badge">UY</span>
+                                    </div>
+                                    <span class="endpoint-desc-brief">Aktif olan sınav kategorilerini sıralı olarak döner (İlkokul, Ortaokul, Lise, Yetişkin vb.).</span>
+                                </div>
+                                <div class="api-card-body">
+                                    <p class="desc-text">Yarışmacının dahil olduğu yaş/okul kategorisini belirlemek ve sınav listesini filtrelemek için kullanılır.</p>
+
+                                                                            <p class="desc-text" style="color: var(--text-dim); font-size: 12.5px;"><em>Bu uç nokta ek bir parametre gerektirmez.</em></p>
+                                    
+                                    <!-- cURL Command -->
+                                    <div class="code-block">
+                                        <div class="code-header">
+                                            <span>Örnek cURL Çağrısı</span>
+                                            <button class="copy-btn" onclick="copyCode(this)">Kopyala</button>
+                                        </div>
+                                        <pre><code>curl -X POST &quot;https://ufkayolculuk.com/rest/get/getExamCategories&quot; -u &quot;USER:PASS&quot;</code></pre>
+                                    </div>
+
+                                    <!-- Sample Response -->
+                                                                            <div class="code-block">
+                                            <div class="code-header">
+                                                <span>Örnek JSON Yanıtı (200 OK)</span>
+                                                <button class="copy-btn" onclick="copyCode(this)">Kopyala</button>
+                                            </div>
+                                            <pre><code>[
+    {
+        "id": "1",
+        "name": "İlkokul Kategorisi",
+        "order_id": "1",
+        "is_published": "1"
+    },
+    {
+        "id": "2",
+        "name": "Ortaokul Kategorisi",
+        "order_id": "2",
+        "is_published": "1"
+    },
+    {
+        "id": "3",
+        "name": "Lise Kategorisi",
+        "order_id": "3",
+        "is_published": "1"
+    }
+]</code></pre>
+                                        </div>
+                                                                    </div>
+                            </div>
+                                            </section>
+                                    <section class="section">
+                        <div class="section-header">
+                            <h2 class="section-title">Web İçerikleri ve Ödül Yönetimi</h2>
+                            <span class="section-tag">Ufka Yolculuk</span>
+                        </div>
+
+                                                    <div id="endpoint-getWebContents" class="api-card endpoint-card" data-search="getwebcontents web İçerikleri ve duyuruları listele web sitesindeki aktif içerikleri, duyuruları, haberleri ve bağlı kategorilerini toplu olarak döner. web_contents tablosundan sadece kullanılabilir alanları (id, order_id, type, title, slug, description, subtitles, body, publish_time, redirect_url) ve içeriklerin ait olduğu kategorileri döner.">
+                                <div class="api-card-header">
+                                    <div class="endpoint-def">
+                                        <span class="http-badge badge-new">POST | GET</span>
+                                        <span class="endpoint-url">https://ufkayolculuk.com/rest/get/getWebContents</span>
+                                        <span class="pill-badge">UY</span>
+                                    </div>
+                                    <span class="endpoint-desc-brief">Web sitesindeki aktif içerikleri, duyuruları, haberleri ve bağlı kategorilerini toplu olarak döner.</span>
+                                </div>
+                                <div class="api-card-body">
+                                    <p class="desc-text">web_contents tablosundan sadece kullanılabilir alanları (id, order_id, type, title, slug, description, subtitles, body, publish_time, redirect_url) ve içeriklerin ait olduğu kategorileri döner.</p>
+
+                                                                            <div class="param-table-wrapper">
+                                            <table class="param-table">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Parametre</th>
+                                                        <th>Tür</th>
+                                                        <th>Zorunlu?</th>
+                                                        <th>Açıklama</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                                                                            <tr>
+                                                            <td class="param-name">type</td>
+                                                            <td>string (Opsiyonel)</td>
+                                                            <td>
+                                                                                                                                    <span class="param-opt">Opsiyonel</span>
+                                                                                                                            </td>
+                                                            <td>İçerik türü: content, announcement vb.</td>
+                                                        </tr>
+                                                                                                            <tr>
+                                                            <td class="param-name">category_id</td>
+                                                            <td>int (Opsiyonel)</td>
+                                                            <td>
+                                                                                                                                    <span class="param-opt">Opsiyonel</span>
+                                                                                                                            </td>
+                                                            <td>Web kategori ID filtrelemesi</td>
+                                                        </tr>
+                                                                                                            <tr>
+                                                            <td class="param-name">slug</td>
+                                                            <td>string (Opsiyonel)</td>
+                                                            <td>
+                                                                                                                                    <span class="param-opt">Opsiyonel</span>
+                                                                                                                            </td>
+                                                            <td>Tekil içerik için slug</td>
+                                                        </tr>
+                                                                                                    </tbody>
+                                            </table>
+                                        </div>
+                                    
+                                    <!-- cURL Command -->
+                                    <div class="code-block">
+                                        <div class="code-header">
+                                            <span>Örnek cURL Çağrısı</span>
+                                            <button class="copy-btn" onclick="copyCode(this)">Kopyala</button>
+                                        </div>
+                                        <pre><code>curl -X POST &quot;https://ufkayolculuk.com/rest/get/getWebContents&quot; -u &quot;USER:PASS&quot;</code></pre>
+                                    </div>
+
+                                    <!-- Sample Response -->
+                                                                            <div class="code-block">
+                                            <div class="code-header">
+                                                <span>Örnek JSON Yanıtı (200 OK)</span>
+                                                <button class="copy-btn" onclick="copyCode(this)">Kopyala</button>
+                                            </div>
+                                            <pre><code>[
+    {
+        "id": "55",
+        "type": "content",
+        "title": "Genel Bilgiler",
+        "slug": "hakkimizda",
+        "description": "Yarışma hakkında...",
+        "body": "<p>İçerik HTML metni...</p>",
+        "categories": [
+            {
+                "id": "1",
+                "title": "Kurumsal",
+                "slug": "kurumsal"
+            }
+        ]
+    }
+]</code></pre>
+                                        </div>
+                                                                    </div>
+                            </div>
+                                                    <div id="endpoint-getAwards" class="api-card endpoint-card" data-search="getawards yarışma Ödüllerini detaylı listele türkiye geneli ve il bazlı yarışma ödüllerini kategori ve derece detaylarıyla döner. İle göre filtrelenebilir. uy_awards tablosundan ödül bilgilerini, il adını, kategori adını ve ödül listesini (json ayrıştırılmış temiz dizi) döner. city_id parametresi ile belirli bir ilin ve genel ödüllerin filtrelenmesini sağlar.">
+                                <div class="api-card-header">
+                                    <div class="endpoint-def">
+                                        <span class="http-badge badge-new">POST | GET</span>
+                                        <span class="endpoint-url">https://ufkayolculuk.com/rest/get/getAwards</span>
+                                        <span class="pill-badge">UY</span>
+                                    </div>
+                                    <span class="endpoint-desc-brief">Türkiye geneli ve il bazlı yarışma ödüllerini kategori ve derece detaylarıyla döner. İle göre filtrelenebilir.</span>
+                                </div>
+                                <div class="api-card-body">
+                                    <p class="desc-text">uy_awards tablosundan ödül bilgilerini, il adını, kategori adını ve ödül listesini (JSON ayrıştırılmış temiz dizi) döner. city_id parametresi ile belirli bir ilin ve genel ödüllerin filtrelenmesini sağlar.</p>
+
+                                                                            <div class="param-table-wrapper">
+                                            <table class="param-table">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Parametre</th>
+                                                        <th>Tür</th>
+                                                        <th>Zorunlu?</th>
+                                                        <th>Açıklama</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                                                                            <tr>
+                                                            <td class="param-name">city_id</td>
+                                                            <td>int (Opsiyonel)</td>
+                                                            <td>
+                                                                                                                                    <span class="param-opt">Opsiyonel</span>
+                                                                                                                            </td>
+                                                            <td>Plaka kodu veya il ID (örn: 34 İstanbul, 6 Ankara). Belirtilirse o il ve Türkiye ödülleri döner.</td>
+                                                        </tr>
+                                                                                                            <tr>
+                                                            <td class="param-name">type</td>
+                                                            <td>string (country / city)</td>
+                                                            <td>
+                                                                                                                                    <span class="param-opt">Opsiyonel</span>
+                                                                                                                            </td>
+                                                            <td>Ödül kapsamı türü</td>
+                                                        </tr>
+                                                                                                    </tbody>
+                                            </table>
+                                        </div>
+                                    
+                                    <!-- cURL Command -->
+                                    <div class="code-block">
+                                        <div class="code-header">
+                                            <span>Örnek cURL Çağrısı</span>
+                                            <button class="copy-btn" onclick="copyCode(this)">Kopyala</button>
+                                        </div>
+                                        <pre><code>curl -X POST &quot;https://ufkayolculuk.com/rest/get/getAwards/34&quot; -u &quot;USER:PASS&quot;</code></pre>
+                                    </div>
+
+                                    <!-- Sample Response -->
+                                                                            <div class="code-block">
+                                            <div class="code-header">
+                                                <span>Örnek JSON Yanıtı (200 OK)</span>
+                                                <button class="copy-btn" onclick="copyCode(this)">Kopyala</button>
+                                            </div>
+                                            <pre><code>[
+    {
+        "id": "8",
+        "type": "country",
+        "city_name": null,
+        "category_name": "İlkokul",
+        "awards": [
+            {
+                "award": "Umre",
+                "type": "other"
+            },
+            {
+                "award": "15.000",
+                "type": "money"
+            }
+        ]
+    }
+]</code></pre>
+                                        </div>
+                                                                    </div>
+                            </div>
+                                                    <div id="endpoint-getWebCategories" class="api-card endpoint-card" data-search="getwebcategories web kategorilerini listele web sitesindeki aktif kategorileri, alt kategorileri ve içerik sayılarıyla döner. web_categories tablosundaki kategorileri listeler. parent_id ile alt kategoriler filtrelenebilir veya tree=1 ile ağaç yapısında alınabilir.">
+                                <div class="api-card-header">
+                                    <div class="endpoint-def">
+                                        <span class="http-badge badge-new">POST | GET</span>
+                                        <span class="endpoint-url">https://ufkayolculuk.com/rest/get/getWebCategories</span>
+                                        <span class="pill-badge">UY</span>
+                                    </div>
+                                    <span class="endpoint-desc-brief">Web sitesindeki aktif kategorileri, alt kategorileri ve içerik sayılarıyla döner.</span>
+                                </div>
+                                <div class="api-card-body">
+                                    <p class="desc-text">web_categories tablosundaki kategorileri listeler. parent_id ile alt kategoriler filtrelenebilir veya tree=1 ile ağaç yapısında alınabilir.</p>
+
+                                                                            <div class="param-table-wrapper">
+                                            <table class="param-table">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Parametre</th>
+                                                        <th>Tür</th>
+                                                        <th>Zorunlu?</th>
+                                                        <th>Açıklama</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                                                                            <tr>
+                                                            <td class="param-name">parent_id</td>
+                                                            <td>int / string (Opsiyonel)</td>
+                                                            <td>
+                                                                                                                                    <span class="param-opt">Opsiyonel</span>
+                                                                                                                            </td>
+                                                            <td>Üst kategori ID veya &quot;root&quot; (sadece ana kategoriler)</td>
+                                                        </tr>
+                                                                                                            <tr>
+                                                            <td class="param-name">slug</td>
+                                                            <td>string (Opsiyonel)</td>
+                                                            <td>
+                                                                                                                                    <span class="param-opt">Opsiyonel</span>
+                                                                                                                            </td>
+                                                            <td>Kategori slug filtresi</td>
+                                                        </tr>
+                                                                                                            <tr>
+                                                            <td class="param-name">tree</td>
+                                                            <td>int (1 veya 0)</td>
+                                                            <td>
+                                                                                                                                    <span class="param-opt">Opsiyonel</span>
+                                                                                                                            </td>
+                                                            <td>1 gönderilirse alt kategoriler iç içe sub_categories dizisi olarak döner</td>
+                                                        </tr>
+                                                                                                    </tbody>
+                                            </table>
+                                        </div>
+                                    
+                                    <!-- cURL Command -->
+                                    <div class="code-block">
+                                        <div class="code-header">
+                                            <span>Örnek cURL Çağrısı</span>
+                                            <button class="copy-btn" onclick="copyCode(this)">Kopyala</button>
+                                        </div>
+                                        <pre><code>curl -X POST &quot;https://ufkayolculuk.com/rest/get/getWebCategories&quot; -u &quot;USER:PASS&quot;</code></pre>
+                                    </div>
+
+                                    <!-- Sample Response -->
+                                                                            <div class="code-block">
+                                            <div class="code-header">
+                                                <span>Örnek JSON Yanıtı (200 OK)</span>
+                                                <button class="copy-btn" onclick="copyCode(this)">Kopyala</button>
+                                            </div>
+                                            <pre><code>[
+    {
+        "id": "49",
+        "parent_id": null,
+        "title": "Ufka Yolculuk",
+        "slug": "ufka-yolculuk",
+        "content_count": 7,
+        "sub_categories": []
+    }
+]</code></pre>
+                                        </div>
+                                                                    </div>
+                            </div>
+                                                    <div id="endpoint-webCategories" class="api-card endpoint-card" data-search="webcategories web kategorileri (kısayol / alias) getwebcategories servisiyle aynı işlevi görür. webcategories adıyla kategori listesini döner.">
+                                <div class="api-card-header">
+                                    <div class="endpoint-def">
+                                        <span class="http-badge badge-get">POST | GET</span>
+                                        <span class="endpoint-url">https://ufkayolculuk.com/rest/get/webCategories</span>
+                                        <span class="pill-badge">UY</span>
+                                    </div>
+                                    <span class="endpoint-desc-brief">getWebCategories servisiyle aynı işlevi görür.</span>
+                                </div>
+                                <div class="api-card-body">
+                                    <p class="desc-text">webCategories adıyla kategori listesini döner.</p>
+
+                                                                            <p class="desc-text" style="color: var(--text-dim); font-size: 12.5px;"><em>Bu uç nokta ek bir parametre gerektirmez.</em></p>
+                                    
+                                    <!-- cURL Command -->
+                                    <div class="code-block">
+                                        <div class="code-header">
+                                            <span>Örnek cURL Çağrısı</span>
+                                            <button class="copy-btn" onclick="copyCode(this)">Kopyala</button>
+                                        </div>
+                                        <pre><code>curl -X POST &quot;https://ufkayolculuk.com/rest/get/webCategories&quot; -u &quot;USER:PASS&quot;</code></pre>
+                                    </div>
+
+                                    <!-- Sample Response -->
+                                                                            <div class="code-block">
+                                            <div class="code-header">
+                                                <span>Örnek JSON Yanıtı (200 OK)</span>
+                                                <button class="copy-btn" onclick="copyCode(this)">Kopyala</button>
+                                            </div>
+                                            <pre><code>[
+    {
+        "id": "49",
+        "title": "Ufka Yolculuk",
+        "slug": "ufka-yolculuk"
+    }
+]</code></pre>
+                                        </div>
+                                                                    </div>
+                            </div>
+                                            </section>
+                                    <section class="section">
+                        <div class="section-header">
+                            <h2 class="section-title">Soru Cevaplama Servisleri</h2>
+                            <span class="section-tag">Ufka Yolculuk</span>
+                        </div>
+
+                                                    <div id="endpoint-createQuestionForm" class="api-card endpoint-card" data-search="createquestionform yeni sınav/deneme formu aç kullanıcı ve sınav id değerleriyle yeni bir question_forms oturum kaydı oluşturur. kullanıcı bir sınava başlarken çağrılır ve yeni oturum id numarasını döner.">
+                                <div class="api-card-header">
+                                    <div class="endpoint-def">
+                                        <span class="http-badge badge-post">POST</span>
+                                        <span class="endpoint-url">https://ufkayolculuk.com/rest/get/createQuestionForm</span>
+                                        <span class="pill-badge">UY</span>
+                                    </div>
+                                    <span class="endpoint-desc-brief">Kullanıcı ve sınav ID değerleriyle yeni bir question_forms oturum kaydı oluşturur.</span>
+                                </div>
+                                <div class="api-card-body">
+                                    <p class="desc-text">Kullanıcı bir sınava başlarken çağrılır ve yeni oturum ID numarasını döner.</p>
+
+                                                                            <div class="param-table-wrapper">
+                                            <table class="param-table">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Parametre</th>
+                                                        <th>Tür</th>
+                                                        <th>Zorunlu?</th>
+                                                        <th>Açıklama</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                                                                            <tr>
+                                                            <td class="param-name">user_id</td>
+                                                            <td>int (POST)</td>
+                                                            <td>
+                                                                                                                                    <span class="param-req">Zorunlu</span>
+                                                                                                                            </td>
+                                                            <td>Kullanıcı ID</td>
+                                                        </tr>
+                                                                                                            <tr>
+                                                            <td class="param-name">exam_id</td>
+                                                            <td>int (POST)</td>
+                                                            <td>
+                                                                                                                                    <span class="param-req">Zorunlu</span>
+                                                                                                                            </td>
+                                                            <td>Sınav ID</td>
+                                                        </tr>
+                                                                                                    </tbody>
+                                            </table>
+                                        </div>
+                                    
+                                    <!-- cURL Command -->
+                                    <div class="code-block">
+                                        <div class="code-header">
+                                            <span>Örnek cURL Çağrısı</span>
+                                            <button class="copy-btn" onclick="copyCode(this)">Kopyala</button>
+                                        </div>
+                                        <pre><code>curl -X POST &quot;https://ufkayolculuk.com/rest/get/createQuestionForm&quot; -u &quot;USER:PASS&quot; -d &quot;user_id=45&amp;exam_id=78&quot;</code></pre>
+                                    </div>
+
+                                    <!-- Sample Response -->
+                                                                            <div class="code-block">
+                                            <div class="code-header">
+                                                <span>Örnek JSON Yanıtı (200 OK)</span>
+                                                <button class="copy-btn" onclick="copyCode(this)">Kopyala</button>
+                                            </div>
+                                            <pre><code>{
+    "status": true,
+    "id": 14206,
+    "uniq_id": "65f12a3b4c5d6"
+}</code></pre>
+                                        </div>
+                                                                    </div>
+                            </div>
+                                                    <div id="endpoint-postAnswer" class="api-card endpoint-card" data-search="postanswer tekil soru cevabını kaydet kullanıcının tek bir soruya verdiği yanıtı sunucuya kaydeder. her soru geçişinde verilen cevabı question_answers tablosuna anlık yazar.">
+                                <div class="api-card-header">
+                                    <div class="endpoint-def">
+                                        <span class="http-badge badge-post">POST</span>
+                                        <span class="endpoint-url">https://ufkayolculuk.com/rest/get/postAnswer</span>
+                                        <span class="pill-badge">UY</span>
+                                    </div>
+                                    <span class="endpoint-desc-brief">Kullanıcının tek bir soruya verdiği yanıtı sunucuya kaydeder.</span>
+                                </div>
+                                <div class="api-card-body">
+                                    <p class="desc-text">Her soru geçişinde verilen cevabı question_answers tablosuna anlık yazar.</p>
+
+                                                                            <div class="param-table-wrapper">
+                                            <table class="param-table">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Parametre</th>
+                                                        <th>Tür</th>
+                                                        <th>Zorunlu?</th>
+                                                        <th>Açıklama</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                                                                            <tr>
+                                                            <td class="param-name">user_id</td>
+                                                            <td>int (POST)</td>
+                                                            <td>
+                                                                                                                                    <span class="param-req">Zorunlu</span>
+                                                                                                                            </td>
+                                                            <td>Kullanıcı ID</td>
+                                                        </tr>
+                                                                                                            <tr>
+                                                            <td class="param-name">form_id</td>
+                                                            <td>int (POST)</td>
+                                                            <td>
+                                                                                                                                    <span class="param-req">Zorunlu</span>
+                                                                                                                            </td>
+                                                            <td>Sınav form ID</td>
+                                                        </tr>
+                                                                                                            <tr>
+                                                            <td class="param-name">question_id</td>
+                                                            <td>int (POST)</td>
+                                                            <td>
+                                                                                                                                    <span class="param-req">Zorunlu</span>
+                                                                                                                            </td>
+                                                            <td>Soru ID</td>
+                                                        </tr>
+                                                                                                            <tr>
+                                                            <td class="param-name">answer</td>
+                                                            <td>string (A/B/C/D/E)</td>
+                                                            <td>
+                                                                                                                                    <span class="param-req">Zorunlu</span>
+                                                                                                                            </td>
+                                                            <td>Verilen şık</td>
+                                                        </tr>
+                                                                                                            <tr>
+                                                            <td class="param-name">is_correct</td>
+                                                            <td>int</td>
+                                                            <td>
+                                                                                                                                    <span class="param-opt">Opsiyonel</span>
+                                                                                                                            </td>
+                                                            <td>1 veya 0</td>
+                                                        </tr>
+                                                                                                    </tbody>
+                                            </table>
+                                        </div>
+                                    
+                                    <!-- cURL Command -->
+                                    <div class="code-block">
+                                        <div class="code-header">
+                                            <span>Örnek cURL Çağrısı</span>
+                                            <button class="copy-btn" onclick="copyCode(this)">Kopyala</button>
+                                        </div>
+                                        <pre><code>curl -X POST &quot;https://ufkayolculuk.com/rest/get/postAnswer&quot; -u &quot;USER:PASS&quot; -d &quot;user_id=45&amp;form_id=14206&amp;question_id=101&amp;answer=B&quot;</code></pre>
+                                    </div>
+
+                                    <!-- Sample Response -->
+                                                                            <div class="code-block">
+                                            <div class="code-header">
+                                                <span>Örnek JSON Yanıtı (200 OK)</span>
+                                                <button class="copy-btn" onclick="copyCode(this)">Kopyala</button>
+                                            </div>
+                                            <pre><code>{
+    "status": true,
+    "id": 9812,
+    "message": "Cevap başarıyla kaydedildi"
+}</code></pre>
+                                        </div>
+                                                                    </div>
+                            </div>
+                                            </section>
+                                    <section class="section">
+                        <div class="section-header">
+                            <h2 class="section-title">Yarışma Kitapları ve Okuma Takibi</h2>
+                            <span class="section-tag">Ufka Yolculuk</span>
+                        </div>
+
+                                                    <div id="endpoint-getBookCategories" class="api-card endpoint-card" data-search="getbookcategories kitap kategorileri ve kitaplarını listele yarışma kitaplarının kategorilerini ve her kategorideki kitap listesini döner. İlkokul, ortaokul, lise ve yetişkin kategorilerine ayrılmış yarışma kitaplarını ve kapak görsellerini getirir.">
+                                <div class="api-card-header">
+                                    <div class="endpoint-def">
+                                        <span class="http-badge badge-get">POST | GET</span>
+                                        <span class="endpoint-url">https://ufkayolculuk.com/rest/get/getBookCategories</span>
+                                        <span class="pill-badge">UY</span>
+                                    </div>
+                                    <span class="endpoint-desc-brief">Yarışma kitaplarının kategorilerini ve her kategorideki kitap listesini döner.</span>
+                                </div>
+                                <div class="api-card-body">
+                                    <p class="desc-text">İlkokul, ortaokul, lise ve yetişkin kategorilerine ayrılmış yarışma kitaplarını ve kapak görsellerini getirir.</p>
+
+                                                                            <p class="desc-text" style="color: var(--text-dim); font-size: 12.5px;"><em>Bu uç nokta ek bir parametre gerektirmez.</em></p>
+                                    
+                                    <!-- cURL Command -->
+                                    <div class="code-block">
+                                        <div class="code-header">
+                                            <span>Örnek cURL Çağrısı</span>
+                                            <button class="copy-btn" onclick="copyCode(this)">Kopyala</button>
+                                        </div>
+                                        <pre><code>curl -X POST &quot;https://ufkayolculuk.com/rest/get/getBookCategories&quot; -u &quot;USER:PASS&quot;</code></pre>
+                                    </div>
+
+                                    <!-- Sample Response -->
+                                                                            <div class="code-block">
+                                            <div class="code-header">
+                                                <span>Örnek JSON Yanıtı (200 OK)</span>
+                                                <button class="copy-btn" onclick="copyCode(this)">Kopyala</button>
+                                            </div>
+                                            <pre><code>[
+    {
+        "id": "1",
+        "title": "İlkokul Kitapları",
+        "books": [
+            {
+                "id": "14",
+                "name": "Dürüstlük Yolculuğu",
+                "image": "uploads/books/durustluk.jpg"
+            }
+        ]
+    }
+]</code></pre>
+                                        </div>
+                                                                    </div>
+                            </div>
+                                                    <div id="endpoint-getBooks" class="api-card endpoint-card" data-search="getbooks tüm aktif kitapları listele tüm kitapları, mobil kapak görselleri, ses dosyaları, pdf linkleri ve sayfa dosya boyutlarıyla döner. kitap okuma uygulaması için gerekli tüm kitap listesi ve sayfaların toplam indirme boyutu (total_image_size) hesaplanarak döner.">
+                                <div class="api-card-header">
+                                    <div class="endpoint-def">
+                                        <span class="http-badge badge-get">POST | GET</span>
+                                        <span class="endpoint-url">https://ufkayolculuk.com/rest/get/getBooks</span>
+                                        <span class="pill-badge">UY</span>
+                                    </div>
+                                    <span class="endpoint-desc-brief">Tüm kitapları, mobil kapak görselleri, ses dosyaları, PDF linkleri ve sayfa dosya boyutlarıyla döner.</span>
+                                </div>
+                                <div class="api-card-body">
+                                    <p class="desc-text">Kitap okuma uygulaması için gerekli tüm kitap listesi ve sayfaların toplam indirme boyutu (total_image_size) hesaplanarak döner.</p>
+
+                                                                            <p class="desc-text" style="color: var(--text-dim); font-size: 12.5px;"><em>Bu uç nokta ek bir parametre gerektirmez.</em></p>
+                                    
+                                    <!-- cURL Command -->
+                                    <div class="code-block">
+                                        <div class="code-header">
+                                            <span>Örnek cURL Çağrısı</span>
+                                            <button class="copy-btn" onclick="copyCode(this)">Kopyala</button>
+                                        </div>
+                                        <pre><code>curl -X POST &quot;https://ufkayolculuk.com/rest/get/getBooks&quot; -u &quot;USER:PASS&quot;</code></pre>
+                                    </div>
+
+                                    <!-- Sample Response -->
+                                                                            <div class="code-block">
+                                            <div class="code-header">
+                                                <span>Örnek JSON Yanıtı (200 OK)</span>
+                                                <button class="copy-btn" onclick="copyCode(this)">Kopyala</button>
+                                            </div>
+                                            <pre><code>[
+    {
+        "id": "14",
+        "name": "Dürüstlük Yolculuğu",
+        "image": "uploads/books/durustluk.jpg",
+        "pdf_file": "uploads/pdf/durustluk.pdf",
+        "sound_file": "uploads/audio/durustluk.mp3",
+        "total_image_size": 14859200
+    }
+]</code></pre>
+                                        </div>
+                                                                    </div>
+                            </div>
+                                                    <div id="endpoint-getBook" class="api-card endpoint-card" data-search="getbook tekil kitap detayı ve sayfa resimleri belirtilen kitabın tüm sayfalarının resim linklerini ve sayfa boyutlarını liste olarak döner. mobil okuyucunun sayfaları çevirebilmesi ve önbelleğe alabilmesi için sayfa sayfa tam url listesini üretir.">
+                                <div class="api-card-header">
+                                    <div class="endpoint-def">
+                                        <span class="http-badge badge-post">POST | GET</span>
+                                        <span class="endpoint-url">https://ufkayolculuk.com/rest/get/getBook</span>
+                                        <span class="pill-badge">UY</span>
+                                    </div>
+                                    <span class="endpoint-desc-brief">Belirtilen kitabın tüm sayfalarının resim linklerini ve sayfa boyutlarını liste olarak döner.</span>
+                                </div>
+                                <div class="api-card-body">
+                                    <p class="desc-text">Mobil okuyucunun sayfaları çevirebilmesi ve önbelleğe alabilmesi için sayfa sayfa tam URL listesini üretir.</p>
+
+                                                                            <div class="param-table-wrapper">
+                                            <table class="param-table">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Parametre</th>
+                                                        <th>Tür</th>
+                                                        <th>Zorunlu?</th>
+                                                        <th>Açıklama</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                                                                            <tr>
+                                                            <td class="param-name">id</td>
+                                                            <td>int (URI veya POST)</td>
+                                                            <td>
+                                                                                                                                    <span class="param-req">Zorunlu</span>
+                                                                                                                            </td>
+                                                            <td>Kitap ID</td>
+                                                        </tr>
+                                                                                                    </tbody>
+                                            </table>
+                                        </div>
+                                    
+                                    <!-- cURL Command -->
+                                    <div class="code-block">
+                                        <div class="code-header">
+                                            <span>Örnek cURL Çağrısı</span>
+                                            <button class="copy-btn" onclick="copyCode(this)">Kopyala</button>
+                                        </div>
+                                        <pre><code>curl -X POST &quot;https://ufkayolculuk.com/rest/get/getBook/14&quot; -u &quot;USER:PASS&quot;</code></pre>
+                                    </div>
+
+                                    <!-- Sample Response -->
+                                                                            <div class="code-block">
+                                            <div class="code-header">
+                                                <span>Örnek JSON Yanıtı (200 OK)</span>
+                                                <button class="copy-btn" onclick="copyCode(this)">Kopyala</button>
+                                            </div>
+                                            <pre><code>{
+    "id": "14",
+    "name": "Dürüstlük Yolculuğu",
+    "pages": [
+        {
+            "id": "1",
+            "image": "https://ufkayolculuk.com/uploads/books/14/page1.jpg",
+            "image_size": 124500
+        },
+        {
+            "id": "2",
+            "image": "https://ufkayolculuk.com/uploads/books/14/page2.jpg",
+            "image_size": 119800
+        }
+    ],
+    "total_image_size": 244300
+}</code></pre>
+                                        </div>
+                                                                    </div>
+                            </div>
+                                                    <div id="endpoint-saveUserPage" class="api-card endpoint-card" data-search="saveuserpage kullanıcının kitapta kaldığı sayfayı kaydet Öğrencinin kitap okurken kaldığı son sayfayı sunucuya senkronize eder. sayfa çevrildikçe tetiklenerek kullanıcının cihazlar arasında okuma durumunu korur.">
+                                <div class="api-card-header">
+                                    <div class="endpoint-def">
+                                        <span class="http-badge badge-post">POST | GET</span>
+                                        <span class="endpoint-url">https://ufkayolculuk.com/rest/get/saveUserPage</span>
+                                        <span class="pill-badge">UY</span>
+                                    </div>
+                                    <span class="endpoint-desc-brief">Öğrencinin kitap okurken kaldığı son sayfayı sunucuya senkronize eder.</span>
+                                </div>
+                                <div class="api-card-body">
+                                    <p class="desc-text">Sayfa çevrildikçe tetiklenerek kullanıcının cihazlar arasında okuma durumunu korur.</p>
+
+                                                                            <div class="param-table-wrapper">
+                                            <table class="param-table">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Parametre</th>
+                                                        <th>Tür</th>
+                                                        <th>Zorunlu?</th>
+                                                        <th>Açıklama</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                                                                            <tr>
+                                                            <td class="param-name">user_id</td>
+                                                            <td>int</td>
+                                                            <td>
+                                                                                                                                    <span class="param-req">Zorunlu</span>
+                                                                                                                            </td>
+                                                            <td>Kullanıcı ID</td>
+                                                        </tr>
+                                                                                                            <tr>
+                                                            <td class="param-name">book_id</td>
+                                                            <td>int</td>
+                                                            <td>
+                                                                                                                                    <span class="param-req">Zorunlu</span>
+                                                                                                                            </td>
+                                                            <td>Kitap ID</td>
+                                                        </tr>
+                                                                                                            <tr>
+                                                            <td class="param-name">page</td>
+                                                            <td>int</td>
+                                                            <td>
+                                                                                                                                    <span class="param-req">Zorunlu</span>
+                                                                                                                            </td>
+                                                            <td>Kaldığı sayfa numarası</td>
+                                                        </tr>
+                                                                                                    </tbody>
+                                            </table>
+                                        </div>
+                                    
+                                    <!-- cURL Command -->
+                                    <div class="code-block">
+                                        <div class="code-header">
+                                            <span>Örnek cURL Çağrısı</span>
+                                            <button class="copy-btn" onclick="copyCode(this)">Kopyala</button>
+                                        </div>
+                                        <pre><code>curl -X POST &quot;https://ufkayolculuk.com/rest/get/saveUserPage/45/14/23&quot; -u &quot;USER:PASS&quot;</code></pre>
+                                    </div>
+
+                                    <!-- Sample Response -->
+                                                                            <div class="code-block">
+                                            <div class="code-header">
+                                                <span>Örnek JSON Yanıtı (200 OK)</span>
+                                                <button class="copy-btn" onclick="copyCode(this)">Kopyala</button>
+                                            </div>
+                                            <pre><code>{
+    "status": true,
+    "page": 23
+}</code></pre>
+                                        </div>
+                                                                    </div>
+                            </div>
+                                            </section>
+                                    <section class="section">
+                        <div class="section-header">
+                            <h2 class="section-title">Yarışmacı Kullanıcı ve Profil Servisleri</h2>
+                            <span class="section-tag">Ufka Yolculuk</span>
+                        </div>
+
+                                                    <div id="endpoint-getUfkaYolculukUser" class="api-card endpoint-card" data-search="getufkayolculukuser yarışmacı kullanıcı sorgulama & doğrulama telefon numarası ve doğum tarihi ile kayıtlı yarışmacı profilini sorgular. mobil uygulama ve online sınav girişinde yarışmacıyı doğrulamak için kullanılır.">
+                                <div class="api-card-header">
+                                    <div class="endpoint-def">
+                                        <span class="http-badge badge-post">POST</span>
+                                        <span class="endpoint-url">https://ufkayolculuk.com/rest/get/getUfkaYolculukUser</span>
+                                        <span class="pill-badge">UY</span>
+                                    </div>
+                                    <span class="endpoint-desc-brief">Telefon numarası ve doğum tarihi ile kayıtlı yarışmacı profilini sorgular.</span>
+                                </div>
+                                <div class="api-card-body">
+                                    <p class="desc-text">Mobil uygulama ve online sınav girişinde yarışmacıyı doğrulamak için kullanılır.</p>
+
+                                                                            <div class="param-table-wrapper">
+                                            <table class="param-table">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Parametre</th>
+                                                        <th>Tür</th>
+                                                        <th>Zorunlu?</th>
+                                                        <th>Açıklama</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                                                                            <tr>
+                                                            <td class="param-name">mobile</td>
+                                                            <td>string (POST)</td>
+                                                            <td>
+                                                                                                                                    <span class="param-req">Zorunlu</span>
+                                                                                                                            </td>
+                                                            <td>10 haneli telefon numarası (örn: 5551234567)</td>
+                                                        </tr>
+                                                                                                            <tr>
+                                                            <td class="param-name">birthdate</td>
+                                                            <td>string (POST)</td>
+                                                            <td>
+                                                                                                                                    <span class="param-req">Zorunlu</span>
+                                                                                                                            </td>
+                                                            <td>Doğum tarihi (örn: 2008-05-15 veya 15.05.2008)</td>
+                                                        </tr>
+                                                                                                    </tbody>
+                                            </table>
+                                        </div>
+                                    
+                                    <!-- cURL Command -->
+                                    <div class="code-block">
+                                        <div class="code-header">
+                                            <span>Örnek cURL Çağrısı</span>
+                                            <button class="copy-btn" onclick="copyCode(this)">Kopyala</button>
+                                        </div>
+                                        <pre><code>curl -X POST &quot;https://ufkayolculuk.com/rest/get/getUfkaYolculukUser&quot; -u &quot;USER:PASS&quot; -d &quot;mobile=5551234567&amp;birthdate=2008-05-15&quot;</code></pre>
+                                    </div>
+
+                                    <!-- Sample Response -->
+                                                                            <div class="code-block">
+                                            <div class="code-header">
+                                                <span>Örnek JSON Yanıtı (200 OK)</span>
+                                                <button class="copy-btn" onclick="copyCode(this)">Kopyala</button>
+                                            </div>
+                                            <pre><code>{
+    "id": "45",
+    "name": "Ahmet",
+    "surname": "Yılmaz",
+    "mobile": "5551234567",
+    "birth_date": "2008-05-15",
+    "uy_category_id": "3",
+    "uy_contest_id": "29"
+}</code></pre>
+                                        </div>
+                                                                    </div>
+                            </div>
+                                                    <div id="endpoint-getUserData" class="api-card endpoint-card" data-search="getuserdata kullanıcının okuma ve sepet verileri kullanıcının okuduğu kitap sayfalarını ve sepet/aktivite geçmişini döner. kullanıcı profilinde okuma ilerlemesini ve geçmişini göstermek için kullanılır.">
+                                <div class="api-card-header">
+                                    <div class="endpoint-def">
+                                        <span class="http-badge badge-post">POST | GET</span>
+                                        <span class="endpoint-url">https://ufkayolculuk.com/rest/get/getUserData</span>
+                                        <span class="pill-badge">UY</span>
+                                    </div>
+                                    <span class="endpoint-desc-brief">Kullanıcının okuduğu kitap sayfalarını ve sepet/aktivite geçmişini döner.</span>
+                                </div>
+                                <div class="api-card-body">
+                                    <p class="desc-text">Kullanıcı profilinde okuma ilerlemesini ve geçmişini göstermek için kullanılır.</p>
+
+                                                                            <div class="param-table-wrapper">
+                                            <table class="param-table">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Parametre</th>
+                                                        <th>Tür</th>
+                                                        <th>Zorunlu?</th>
+                                                        <th>Açıklama</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                                                                            <tr>
+                                                            <td class="param-name">user_id</td>
+                                                            <td>int</td>
+                                                            <td>
+                                                                                                                                    <span class="param-req">Zorunlu</span>
+                                                                                                                            </td>
+                                                            <td>Kullanıcı ID</td>
+                                                        </tr>
+                                                                                                    </tbody>
+                                            </table>
+                                        </div>
+                                    
+                                    <!-- cURL Command -->
+                                    <div class="code-block">
+                                        <div class="code-header">
+                                            <span>Örnek cURL Çağrısı</span>
+                                            <button class="copy-btn" onclick="copyCode(this)">Kopyala</button>
+                                        </div>
+                                        <pre><code>curl -X POST &quot;https://ufkayolculuk.com/rest/get/getUserData/45&quot; -u &quot;USER:PASS&quot;</code></pre>
+                                    </div>
+
+                                    <!-- Sample Response -->
+                                                                            <div class="code-block">
+                                            <div class="code-header">
+                                                <span>Örnek JSON Yanıtı (200 OK)</span>
+                                                <button class="copy-btn" onclick="copyCode(this)">Kopyala</button>
+                                            </div>
+                                            <pre><code>{
+    "book_pages": [
+        {
+            "id": "301",
+            "type": "book",
+            "product_id": "14",
+            "related_id": "23"
+        }
+    ]
+}</code></pre>
+                                        </div>
+                                                                    </div>
+                            </div>
+                                                    <div id="endpoint-getProfileMenu" class="api-card endpoint-card" data-search="getprofilemenu dinamik profil menüsü kullanıcının giriş durumuna göre özelleştirilmiş profil menü bağlantılarını ve svg ikonlarını döner. kaydımı düzenle, davet et kazan, takım lideri gibi menü seçeneklerini kullanıcı yetkisine göre döner.">
+                                <div class="api-card-header">
+                                    <div class="endpoint-def">
+                                        <span class="http-badge badge-post">POST | GET</span>
+                                        <span class="endpoint-url">https://ufkayolculuk.com/rest/get/getProfileMenu</span>
+                                        <span class="pill-badge">UY</span>
+                                    </div>
+                                    <span class="endpoint-desc-brief">Kullanıcının giriş durumuna göre özelleştirilmiş profil menü bağlantılarını ve SVG ikonlarını döner.</span>
+                                </div>
+                                <div class="api-card-body">
+                                    <p class="desc-text">Kaydımı Düzenle, Davet Et Kazan, Takım Lideri gibi menü seçeneklerini kullanıcı yetkisine göre döner.</p>
+
+                                                                            <div class="param-table-wrapper">
+                                            <table class="param-table">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Parametre</th>
+                                                        <th>Tür</th>
+                                                        <th>Zorunlu?</th>
+                                                        <th>Açıklama</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                                                                            <tr>
+                                                            <td class="param-name">user_id</td>
+                                                            <td>int (Opsiyonel)</td>
+                                                            <td>
+                                                                                                                                    <span class="param-opt">Opsiyonel</span>
+                                                                                                                            </td>
+                                                            <td>Giriş yapan kullanıcı ID</td>
+                                                        </tr>
+                                                                                                    </tbody>
+                                            </table>
+                                        </div>
+                                    
+                                    <!-- cURL Command -->
+                                    <div class="code-block">
+                                        <div class="code-header">
+                                            <span>Örnek cURL Çağrısı</span>
+                                            <button class="copy-btn" onclick="copyCode(this)">Kopyala</button>
+                                        </div>
+                                        <pre><code>curl -X POST &quot;https://ufkayolculuk.com/rest/get/getProfileMenu/45&quot; -u &quot;USER:PASS&quot;</code></pre>
+                                    </div>
+
+                                    <!-- Sample Response -->
+                                                                            <div class="code-block">
+                                            <div class="code-header">
+                                                <span>Örnek JSON Yanıtı (200 OK)</span>
+                                                <button class="copy-btn" onclick="copyCode(this)">Kopyala</button>
+                                            </div>
+                                            <pre><code>[
+    {
+        "title": "Kaydımı Düzenle",
+        "url": "https://ufkayolculuk.com/kayit-ol/0/1"
+    },
+    {
+        "title": "Davet Et, Kazan",
+        "url": "https://ufkayolculuk.com/vesile-olduklarim"
+    },
+    {
+        "title": "Takım Lideri",
+        "url": "https://ufkayolculuk.com/lider-olmak-istiyorum"
+    }
+]</code></pre>
+                                        </div>
+                                                                    </div>
+                            </div>
+                                                    <div id="endpoint-getPage" class="api-card endpoint-card" data-search="getpage bilgilendirme sayfası İçeriği yarışma şartnamesi, kuralları veya duyuru sayfalarının başlık ve gövde metnini döner. web_contents tablosunda tanımlı kurumsal sayfaları mobil uygulamada göstermek için kullanılır.">
+                                <div class="api-card-header">
+                                    <div class="endpoint-def">
+                                        <span class="http-badge badge-post">POST | GET</span>
+                                        <span class="endpoint-url">https://ufkayolculuk.com/rest/get/getPage</span>
+                                        <span class="pill-badge">UY</span>
+                                    </div>
+                                    <span class="endpoint-desc-brief">Yarışma şartnamesi, kuralları veya duyuru sayfalarının başlık ve gövde metnini döner.</span>
+                                </div>
+                                <div class="api-card-body">
+                                    <p class="desc-text">web_contents tablosunda tanımlı kurumsal sayfaları mobil uygulamada göstermek için kullanılır.</p>
+
+                                                                            <div class="param-table-wrapper">
+                                            <table class="param-table">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Parametre</th>
+                                                        <th>Tür</th>
+                                                        <th>Zorunlu?</th>
+                                                        <th>Açıklama</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                                                                            <tr>
+                                                            <td class="param-name">id</td>
+                                                            <td>int</td>
+                                                            <td>
+                                                                                                                                    <span class="param-req">Zorunlu</span>
+                                                                                                                            </td>
+                                                            <td>Sayfa / İçerik ID</td>
+                                                        </tr>
+                                                                                                    </tbody>
+                                            </table>
+                                        </div>
+                                    
+                                    <!-- cURL Command -->
+                                    <div class="code-block">
+                                        <div class="code-header">
+                                            <span>Örnek cURL Çağrısı</span>
+                                            <button class="copy-btn" onclick="copyCode(this)">Kopyala</button>
+                                        </div>
+                                        <pre><code>curl -X POST &quot;https://ufkayolculuk.com/rest/get/getPage/12&quot; -u &quot;USER:PASS&quot;</code></pre>
+                                    </div>
+
+                                    <!-- Sample Response -->
+                                                                            <div class="code-block">
+                                            <div class="code-header">
+                                                <span>Örnek JSON Yanıtı (200 OK)</span>
+                                                <button class="copy-btn" onclick="copyCode(this)">Kopyala</button>
+                                            </div>
+                                            <pre><code>{
+    "page": [
+        {
+            "id": "12",
+            "title": "Yarışma Şartnamesi",
+            "body": "<p>Ufka Yolculuk yarışma şartları...</p>"
+        }
+    ]
+}</code></pre>
+                                        </div>
+                                                                    </div>
+                            </div>
+                                            </section>
+                                    <section class="section">
+                        <div class="section-header">
+                            <h2 class="section-title">Genel Sistem Servisleri</h2>
+                            <span class="section-tag">Ufka Yolculuk</span>
+                        </div>
+
+                                                    <div id="endpoint-getCities" class="api-card endpoint-card" data-search="getcities türkiye İller listesi kayıt ve okul seçiminde kullanılan 81 ilin alfabetik listesini döner. plaka id ve il isimlerini içeren liste.">
+                                <div class="api-card-header">
+                                    <div class="endpoint-def">
+                                        <span class="http-badge badge-get">POST | GET</span>
+                                        <span class="endpoint-url">https://ufkayolculuk.com/rest/get/getCities</span>
+                                        <span class="pill-badge">UY</span>
+                                    </div>
+                                    <span class="endpoint-desc-brief">Kayıt ve okul seçiminde kullanılan 81 ilin alfabetik listesini döner.</span>
+                                </div>
+                                <div class="api-card-body">
+                                    <p class="desc-text">Plaka ID ve il isimlerini içeren liste.</p>
+
+                                                                            <p class="desc-text" style="color: var(--text-dim); font-size: 12.5px;"><em>Bu uç nokta ek bir parametre gerektirmez.</em></p>
+                                    
+                                    <!-- cURL Command -->
+                                    <div class="code-block">
+                                        <div class="code-header">
+                                            <span>Örnek cURL Çağrısı</span>
+                                            <button class="copy-btn" onclick="copyCode(this)">Kopyala</button>
+                                        </div>
+                                        <pre><code>curl -X POST &quot;https://ufkayolculuk.com/rest/get/getCities&quot; -u &quot;USER:PASS&quot;</code></pre>
+                                    </div>
+
+                                    <!-- Sample Response -->
+                                                                            <div class="code-block">
+                                            <div class="code-header">
+                                                <span>Örnek JSON Yanıtı (200 OK)</span>
+                                                <button class="copy-btn" onclick="copyCode(this)">Kopyala</button>
+                                            </div>
+                                            <pre><code>[
+    {
+        "id": "34",
+        "name": "İstanbul"
+    },
+    {
+        "id": "6",
+        "name": "Ankara"
+    }
+]</code></pre>
+                                        </div>
+                                                                    </div>
+                            </div>
+                                                    <div id="endpoint-getMenu" class="api-card endpoint-card" data-search="getmenu navigasyon menüsü header ve footer menü ağacını döner. mobil ve web arayüzleri için hiyerarşik menü yapısı.">
+                                <div class="api-card-header">
+                                    <div class="endpoint-def">
+                                        <span class="http-badge badge-get">POST | GET</span>
+                                        <span class="endpoint-url">https://ufkayolculuk.com/rest/get/getMenu</span>
+                                        <span class="pill-badge">UY</span>
+                                    </div>
+                                    <span class="endpoint-desc-brief">Header ve footer menü ağacını döner.</span>
+                                </div>
+                                <div class="api-card-body">
+                                    <p class="desc-text">Mobil ve web arayüzleri için hiyerarşik menü yapısı.</p>
+
+                                                                            <div class="param-table-wrapper">
+                                            <table class="param-table">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Parametre</th>
+                                                        <th>Tür</th>
+                                                        <th>Zorunlu?</th>
+                                                        <th>Açıklama</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                                                                            <tr>
+                                                            <td class="param-name">name</td>
+                                                            <td>string</td>
+                                                            <td>
+                                                                                                                                    <span class="param-opt">Opsiyonel</span>
+                                                                                                                            </td>
+                                                            <td>header veya footer</td>
+                                                        </tr>
+                                                                                                    </tbody>
+                                            </table>
+                                        </div>
+                                    
+                                    <!-- cURL Command -->
+                                    <div class="code-block">
+                                        <div class="code-header">
+                                            <span>Örnek cURL Çağrısı</span>
+                                            <button class="copy-btn" onclick="copyCode(this)">Kopyala</button>
+                                        </div>
+                                        <pre><code>curl -X POST &quot;https://ufkayolculuk.com/rest/get/getMenu/header&quot; -u &quot;USER:PASS&quot;</code></pre>
+                                    </div>
+
+                                    <!-- Sample Response -->
+                                                                            <div class="code-block">
+                                            <div class="code-header">
+                                                <span>Örnek JSON Yanıtı (200 OK)</span>
+                                                <button class="copy-btn" onclick="copyCode(this)">Kopyala</button>
+                                            </div>
+                                            <pre><code>{
+    "headerMenu": [
+        {
+            "id": "1",
+            "title": "Ana Sayfa",
+            "url": "/"
+        }
+    ]
+}</code></pre>
+                                        </div>
+                                                                    </div>
+                            </div>
+                                            </section>
+                            </div>
+        
+    </main>
+</div>
+
+<script>
+    const BASE_REST_URL = "https://ufkayolculuk.com/rest/get/";
+
+    function copyCode(btn) {
+        const pre = btn.closest('.code-block').querySelector('pre code');
+        if (pre) {
+            navigator.clipboard.writeText(pre.innerText).then(() => {
+                const originalText = btn.innerText;
+                btn.innerText = 'Kopyalandı!';
+                btn.style.color = '#10b981';
+                btn.style.borderColor = '#10b981';
+                setTimeout(() => {
+                    btn.innerText = originalText;
+                    btn.style.color = '';
+                    btn.style.borderColor = '';
+                }, 2000);
+            });
+        }
+    }
+
+    function updateGeneratedCurl() {
+        const user = document.getElementById('testUser').value || 'USER';
+        const pass = document.getElementById('testPass').value || 'PASS';
+        const endpoint = document.getElementById('testEndpoint').value;
+        const codeEl = document.getElementById('generatedCurl');
+        codeEl.textContent = `curl -X POST "${BASE_REST_URL}${endpoint}" -u "${user}:${pass}"`;
+    }
+
+    document.getElementById('testUser').addEventListener('input', updateGeneratedCurl);
+    document.getElementById('testPass').addEventListener('input', updateGeneratedCurl);
+
+    function filterEndpoints() {
+        const query = document.getElementById('apiSearch').value.toLowerCase().trim();
+        const cards = document.querySelectorAll('.endpoint-card');
+        const navItems = document.querySelectorAll('#sidebarNav .nav-item[data-name]');
+
+        cards.forEach(card => {
+            const data = card.getAttribute('data-search') || '';
+            if (data.includes(query)) {
+                card.style.display = '';
+            } else {
+                card.style.display = 'none';
+            }
+        });
+
+        navItems.forEach(item => {
+            const data = item.getAttribute('data-name') || '';
+            if (data.includes(query)) {
+                item.style.display = '';
+            } else {
+                item.style.display = 'none';
+            }
+        });
+    }
+
+    function getCsrfCookie() {
+        const name = 'csrf_3984-955YT-_cn' + '=';
+        const ca = document.cookie.split(';');
+        for (let i = 0; i < ca.length; i++) {
+            let c = ca[i].trim();
+            if (c.indexOf(name) === 0) return decodeURIComponent(c.substring(name.length, c.length));
+        }
+        return 'f2b823fc96dc86ec126771e89ac24855';
+    }
+
+    async function runLiveTest() {
+        const user = document.getElementById('testUser').value;
+        const pass = document.getElementById('testPass').value;
+        const endpoint = document.getElementById('testEndpoint').value;
+        const fullUrl = BASE_REST_URL + endpoint;
+
+        const resultBox = document.getElementById('testResult');
+        const statusEl = document.getElementById('testStatus');
+        const jsonEl = document.getElementById('testResponseJson');
+
+        resultBox.style.display = 'block';
+        statusEl.innerText = 'Yükleniyor...';
+        statusEl.style.color = '#f59e0b';
+        jsonEl.textContent = 'İstek gönderiliyor...';
+
+        try {
+            const currentCsrf = getCsrfCookie();
+            const formData = new FormData();
+            if (user) formData.append('username', user);
+            if (pass) formData.append('password', pass);
+            formData.append('csrf_3323-098U_protection', currentCsrf);
+
+            const headers = {
+                'X-Requested-With': 'XMLHttpRequest',
+                'X-CSRF-Token': currentCsrf
+            };
+            if (user && pass) {
+                headers['Authorization'] = 'Basic ' + btoa(user + ':' + pass);
+            }
+
+            const response = await fetch(fullUrl, {
+                method: 'POST',
+                headers: headers,
+                body: formData
+            });
+
+            const rawText = await response.text();
+            let data = null;
+            try {
+                data = JSON.parse(rawText);
+            } catch (jsonErr) {
+                data = null;
+            }
+
+            statusEl.innerText = `HTTP ${response.status} ${response.statusText}`;
+            statusEl.style.color = response.ok ? '#10b981' : '#f43f5e';
+
+            if (data !== null) {
+                jsonEl.textContent = JSON.stringify(data, null, 2);
+            } else {
+                jsonEl.textContent = rawText || `Boş yanıt döndü (HTTP ${response.status})`;
+            }
+        } catch (err) {
+            statusEl.innerText = 'Hata';
+            statusEl.style.color = '#f43f5e';
+            jsonEl.textContent = 'İstek başarısız: ' + err.message + '\n\nNot: Kimlik bilgilerinizi girdiğinizden emin olun.';
+        }
+    }
+
+    function doLogout() {
+        try {
+            localStorage.removeItem('hb_rest_user');
+            localStorage.removeItem('hb_rest_pass');
+        } catch(e) {}
+        window.location.href = "https://ufkayolculuk.com/rest/logout";
+    }
+
+    // Auto-fill from localStorage or PHP fallback
+    (function initCredentials() {
+        const elUser = document.getElementById('testUser');
+        const elPass = document.getElementById('testPass');
+        let lsUser = '';
+        let lsPass = '';
+        try {
+            lsUser = localStorage.getItem('hb_rest_user') || '';
+            lsPass = localStorage.getItem('hb_rest_pass') || '';
+        } catch(e) {}
+
+        if (lsUser && (!elUser.value || elUser.value === 'api_user')) {
+            elUser.value = lsUser;
+        }
+        if (lsPass && !elPass.value) {
+            elPass.value = lsPass;
+        }
+
+        // Keep localStorage in sync
+        if (elUser.value && elPass.value) {
+            try {
+                localStorage.setItem('hb_rest_user', elUser.value);
+                localStorage.setItem('hb_rest_pass', elPass.value);
+            } catch(e) {}
+        }
+    })();
+
+    updateGeneratedCurl();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🚀 Ufka Yolculuk 14 — Web Sitesi Proje Sunum Portalı</title>
+  <meta name="description"
+    content="Ufka Yolculuk 14. Bilgi ve Kültür Yarışması web arayüz tasarımı, sayfalar listesi ve müşteri sunum kataloğu.">
+
+  <!-- Google Fonts: Inter & Outfit -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@600;700;800;900&display=swap"
+    rel="stylesheet">
+
+  <!-- Bootstrap 5.3 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+
+  <!-- Ana Stil Dosyası -->
+  <link rel="stylesheet" href="assets/css/style.css?v=2.2">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="assets/images/logo.png">
+
+  <style>
+    /* Sunum Portalı Özel Stilleri */
+    .portal-hero {
+      background: linear-gradient(135deg, #0A192F 0%, #0F3460 50%, #16213E 100%);
+      padding: 4.5rem 0 3.5rem;
+      position: relative;
+      overflow: hidden;
+      color: #FFFFFF;
+    }
+
+    .portal-hero::after {
+      content: '';
+      position: absolute;
+      bottom: -40%;
+      right: -10%;
+      width: 600px;
+      height: 600px;
+      background: radial-gradient(circle, rgba(255, 184, 0, 0.12) 0%, rgba(255, 184, 0, 0) 70%);
+      border-radius: 50%;
+      pointer-events: none;
+    }
+
+    .portal-badge-client {
+      background: rgba(255, 184, 0, 0.15);
+      border: 1px solid rgba(255, 184, 0, 0.4);
+      color: #FFB800;
+      font-weight: 700;
+      padding: 0.45rem 1rem;
+      border-radius: 30px;
+      font-size: 0.85rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .showcase-card {
+      background: #FFFFFF;
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      transition: all var(--transition-normal);
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+      position: relative;
+    }
+
+    .showcase-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 16px 36px rgba(15, 52, 96, 0.12);
+      border-color: #BFDBFE;
+    }
+
+    .showcase-preview-box {
+      height: 180px;
+      background: linear-gradient(135deg, #F8FAFC 0%, #EFF6FF 100%);
+      border-bottom: 1px solid var(--border-light);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+      padding: 1.5rem;
+    }
+
+    .showcase-preview-icon {
+      width: 70px;
+      height: 70px;
+      border-radius: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.2rem;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+      margin-bottom: 0.75rem;
+      transition: transform var(--transition-normal);
+    }
+
+    .showcase-card:hover .showcase-preview-icon {
+      transform: scale(1.1) rotate(-3deg);
+    }
+
+    .showcase-status-badge {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 0.3rem 0.75rem;
+      border-radius: 20px;
+    }
+
+    .showcase-body {
+      padding: 1.75rem;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .showcase-title {
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: #0F172A;
+      margin-bottom: 0.6rem;
+      font-family: var(--font-heading);
+    }
+
+    .showcase-desc {
+      font-size: 0.9rem;
+      color: #64748B;
+      line-height: 1.6;
+      margin-bottom: 1.25rem;
+      flex: 1;
+    }
+
+    .showcase-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .showcase-tag {
+      background: #F1F5F9;
+      color: #334155;
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 0.25rem 0.65rem;
+      border-radius: 6px;
+    }
+
+    .showcase-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+    }
+
+    .btn-launch {
+      background: var(--brand-blue);
+      color: #FFFFFF;
+      font-weight: 700;
+      font-size: 0.9rem;
+      padding: 0.65rem 1.25rem;
+      border-radius: var(--radius-sm);
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      flex: 1;
+      transition: all var(--transition-fast);
+    }
+
+    .btn-launch:hover {
+      background: #0b2545;
+      color: #FFFFFF;
+      transform: translateX(2px);
+    }
+
+    .btn-external {
+      background: #F8FAFC;
+      border: 1px solid var(--border-light);
+      color: #475569;
+      width: 42px;
+      height: 42px;
+      border-radius: var(--radius-sm);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+      transition: all var(--transition-fast);
+    }
+
+    .btn-external:hover {
+      background: #E2E8F0;
+      color: #0F172A;
+    }
+
+    .feature-check-item {
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+      font-size: 0.9rem;
+      color: #334155;
+      margin-bottom: 0.5rem;
+    }
+
+    .feature-check-icon {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: #DCFCE7;
+      color: #16A34A;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+      font-weight: 800;
+      flex-shrink: 0;
+    }
+  </style>
+</head>
+
+<body class="bg-light">
+
+  <section class="py-5">
+    <div class="container">
+      <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-4 pb-2 border-bottom">
+        <div>
+          <h2 class="h3 fw-bold text-dark font-heading mb-1">
+            📑 Hazırlanan Sayfalar Listesi
+          </h2>
+          <p class="text-muted fs-7 mb-0">
+            Tıklayarak sayfalar arasında doğrudan geçiş yapabilirsiniz.
+          </p>
+        </div>
+        <span class="badge bg-primary px-3 py-2 rounded-pill fs-7 fw-bold">
+          Toplam 5 Sayfa
+        </span>
+      </div>
+
+      <div class="row g-4">
+
+        <!-- ==========================================
+             KART 1: ANA SAYFA (HOME)
+             ========================================== -->
+        <div class="col-lg-4 col-md-6">
+          <div class="showcase-card">
+            <div class="showcase-preview-box">
+              <span class="showcase-status-badge bg-success text-white">🟢 Ana Landing</span>
+              <div class="showcase-preview-icon bg-primary bg-opacity-10 text-primary">
+                🏠
+              </div>
+              <span class="text-muted fw-bold fs-8">home.html</span>
+            </div>
+            <div class="showcase-body">
+              <h3 class="showcase-title">1. Ana Sayfa (Home)</h3>
+              <p class="showcase-desc">
+                Web ve mobile özel dikey slider, kategori kitapları, geri sayım sayacı, duyurular, takım lideri portalı
+                ve AI destek robotu içeren ana karşılama sayfası.
+              </p>
+              <div class="showcase-tags">
+                <span class="showcase-tag">Dikey Mobil Slider</span>
+                <span class="showcase-tag">Giriş Modalı</span>
+                <span class="showcase-tag">Geri Sayım</span>
+                <span class="showcase-tag">Kitaplar</span>
+              </div>
+              <div class="showcase-actions">
+                <a href="home.html" class="btn-launch">
+                  <span>Sayfayı Aç</span>
+                  <span>→</span>
+                </a>
+                <a href="home.html" target="_blank" class="btn-external" title="Yeni Sekmede Aç"
+                  aria-label="Yeni Sekmede Aç">
+                  ↗
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ==========================================
+             KART 2: ÖDÜLLER SAYFASI
+             ========================================== -->
+        <div class="col-lg-4 col-md-6">
+          <div class="showcase-card">
+            <div class="showcase-preview-box">
+              <span class="showcase-status-badge bg-warning text-dark">✨ Yeni Hazırlandı</span>
+              <div class="showcase-preview-icon bg-warning bg-opacity-10 text-warning">
+                🏆
+              </div>
+              <span class="text-muted fw-bold fs-8">oduller.html</span>
+            </div>
+            <div class="showcase-body">
+              <h3 class="showcase-title">2. Yarışma Ödülleri</h3>
+              <p class="showcase-desc">
+                8 Kategori bazında 1-100. sıralama derecelerini gösteren Türkiye Geneli Podyumu (🥇 🥈 🥉) ve 81 il için
+                anlık güncellenen dinamik İl & İlçe Ödülleri seçicisi.
+              </p>
+              <div class="showcase-tags">
+                <span class="showcase-tag">81 İl Dinamik Filtre</span>
+                <span class="showcase-tag">Umre Podyumu</span>
+                <span class="showcase-tag">İlçe Ödülleri</span>
+                <span class="showcase-tag">Geniş Blok Düzeni</span>
+              </div>
+              <div class="showcase-actions">
+                <a href="oduller.html" class="btn-launch">
+                  <span>Sayfayı Aç</span>
+                  <span>→</span>
+                </a>
+                <a href="oduller.html" target="_blank" class="btn-external" title="Yeni Sekmede Aç"
+                  aria-label="Yeni Sekmede Aç">
+                  ↗
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ==========================================
+             KART 3: SAYFA DETAYI (HAKKIMIZDA VB.)
+             ========================================== -->
+        <div class="col-lg-4 col-md-6">
+          <div class="showcase-card">
+            <div class="showcase-preview-box">
+              <span class="showcase-status-badge bg-info text-dark">📄 İçerik Şablonu</span>
+              <div class="showcase-preview-icon bg-info bg-opacity-10 text-info">
+                📑
+              </div>
+              <span class="text-muted fw-bold fs-8">sayfa-detay.html</span>
+            </div>
+            <div class="showcase-body">
+              <h3 class="showcase-title">3. Sayfa Detayı (Hakkımızda)</h3>
+              <p class="showcase-desc">
+                Hakkımızda, Misyon & Vizyon ve Biz Kimiz gibi dinamik HTML formatındaki kurumsal sayfaların okunduğu,
+                breadcrumb ve kenar çubuklu detay okuma şablonu.
+              </p>
+              <div class="showcase-tags">
+                <span class="showcase-tag">Admin HTML Desteği</span>
+                <span class="showcase-tag">Breadcrumb</span>
+                <span class="showcase-tag">Sidebar Navigasyon</span>
+              </div>
+              <div class="showcase-actions">
+                <a href="sayfa-detay.html" class="btn-launch">
+                  <span>Sayfayı Aç</span>
+                  <span>→</span>
+                </a>
+                <a href="sayfa-detay.html" target="_blank" class="btn-external" title="Yeni Sekmede Aç"
+                  aria-label="Yeni Sekmede Aç">
+                  ↗
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ==========================================
+             KART 4: DUYURULAR & HABERLER
+             ========================================== -->
+        <div class="col-lg-4 col-md-6">
+          <div class="showcase-card">
+            <div class="showcase-preview-box">
+              <span class="showcase-status-badge bg-primary text-white">📢 Galeri & Liste</span>
+              <div class="showcase-preview-icon bg-primary bg-opacity-10 text-primary">
+                📰
+              </div>
+              <span class="text-muted fw-bold fs-8">duyurular.html</span>
+            </div>
+            <div class="showcase-body">
+              <h3 class="showcase-title">4. Duyurular & Haberler</h3>
+              <p class="showcase-desc">
+                Yan yana galeri kartları, kategori sekmeleri, sayfalama (pagination) ve tıklanınca tam detay açan okuma
+                modalı içeren güncel haber merkezi.
+              </p>
+              <div class="showcase-tags">
+                <span class="showcase-tag">Galeri Görünümü</span>
+                <span class="showcase-tag">Kategori Filtresi</span>
+                <span class="showcase-tag">Sayfalama</span>
+                <span class="showcase-tag">Detay Modalı</span>
+              </div>
+              <div class="showcase-actions">
+                <a href="duyurular.html" class="btn-launch">
+                  <span>Sayfayı Aç</span>
+                  <span>→</span>
+                </a>
+                <a href="duyurular.html" target="_blank" class="btn-external" title="Yeni Sekmede Aç"
+                  aria-label="Yeni Sekmede Aç">
+                  ↗
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ==========================================
+             KART 5: İLETİŞİM & İL TEMSİLCİLİKLERİ
+             ========================================== -->
+        <div class="col-lg-4 col-md-6">
+          <div class="showcase-card">
+            <div class="showcase-preview-box">
+              <span class="showcase-status-badge bg-success text-white">📞 İnteraktif</span>
+              <div class="showcase-preview-icon bg-success bg-opacity-10 text-success">
+                📍
+              </div>
+              <span class="text-muted fw-bold fs-8">iletisim.html</span>
+            </div>
+            <div class="showcase-body">
+              <h3 class="showcase-title">5. İletişim & İl Temsilcilikleri</h3>
+              <p class="showcase-desc">
+                İletişim formu, çağrı merkezi ve 81 ilden seçim yapıldığında temsilci adı, kulübü ve telefon numarasını
+                anlık getiren dinamik il temsilci bulucu.
+              </p>
+              <div class="showcase-tags">
+                <span class="showcase-tag">81 İl Temsilci Bulucu</span>
+                <span class="showcase-tag">İletişim Formu</span>
+                <span class="showcase-tag">Sosyal Medya</span>
+                <span class="showcase-tag">Harita</span>
+              </div>
+              <div class="showcase-actions">
+                <a href="iletisim.html" class="btn-launch">
+                  <span>Sayfayı Aç</span>
+                  <span>→</span>
+                </a>
+                <a href="iletisim.html" target="_blank" class="btn-external" title="Yeni Sekmede Aç"
+                  aria-label="Yeni Sekmede Aç">
+                  ↗
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ==========================================
+             KART 6: TEKNOLOJİ & KALİTE KARTI
+             ========================================== -->
+        <div class="col-lg-4 col-md-6">
+          <div class="showcase-card bg-gradient"
+            style="background: linear-gradient(135deg, #0F3460 0%, #16213E 100%); color:#FFFFFF;">
+            <div class="showcase-preview-box"
+              style="background: transparent; border-bottom: 1px solid rgba(255,255,255,0.1);">
+              <div class="showcase-preview-icon bg-warning bg-opacity-20 text-warning">
+                ⚡
+              </div>
+              <span class="text-white-50 fw-bold fs-8">Frontend Standartları</span>
+            </div>
+            <div class="showcase-body">
+              <h3 class="showcase-title text-white">Yüksek Performans & Kalite</h3>
+              <p class="showcase-desc text-white-50">
+                Bootstrap 5.3 + Vanilla JS mimarisi. Sıfır harici kütüphane ağırlığı, anında yüklenen DOM, tam
+                responsive grid sistemi ve CSS3 animasyonları.
+              </p>
+              <div class="d-flex align-items-center gap-2 pt-2">
+                <span class="badge bg-white bg-opacity-10 text-warning px-3 py-2 rounded-pill">HTML5</span>
+                <span class="badge bg-white bg-opacity-10 text-warning px-3 py-2 rounded-pill">CSS3 / Flex & Grid</span>
+                <span class="badge bg-white bg-opacity-10 text-warning px-3 py-2 rounded-pill">JS ES6+</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- Bootstrap 5.3 JS Bundle -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+    crossorigin="anonymous"></script>
+
+</body>
+
+</html>

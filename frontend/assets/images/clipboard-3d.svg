@@ -1,0 +1,62 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160" fill="none">
+  <defs>
+    <linearGradient id="boardGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#3B82F6"/>
+      <stop offset="100%" stop-color="#1D4ED8"/>
+    </linearGradient>
+    <linearGradient id="pencilGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1E3A8A"/>
+      <stop offset="100%" stop-color="#0284C7"/>
+    </linearGradient>
+    <filter id="cbShadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="8" stdDeviation="8" flood-color="#1E3A8A" flood-opacity="0.2"/>
+    </filter>
+  </defs>
+
+  <g filter="url(#cbShadow)">
+    <!-- Clipboard Body -->
+    <rect x="25" y="25" width="95" height="120" rx="12" fill="url(#boardGrad)"/>
+
+    <!-- Paper Sheet -->
+    <rect x="33" y="38" width="79" height="100" rx="6" fill="#FFFFFF"/>
+
+    <!-- Top Metal Clip -->
+    <rect x="52" y="18" width="41" height="18" rx="5" fill="#E2E8F0"/>
+    <rect x="56" y="22" width="33" height="8" rx="3" fill="#94A3B8"/>
+    <circle cx="72.5" cy="26" r="3" fill="#64748B"/>
+
+    <!-- Checklist Rows -->
+    <!-- Row 1 -->
+    <rect x="42" y="52" width="14" height="14" rx="3" fill="#EFF6FF" stroke="#3B82F6" stroke-width="1.5"/>
+    <path d="M 45 59 L 48 62 L 53 55" stroke="#3B82F6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    <rect x="62" y="56" width="40" height="6" rx="3" fill="#CBD5E1"/>
+
+    <!-- Row 2 -->
+    <rect x="42" y="74" width="14" height="14" rx="3" fill="#EFF6FF" stroke="#3B82F6" stroke-width="1.5"/>
+    <path d="M 45 81 L 48 84 L 53 77" stroke="#3B82F6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    <rect x="62" y="78" width="35" height="6" rx="3" fill="#CBD5E1"/>
+
+    <!-- Row 3 -->
+    <rect x="42" y="96" width="14" height="14" rx="3" fill="#EFF6FF" stroke="#3B82F6" stroke-width="1.5"/>
+    <path d="M 45 103 L 48 106 L 53 99" stroke="#3B82F6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    <rect x="62" y="100" width="38" height="6" rx="3" fill="#CBD5E1"/>
+
+    <!-- Row 4 -->
+    <rect x="42" y="118" width="14" height="14" rx="3" fill="#EFF6FF" stroke="#3B82F6" stroke-width="1.5"/>
+    <path d="M 45 125 L 48 128 L 53 121" stroke="#3B82F6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    <rect x="62" y="122" width="30" height="6" rx="3" fill="#CBD5E1"/>
+
+    <!-- 3D Pencil -->
+    <g transform="translate(112, 70) rotate(-35)">
+      <!-- Body -->
+      <rect x="0" y="0" width="14" height="65" rx="3" fill="url(#pencilGrad)"/>
+      <rect x="4" y="0" width="6" height="65" fill="#38BDF8"/>
+      <!-- Tip -->
+      <polygon points="0,65 14,65 7,80" fill="#FDE68A"/>
+      <polygon points="5,76 9,76 7,80" fill="#0F172A"/>
+      <!-- Eraser -->
+      <rect x="0" y="-8" width="14" height="8" rx="2" fill="#F43F5E"/>
+      <rect x="0" y="-2" width="14" height="3" fill="#E2E8F0"/>
+    </g>
+  </g>
+</svg>

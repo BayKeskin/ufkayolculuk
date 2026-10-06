@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 280" fill="none">
+  <defs>
+    <linearGradient id="skyGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#38BDF8"/>
+      <stop offset="60%" stop-color="#BAE6FD"/>
+      <stop offset="100%" stop-color="#FEF08A"/>
+    </linearGradient>
+    <linearGradient id="treeGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#4ADE80"/>
+      <stop offset="50%" stop-color="#16A34A"/>
+      <stop offset="100%" stop-color="#14532D"/>
+    </linearGradient>
+    <linearGradient id="hillGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#86EFAC"/>
+      <stop offset="100%" stop-color="#15803D"/>
+    </linearGradient>
+  </defs>
+  <!-- Background Sky -->
+  <rect width="200" height="280" rx="8" fill="url(#skyGrad)"/>
+
+  <!-- Soft Sunlight -->
+  <circle cx="100" cy="130" r="50" fill="#FFFBEB" opacity="0.8"/>
+
+  <!-- Rolling Hills -->
+  <path d="M 0 200 Q 60 170 120 190 T 200 180 L 200 280 L 0 280 Z" fill="#4ADE80" opacity="0.6"/>
+  <path d="M 0 220 Q 100 190 200 220 L 200 280 L 0 280 Z" fill="url(#hillGrad)"/>
+
+  <!-- Tree Trunk & Branches -->
+  <g transform="translate(100, 195)">
+    <path d="M -8 20 C -8 0 -25 -25 -40 -40 L -30 -42 C -18 -30 -5 -10 -3 5 Z" fill="#78350F"/>
+    <path d="M 8 20 C 8 0 25 -25 40 -40 L 30 -42 C 18 -30 5 -10 3 5 Z" fill="#78350F"/>
+    <path d="M -6 20 C -4 -10 -10 -35 -15 -55 L -7 -57 C -3 -35 2 -10 6 20 Z" fill="#5A280B"/>
+    <path d="M 0 20 C 2 -10 10 -35 15 -55 L 7 -57 C 3 -35 -2 -10 0 20 Z" fill="#5A280B"/>
+    <ellipse cx="0" cy="20" rx="14" ry="4" fill="#14532D"/>
+  </g>
+
+  <!-- Big Lush Canopy -->
+  <g transform="translate(100, 125)">
+    <circle cx="-30" cy="-10" r="32" fill="url(#treeGrad)"/>
+    <circle cx="30" cy="-10" r="32" fill="url(#treeGrad)"/>
+    <circle cx="0" cy="-35" r="36" fill="#22C55E"/>
+    <circle cx="-15" cy="-25" r="28" fill="#4ADE80" opacity="0.8"/>
+    <circle cx="15" cy="-25" r="28" fill="#16A34A"/>
+    <circle cx="0" cy="0" r="35" fill="url(#treeGrad)"/>
+  </g>
+
+  <!-- Spine Shadow -->
+  <rect x="0" y="0" width="8" height="280" fill="#000000" opacity="0.3"/>
+</svg>

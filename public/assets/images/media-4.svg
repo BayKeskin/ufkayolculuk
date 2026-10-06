@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 180" fill="none">
+  <defs>
+    <linearGradient id="mediaBg4" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#022C22"/>
+      <stop offset="50%" stop-color="#0F172A"/>
+      <stop offset="100%" stop-color="#020617"/>
+    </linearGradient>
+  </defs>
+  <rect width="320" height="180" rx="12" fill="url(#mediaBg4)"/>
+  <circle cx="240" cy="90" r="65" fill="#10B981" opacity="0.2"/>
+
+  <!-- Speaker Portrait -->
+  <g transform="translate(195, 30)">
+    <ellipse cx="45" cy="40" rx="20" ry="26" fill="#FDE68A"/>
+    <path d="M 25 35 C 25 15 65 12 65 35 C 58 22 35 22 25 35 Z" fill="#0F172A"/>
+    <path d="M 32 55 C 38 66 52 66 58 55 Z" fill="#0F172A"/>
+    <path d="M 5 110 L 25 72 L 65 72 L 85 110 Z" fill="#134E4A"/>
+    <polygon points="40,72 50,72 45,95" fill="#10B981"/>
+  </g>
+</svg>

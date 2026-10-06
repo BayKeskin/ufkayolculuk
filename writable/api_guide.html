@@ -1,0 +1,344 @@
+﻿<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ufka Yolculuk - REST API Portalı Giriş</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-body: #06090e;
+            --bg-card: #0d131f;
+            --bg-input: #080c14;
+            --border: #1e293b;
+            --border-focus: #0d9488;
+            --text-main: #f1f5f9;
+            --text-muted: #94a3b8;
+            --text-dim: #64748b;
+            --accent-teal: #0d9488;
+            --accent-cyan: #06b6d4;
+            --accent-rose: #f43f5e;
+            --radius: 12px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            background-image: 
+                radial-gradient(circle at 50% 20%, rgba(13, 148, 136, 0.12) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(2, 132, 199, 0.08) 0%, transparent 40%);
+        }
+
+        .login-card {
+            width: 100%;
+            max-width: 440px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(255, 255, 255, 0.02);
+            overflow: hidden;
+            position: relative;
+        }
+
+        .login-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #0d9488, #0284c7, #8b5cf6);
+        }
+
+        .card-header {
+            padding: 36px 32px 24px;
+            text-align: center;
+        }
+
+        .brand-badge {
+            width: 52px;
+            height: 52px;
+            margin: 0 auto 16px;
+            border-radius: 14px;
+            background: linear-gradient(135deg, #0d9488, #0284c7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 20px;
+            color: #fff;
+            box-shadow: 0 8px 24px rgba(13, 148, 136, 0.35);
+        }
+
+        .card-title {
+            font-size: 22px;
+            font-weight: 800;
+            color: #fff;
+            letter-spacing: -0.5px;
+            margin-bottom: 6px;
+        }
+
+        .card-subtitle {
+            font-size: 13px;
+            color: var(--text-muted);
+            line-height: 1.5;
+        }
+
+        .card-body {
+            padding: 0 32px 32px;
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+        }
+
+        .input-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .form-input {
+            width: 100%;
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 12px 14px;
+            font-size: 14px;
+            color: var(--text-main);
+            font-family: inherit;
+            transition: all 0.2s;
+            outline: none;
+        }
+
+        .form-input:focus {
+            border-color: var(--accent-teal);
+            box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.2);
+            background: #090f1a;
+        }
+
+        .btn-submit {
+            width: 100%;
+            background: linear-gradient(135deg, #0d9488, #0284c7);
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            padding: 13px 16px;
+            font-size: 14px;
+            font-weight: 700;
+            font-family: inherit;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.2s;
+            box-shadow: 0 4px 16px rgba(13, 148, 136, 0.3);
+            margin-top: 24px;
+        }
+
+        .btn-submit:hover {
+            opacity: 0.95;
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(13, 148, 136, 0.4);
+        }
+
+        .btn-submit:active {
+            transform: translateY(0);
+        }
+
+        .btn-submit:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .alert-box {
+            padding: 12px 14px;
+            border-radius: 8px;
+            font-size: 13px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .alert-error {
+            background: rgba(244, 63, 94, 0.12);
+            border: 1px solid rgba(244, 63, 94, 0.35);
+            color: #fb7185;
+        }
+
+        .security-badge {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 12px;
+            margin-top: 20px;
+            font-size: 11px;
+            color: var(--text-dim);
+            line-height: 1.5;
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+        }
+
+        .security-badge svg {
+            flex-shrink: 0;
+            margin-top: 1px;
+            color: var(--accent-teal);
+        }
+
+        .spinner {
+            display: none;
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-top-color: #fff;
+            border-radius: 50%;
+            animation: spin 0.6s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+
+<div class="login-card">
+    <div class="card-header">
+        <div class="brand-badge">UY</div>
+        <h1 class="card-title">Ufka Yolculuk REST API</h1>
+        <p class="card-subtitle">Servis kataloğuna ve dokümantasyona erişmek için API kimlik bilgilerinizi giriniz.</p>
+    </div>
+
+    <div class="card-body">
+        <div id="errorAlert" class="alert-box alert-error" style="display: none;">
+            <span>⚠️</span>
+            <span id="errorMessage"></span>
+        </div>
+
+        <form id="loginForm" method="POST" action="https://ufkayolculuk.com/rest/login" onsubmit="handleLogin(event)">
+            <input type="hidden" id="csrfToken" name="csrf_3323-098U_protection" value="fd14ecc0fd7df3a9212964ef3401d49d">
+
+            <div class="form-group">
+                <label class="form-label" for="username">API Kullanıcı Adı</label>
+                <div class="input-wrapper">
+                    <input type="text" id="username" name="username" class="form-input" placeholder="örn: ufka_api_user" required autofocus autocomplete="username">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="password">API Şifresi</label>
+                <div class="input-wrapper">
+                    <input type="password" id="password" name="password" class="form-input" placeholder="••••••••" required autocomplete="current-password">
+                </div>
+            </div>
+
+            <button type="submit" id="submitBtn" class="btn-submit">
+                <span class="spinner" id="btnSpinner"></span>
+                <span id="btnText">Giriş Yap & Servisleri Aç</span>
+            </button>
+        </form>
+
+        <div class="security-badge">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+            </svg>
+            <div>
+                <strong>Proje İzolasyonu:</strong> Giriş yaptığınızda yalnızca yetkilendirildiğiniz projenin servisleri listelenir ve test araçları otomatik olarak kimlik bilgilerinizle doldurulur.
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    async function handleLogin(e) {
+        e.preventDefault();
+        const form = document.getElementById('loginForm');
+        const submitBtn = document.getElementById('submitBtn');
+        const btnSpinner = document.getElementById('btnSpinner');
+        const btnText = document.getElementById('btnText');
+        const errorAlert = document.getElementById('errorAlert');
+        const errorMessage = document.getElementById('errorMessage');
+
+        const username = document.getElementById('username').value.trim();
+        const password = document.getElementById('password').value;
+
+        if (!username || !password) {
+            errorMessage.textContent = 'Lütfen kullanıcı adı ve şifrenizi giriniz.';
+            errorAlert.style.display = 'flex';
+            return;
+        }
+
+        submitBtn.disabled = true;
+        btnSpinner.style.display = 'inline-block';
+        btnText.textContent = 'Doğrulanıyor...';
+        errorAlert.style.display = 'none';
+
+        try {
+            const formData = new FormData(form);
+            formData.append('ajax', '1');
+
+            const response = await fetch("https://ufkayolculuk.com/rest/login", {
+                method: 'POST',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                body: formData
+            });
+
+            const data = await response.json();
+
+            if (data.status && data.redirect) {
+                localStorage.setItem('hb_rest_user', username);
+                localStorage.setItem('hb_rest_pass', password);
+                btnText.textContent = 'Yetkilendirildi, yönlendiriliyorsunuz...';
+                window.location.href = data.redirect;
+            } else {
+                if (data.csrf_hash) {
+                    const csrfInput = document.getElementById('csrfToken');
+                    if (csrfInput) csrfInput.value = data.csrf_hash;
+                }
+                errorMessage.textContent = data.message || 'Kullanıcı adı veya şifre hatalı.';
+                errorAlert.style.display = 'flex';
+                submitBtn.disabled = false;
+                btnSpinner.style.display = 'none';
+                btnText.textContent = 'Giriş Yap & Servisleri Aç';
+            }
+        } catch (err) {
+            // If JSON fails, submit standard form
+            form.submit();
+        }
+    }
+</script>
+
+<script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/v31edd6df95cf4e85bb4c19e7a9bdbcba1788362987495" integrity="sha512-iIg7k2xntmwu6/uSb5tpc/hySgZc4eoL31yB29W6tJFo2akwjPWcEqnCEdJvGexCL0KEQwVYv5BlowfhVz26hg==" data-cf-beacon='{"version":"2024.11.0","token":"f384be6dec114a49bda76dcea78991d8","r":1,"spa":2}' crossorigin="anonymous"></script>
+</body>
+</html>
+

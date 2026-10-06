@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 540 580" width="100%" height="100%">
+  <defs>
+    <linearGradient id="mBgGrad4" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#7C2D12"/>
+      <stop offset="50%" stop-color="#C2410C"/>
+      <stop offset="100%" stop-color="#EA580C"/>
+    </linearGradient>
+    <filter id="mShadow4" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="10" stdDeviation="12" flood-color="#000" flood-opacity="0.25"/>
+    </filter>
+  </defs>
+
+  <!-- Arka Plan -->
+  <rect width="540" height="580" rx="20" fill="url(#mBgGrad4)"/>
+  <circle cx="440" cy="140" r="180" fill="#FB923C" opacity="0.25"/>
+  <circle cx="100" cy="460" r="150" fill="#FDBA74" opacity="0.1"/>
+
+  <!-- Üst Başlık & Rozet Grubu -->
+  <g transform="translate(40, 45)">
+    <rect width="130" height="28" rx="14" fill="#FDE047"/>
+    <text x="65" y="19" font-family="'Plus Jakarta Sans', sans-serif" font-size="11" font-weight="800" fill="#0F172A" text-anchor="middle" letter-spacing="1">LİDER PORTALI</text>
+    
+    <text x="0" y="70" font-family="'Plus Jakarta Sans', sans-serif" font-size="34" font-weight="900" fill="#FFFFFF">
+      <tspan x="0" dy="0">Takımını Kur,</tspan>
+      <tspan x="0" dy="42" fill="#FDE047">Birlikte Başar!</tspan>
+    </text>
+    
+    <text x="0" y="155" font-family="'Plus Jakarta Sans', sans-serif" font-size="14" font-weight="500" fill="#FFEDD5">
+      <tspan x="0" dy="0">Danışman öğretmenler ve takım liderleri</tspan>
+      <tspan x="0" dy="22">için özel yönetim ve takip portalı.</tspan>
+    </text>
+  </g>
+
+  <!-- Orta 3D Takım ve Figürler -->
+  <g transform="translate(100, 235)" filter="url(#mShadow4)">
+    <g transform="translate(30, 20)">
+      <circle cx="55" cy="40" r="28" fill="#FED7AA"/>
+      <path d="M10 135 C10 85, 100 85, 100 135 Z" fill="#1E3A8A"/>
+      
+      <circle cx="140" cy="25" r="32" fill="#FED7AA"/>
+      <path d="M85 135 C85 75, 195 75, 195 135 Z" fill="#FDE047"/>
+
+      <circle cx="220" cy="42" r="26" fill="#FED7AA"/>
+      <path d="M175 135 C175 90, 265 90, 265 135 Z" fill="#047857"/>
+
+      <!-- Başarı Rozeti Yıldız -->
+      <g transform="translate(112, 108)">
+        <polygon points="28,4 36,20 54,22 40,35 44,53 28,44 12,53 16,35 2,22 20,20" fill="#FDE047"/>
+      </g>
+    </g>
+  </g>
+
+  <!-- Alt Buton -->
+  <g transform="translate(40, 485)">
+    <rect width="460" height="52" rx="12" fill="#FDE047" filter="url(#mShadow4)"/>
+    <text x="210" y="32" font-family="'Plus Jakarta Sans', sans-serif" font-size="16" font-weight="800" fill="#0F172A" text-anchor="middle">Portala Git</text>
+    <path d="M265 26l6 6m0 0l-6 6m6-6h-18" stroke="#0F172A" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+</svg>

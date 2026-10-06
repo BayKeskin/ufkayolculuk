@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 16" width="24" height="16" rx="3">
+  <clipPath id="ukClip">
+    <rect width="24" height="16" rx="2"/>
+  </clipPath>
+  <g clip-path="url(#ukClip)">
+    <rect width="24" height="16" fill="#012169"/>
+    <!-- Diagonal White Cross -->
+    <path d="M0 0 L24 16 M24 0 L0 16" stroke="#FFFFFF" stroke-width="3"/>
+    <!-- Diagonal Red Cross -->
+    <path d="M0 0 L24 16 M24 0 L0 16" stroke="#C8102E" stroke-width="1.8"/>
+    <!-- Straight White Cross -->
+    <path d="M12 0 V16 M0 8 H24" stroke="#FFFFFF" stroke-width="5"/>
+    <!-- Straight Red Cross -->
+    <path d="M12 0 V16 M0 8 H24" stroke="#C8102E" stroke-width="3"/>
+  </g>
+</svg>

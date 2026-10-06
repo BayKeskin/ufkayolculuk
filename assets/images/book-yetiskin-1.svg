@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 280" fill="none">
+  <defs>
+    <linearGradient id="warmStreetSky" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#FCD34D"/>
+      <stop offset="50%" stop-color="#FDE68A"/>
+      <stop offset="100%" stop-color="#EA580C"/>
+    </linearGradient>
+    <linearGradient id="buildingGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#78350F"/>
+      <stop offset="100%" stop-color="#451A03"/>
+    </linearGradient>
+  </defs>
+  <!-- Background Warm Sky -->
+  <rect width="200" height="280" rx="8" fill="url(#warmStreetSky)"/>
+
+  <!-- Glowing Sun / Warm Horizon -->
+  <circle cx="100" cy="180" r="45" fill="#FEF08A" opacity="0.9"/>
+
+  <!-- Historical Buildings / Classical Street View (Perspective) -->
+  <!-- Left Building Facade -->
+  <polygon points="0,40 55,100 55,250 0,280" fill="url(#buildingGrad)"/>
+  <polygon points="0,40 55,100 55,115 0,60" fill="#92400E"/>
+  <!-- Windows on left -->
+  <rect x="15" y="80" width="12" height="24" rx="6" fill="#FDE68A" opacity="0.8"/>
+  <rect x="35" y="110" width="10" height="20" rx="5" fill="#FDE68A" opacity="0.8"/>
+  <rect x="15" y="120" width="12" height="24" rx="6" fill="#FDE68A" opacity="0.8"/>
+  <rect x="35" y="145" width="10" height="20" rx="5" fill="#FDE68A" opacity="0.8"/>
+  <rect x="15" y="165" width="12" height="24" rx="6" fill="#FDE68A" opacity="0.8"/>
+
+  <!-- Right Building Facade -->
+  <polygon points="200,50 145,105 145,250 200,280" fill="url(#buildingGrad)"/>
+  <polygon points="200,50 145,105 145,120 200,70" fill="#92400E"/>
+  <!-- Windows on right -->
+  <rect x="170" y="85" width="12" height="24" rx="6" fill="#FDE68A" opacity="0.8"/>
+  <rect x="153" y="115" width="10" height="20" rx="5" fill="#FDE68A" opacity="0.8"/>
+  <rect x="170" y="125" width="12" height="24" rx="6" fill="#FDE68A" opacity="0.8"/>
+  <rect x="153" y="150" width="10" height="20" rx="5" fill="#FDE68A" opacity="0.8"/>
+  <rect x="170" y="170" width="12" height="24" rx="6" fill="#FDE68A" opacity="0.8"/>
+
+  <!-- Central Monument / Dome in Distance -->
+  <polygon points="100,130 90,165 110,165" fill="#B45309"/>
+  <path d="M 85 165 C 85 145 115 145 115 165 Z" fill="#92400E"/>
+  <rect x="80" y="165" width="40" height="25" fill="#78350F"/>
+
+  <!-- Cobblestone Street Ground with Warm Light Reflection -->
+  <polygon points="55,250 145,250 200,280 0,280" fill="#7C2D12"/>
+  <polygon points="75,250 125,250 150,280 50,280" fill="#EA580C" opacity="0.5"/>
+
+  <!-- Spine Shadow -->
+  <rect x="0" y="0" width="8" height="280" fill="#000000" opacity="0.3"/>
+</svg>

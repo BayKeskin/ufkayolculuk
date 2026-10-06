@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 180" fill="none">
+  <defs>
+    <linearGradient id="mediaBg3" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#18181B"/>
+      <stop offset="60%" stop-color="#27272A"/>
+      <stop offset="100%" stop-color="#09090B"/>
+    </linearGradient>
+    <radialGradient id="watchGold" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#FEF08A"/>
+      <stop offset="60%" stop-color="#F59E0B"/>
+      <stop offset="100%" stop-color="#B45309"/>
+    </radialGradient>
+  </defs>
+  <rect width="320" height="180" rx="12" fill="url(#mediaBg3)"/>
+
+  <!-- Vintage Pocket Watch on Right -->
+  <g transform="translate(210, 40)">
+    <!-- Glow -->
+    <circle cx="50" cy="50" r="45" fill="#F59E0B" opacity="0.2"/>
+    <!-- Top Crown -->
+    <rect x="44" y="2" width="12" height="8" rx="2" fill="#D97706"/>
+    <circle cx="50" cy="-2" r="7" stroke="#D97706" stroke-width="2.5" fill="none"/>
+    <!-- Outer Case -->
+    <circle cx="50" cy="50" r="42" fill="url(#watchGold)"/>
+    <circle cx="50" cy="50" r="36" fill="#FFFBEB"/>
+    <!-- Dial Marks -->
+    <circle cx="50" cy="50" r="32" stroke="#B45309" stroke-width="1" stroke-dasharray="2 6" fill="none"/>
+    <!-- Hands -->
+    <line x1="50" y1="50" x2="50" y2="28" stroke="#18181B" stroke-width="2" stroke-linecap="round"/>
+    <line x1="50" y1="50" x2="68" y2="58" stroke="#18181B" stroke-width="2" stroke-linecap="round"/>
+    <circle cx="50" cy="50" r="3" fill="#B45309"/>
+  </g>
+</svg>

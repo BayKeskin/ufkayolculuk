@@ -1,0 +1,68 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 420" width="100%" height="100%">
+  <defs>
+    <linearGradient id="bgGrad4" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#7C2D12"/>
+      <stop offset="50%" stop-color="#C2410C"/>
+      <stop offset="100%" stop-color="#EA580C"/>
+    </linearGradient>
+    <linearGradient id="yellowGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FEF08A"/>
+      <stop offset="100%" stop-color="#FDE047"/>
+    </linearGradient>
+    <filter id="shadow4" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="12" stdDeviation="16" flood-color="#000" flood-opacity="0.25"/>
+    </filter>
+  </defs>
+
+  <!-- Arka Plan -->
+  <rect width="1200" height="420" rx="16" fill="url(#bgGrad4)"/>
+  
+  <!-- Işık Efektleri -->
+  <circle cx="1020" cy="200" r="260" fill="#FB923C" opacity="0.25"/>
+  <circle cx="200" cy="300" r="160" fill="#FDBA74" opacity="0.1"/>
+
+  <!-- Sol Metin Alanı -->
+  <g transform="translate(80, 80)">
+    <!-- Pill Badge -->
+    <rect width="160" height="32" rx="16" fill="#FDE047"/>
+    <text x="80" y="21" font-family="'Plus Jakarta Sans', sans-serif" font-size="13" font-weight="800" fill="#0F172A" text-anchor="middle" letter-spacing="1">LİDER PORTALI</text>
+    
+    <!-- Ana Başlık -->
+    <text x="0" y="90" font-family="'Plus Jakarta Sans', sans-serif" font-size="44" font-weight="900" fill="#FFFFFF">
+      <tspan x="0" dy="0">Takımını Kur,</tspan>
+      <tspan x="0" dy="52" fill="#FDE047">Birlikte Başar!</tspan>
+    </text>
+    
+    <!-- Alt Açıklama -->
+    <text x="0" y="200" font-family="'Plus Jakarta Sans', sans-serif" font-size="18" font-weight="500" fill="#FFEDD5">
+      Öğretmenler ve danışmanlar için özel takım lideri portalı ve yönetim paneli.
+    </text>
+
+    <!-- Buton -->
+    <g transform="translate(0, 235)">
+      <rect width="240" height="48" rx="10" fill="#FDE047" filter="url(#shadow4)"/>
+      <text x="20" y="30" font-family="'Plus Jakarta Sans', sans-serif" font-size="16" font-weight="800" fill="#0F172A" text-anchor="start">Portala Git</text>
+      <path d="M204 18l8 6-8 6M212 24h-18" stroke="#0F172A" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </g>
+  </g>
+
+  <!-- Sağ 3D Takım ve Liderlik Görseli -->
+  <g transform="translate(760, 60)" filter="url(#shadow4)">
+    <!-- Danışman / Lider Figürleri -->
+    <g transform="translate(60, 40)">
+      <circle cx="70" cy="50" r="35" fill="#FED7AA"/>
+      <path d="M10 170 C10 110, 130 110, 130 170 Z" fill="#1E3A8A"/>
+      
+      <circle cx="180" cy="35" r="40" fill="#FED7AA"/>
+      <path d="M110 170 C110 95, 250 95, 250 170 Z" fill="#FDE047"/>
+
+      <circle cx="280" cy="55" r="32" fill="#FED7AA"/>
+      <path d="M225 170 C225 115, 335 115, 335 170 Z" fill="#047857"/>
+
+      <!-- Yıldız / Başarı Rozeti -->
+      <g transform="translate(145, 140)">
+        <polygon points="35,5 45,25 68,28 50,44 55,67 35,55 15,67 20,44 2,28 25,25" fill="#FDE047"/>
+      </g>
+    </g>
+  </g>
+</svg>

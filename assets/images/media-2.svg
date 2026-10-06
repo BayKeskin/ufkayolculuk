@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 180" fill="none">
+  <defs>
+    <linearGradient id="mediaBg2" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#090D16"/>
+      <stop offset="50%" stop-color="#1E293B"/>
+      <stop offset="100%" stop-color="#0F172A"/>
+    </linearGradient>
+  </defs>
+  <rect width="320" height="180" rx="12" fill="url(#mediaBg2)"/>
+  <circle cx="230" cy="90" r="60" fill="#0284C7" opacity="0.25"/>
+
+  <!-- Speaker Group / Discussion Silhouette -->
+  <g transform="translate(160, 35)">
+    <!-- Person 1 -->
+    <ellipse cx="35" cy="40" rx="18" ry="22" fill="#FDE68A"/>
+    <path d="M 17 35 C 17 18 53 15 53 35 Z" fill="#0F172A"/>
+    <path d="M 5 95 L 20 65 L 50 65 L 65 95 Z" fill="#1E293B"/>
+    <!-- Person 2 -->
+    <ellipse cx="85" cy="45" rx="16" ry="20" fill="#FDE68A"/>
+    <path d="M 69 40 C 69 22 101 20 101 40 Z" fill="#0F172A"/>
+    <path d="M 55 95 L 70 70 L 100 70 L 115 95 Z" fill="#334155"/>
+  </g>
+</svg>

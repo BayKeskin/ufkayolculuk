@@ -1,0 +1,169 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 480" fill="none">
+  <defs>
+    <!-- Gradients -->
+    <linearGradient id="bookCoverGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0F2D59"/>
+      <stop offset="100%" stop-color="#1E40AF"/>
+    </linearGradient>
+    <linearGradient id="pagesGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF"/>
+      <stop offset="70%" stop-color="#E2E8F0"/>
+      <stop offset="100%" stop-color="#CBD5E1"/>
+    </linearGradient>
+    <linearGradient id="mountainGrad1" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#93C5FD"/>
+      <stop offset="50%" stop-color="#60A5FA"/>
+      <stop offset="100%" stop-color="#2563EB"/>
+    </linearGradient>
+    <linearGradient id="mountainGrad2" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#BFDBFE"/>
+      <stop offset="60%" stop-color="#3B82F6"/>
+      <stop offset="100%" stop-color="#1D4ED8"/>
+    </linearGradient>
+    <linearGradient id="mountainGrad3" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#E0E7FF"/>
+      <stop offset="100%" stop-color="#4F46E5"/>
+    </linearGradient>
+    <linearGradient id="grassGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#86EFAC"/>
+      <stop offset="50%" stop-color="#22C55E"/>
+      <stop offset="100%" stop-color="#15803D"/>
+    </linearGradient>
+    <linearGradient id="riverGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#38BDF8"/>
+      <stop offset="50%" stop-color="#0284C7"/>
+      <stop offset="100%" stop-color="#0369A1"/>
+    </linearGradient>
+    <linearGradient id="trophyGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FDE047"/>
+      <stop offset="50%" stop-color="#F59E0B"/>
+      <stop offset="100%" stop-color="#D97706"/>
+    </linearGradient>
+    <linearGradient id="gemGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#67E8F9"/>
+      <stop offset="50%" stop-color="#06B6D4"/>
+      <stop offset="100%" stop-color="#0891B2"/>
+    </linearGradient>
+    <linearGradient id="sunbeam" x1="50%" y1="0%" x2="50%" y2="100%">
+      <stop offset="0%" stop-color="#FEF08A" stop-opacity="0.6"/>
+      <stop offset="100%" stop-color="#FEF08A" stop-opacity="0"/>
+    </linearGradient>
+    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="6" result="blur"/>
+      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>
+    <filter id="softShadow" x="-10%" y="-10%" width="120%" height="130%">
+      <feDropShadow dx="0" dy="18" stdDeviation="20" flood-color="#0F172A" flood-opacity="0.15"/>
+    </filter>
+  </defs>
+
+  <!-- BACKGROUND GLOW / SUNBEAM -->
+  <g opacity="0.8">
+    <circle cx="350" cy="180" r="140" fill="#FEF3C7" opacity="0.6" filter="url(#glow)"/>
+    <polygon points="350,180 200,40 240,30" fill="url(#sunbeam)"/>
+    <polygon points="350,180 320,10 380,10" fill="url(#sunbeam)"/>
+    <polygon points="350,180 460,30 500,50" fill="url(#sunbeam)"/>
+  </g>
+
+  <!-- FLYING BIRDS -->
+  <g fill="#475569" opacity="0.7">
+    <path d="M 520 110 Q 528 102 536 110 Q 544 102 552 110 Q 544 106 536 114 Q 528 106 520 110 Z"/>
+    <path d="M 550 90 Q 556 84 562 90 Q 568 84 574 90 Q 568 87 562 93 Q 556 87 550 90 Z"/>
+    <path d="M 500 135 Q 505 130 510 135 Q 515 130 520 135 Q 515 132 510 138 Q 505 132 500 135 Z"/>
+  </g>
+
+  <!-- FLOATING GEM (DIAMOND) -->
+  <g transform="translate(420, 100) scale(0.9)" filter="url(#glow)">
+    <polygon points="20,0 40,15 30,45 10,45 0,15" fill="url(#gemGrad)"/>
+    <polygon points="20,0 40,15 20,45" fill="#22D3EE" opacity="0.6"/>
+    <polygon points="20,0 20,45 0,15" fill="#0891B2" opacity="0.8"/>
+    <polygon points="20,0 30,15 20,45 10,15" fill="#E0F2FE" opacity="0.9"/>
+  </g>
+
+  <!-- FLOATING GOLDEN TROPHY CUP -->
+  <g transform="translate(600, 105) scale(0.9)" filter="url(#glow)">
+    <!-- Cup Body -->
+    <path d="M 15 20 Q 15 65 45 65 Q 75 65 75 20 Z" fill="url(#trophyGrad)"/>
+    <!-- Handles -->
+    <path d="M 15 28 C -5 28 -5 50 15 50" stroke="#F59E0B" stroke-width="6" stroke-linecap="round" fill="none"/>
+    <path d="M 75 28 C 95 28 95 50 75 50" stroke="#F59E0B" stroke-width="6" stroke-linecap="round" fill="none"/>
+    <!-- Stem & Base -->
+    <rect x="40" y="65" width="10" height="18" fill="#D97706"/>
+    <path d="M 25 83 L 65 83 L 70 95 L 20 95 Z" fill="url(#trophyGrad)"/>
+    <!-- Star Sparkle -->
+    <path d="M 45 32 L 48 40 L 56 42 L 50 48 L 52 56 L 45 51 L 38 56 L 40 48 L 34 42 L 42 40 Z" fill="#FFFBEB"/>
+  </g>
+
+  <!-- 3D BOOK WITH MAGICAL LANDSCAPE -->
+  <g filter="url(#softShadow)">
+    <!-- BOOK COVER BOTTOM SPREAD -->
+    <path d="M 70 330 C 70 330 200 370 345 375 C 490 370 630 330 630 330 L 640 355 C 640 355 490 395 345 400 C 200 395 60 355 60 355 Z" fill="url(#bookCoverGrad)"/>
+
+    <!-- BOOK PAGES BLOCK (LEFT & RIGHT) -->
+    <path d="M 68 322 C 180 348 260 355 345 365 L 345 385 C 260 375 180 368 68 342 Z" fill="#CBD5E1"/>
+    <path d="M 622 322 C 510 348 430 355 345 365 L 345 385 C 430 375 510 368 622 342 Z" fill="#94A3B8"/>
+
+    <!-- BOOK OPEN TOP PAGES -->
+    <path d="M 70 320 C 180 345 260 352 345 360 C 430 352 510 345 620 320 L 580 260 C 490 275 420 280 345 285 C 270 280 200 275 110 260 Z" fill="url(#pagesGrad)"/>
+  </g>
+
+  <!-- LANDSCAPE POPPING OUT OF BOOK -->
+  <g>
+    <!-- BACKGROUND MOUNTAINS -->
+    <polygon points="345,140 250,270 440,270" fill="url(#mountainGrad1)"/>
+    <polygon points="345,140 345,270 440,270" fill="#1E40AF" opacity="0.3"/>
+    <!-- Snowcaps -->
+    <polygon points="345,140 315,182 335,178 345,188 358,178 375,182" fill="#FFFFFF"/>
+
+    <polygon points="460,165 370,275 550,275" fill="url(#mountainGrad2)"/>
+    <polygon points="460,165 460,275 550,275" fill="#1D4ED8" opacity="0.3"/>
+    <polygon points="460,165 435,200 450,195 460,205 475,195 490,202" fill="#FFFFFF"/>
+
+    <polygon points="230,175 140,280 320,280" fill="url(#mountainGrad3)"/>
+    <polygon points="230,175 230,280 320,280" fill="#3730A3" opacity="0.3"/>
+    <polygon points="230,175 210,208 225,204 230,212 242,204 255,210" fill="#FFFFFF"/>
+
+    <!-- GREEN ROLLING HILLS (TERRAIN) -->
+    <path d="M 115 270 C 190 240 260 250 345 265 C 430 250 500 240 575 270 C 590 295 560 335 345 350 C 130 335 100 295 115 270 Z" fill="url(#grassGrad)"/>
+
+    <!-- WINDING BLUE RIVER -->
+    <path d="M 345 245 C 330 260 365 275 330 295 C 295 315 380 335 345 355 C 330 355 310 352 315 348 C 345 330 280 310 315 290 C 345 270 320 255 335 245 Z" fill="url(#riverGrad)"/>
+
+    <!-- PINE FORESTS (3D Trees Left & Right) -->
+    <!-- Left Group -->
+    <g fill="#166534">
+      <!-- Tree 1 -->
+      <polygon points="170,225 155,255 185,255"/>
+      <polygon points="170,240 150,270 190,270"/>
+      <!-- Tree 2 -->
+      <polygon points="195,215 180,245 210,245" fill="#15803D"/>
+      <polygon points="195,230 175,260 215,260" fill="#15803D"/>
+      <!-- Tree 3 -->
+      <polygon points="225,235 212,260 238,260"/>
+      <polygon points="225,248 208,272 242,272"/>
+      <!-- Tree 4 (Fore) -->
+      <polygon points="160,250 142,280 178,280" fill="#14532D"/>
+      <polygon points="160,265 138,295 182,295" fill="#14532D"/>
+      <polygon points="200,255 185,282 215,282" fill="#166534"/>
+      <polygon points="200,270 180,300 220,300" fill="#166534"/>
+    </g>
+
+    <!-- Right Group -->
+    <g fill="#166534">
+      <!-- Tree 1 -->
+      <polygon points="510,225 495,255 525,255"/>
+      <polygon points="510,240 490,270 530,270"/>
+      <!-- Tree 2 -->
+      <polygon points="480,215 465,245 495,245" fill="#15803D"/>
+      <polygon points="480,230 460,260 500,260" fill="#15803D"/>
+      <!-- Tree 3 -->
+      <polygon points="450,235 438,260 462,260"/>
+      <polygon points="450,248 432,272 468,272"/>
+      <!-- Tree 4 (Fore) -->
+      <polygon points="525,250 508,280 542,280" fill="#14532D"/>
+      <polygon points="525,265 502,295 548,295" fill="#14532D"/>
+      <polygon points="485,255 470,282 500,282" fill="#166534"/>
+      <polygon points="485,270 465,300 505,300" fill="#166534"/>
+    </g>
+  </g>
+</svg>

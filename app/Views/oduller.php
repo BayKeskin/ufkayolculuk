@@ -1,6 +1,7 @@
 <?= $this->extend('layouts/main') ?>
 
 <?= $this->section('content') ?>
+  <!-- ==========================================
        HERO BANNER & BREADCRUMB (Koyu Arka Plan)
        ========================================== -->
   <section class="awards-hero-banner" style="background-color: #0F3460 !important; background: linear-gradient(135deg, #0A192F 0%, #0F3460 50%, #16213E 100%) !important;">

@@ -19,7 +19,77 @@ class UfkaApiService
     }
 
     /**
-     * REST API uç noktasına HTTP isteği gönderir
+     * API Bearer Access Token alır (2 saatlik ömür, yerel önbellek, refresh ve Basic Auth fallback)
+     */
+    public function getAccessToken(bool $forceRefresh = false): ?string
+    {
+        $cacheKey = 'ufka_api_bearer_access_token';
+        if (!$forceRefresh) {
+            $cachedToken = cache($cacheKey);
+            if (!empty($cachedToken)) {
+                return $cachedToken;
+            }
+        }
+
+        // Önce varsa refresh_token ile yenilemeyi dene
+        $refreshToken = cache('ufka_api_bearer_refresh_token');
+        if ($forceRefresh && !empty($refreshToken)) {
+            try {
+                $client = Services::curlrequest(['timeout' => 10, 'verify' => false, 'http_errors' => false]);
+                $url = rtrim($this->config->baseURL, '/') . '/refresh';
+                $resp = $client->post($url, [
+                    'form_params' => ['refresh_token' => $refreshToken],
+                    'verify' => false,
+                ]);
+                if ($resp->getStatusCode() === 200) {
+                    $json = json_decode($resp->getBody(), true);
+                    if (!empty($json['access_token'])) {
+                        $ttl = $this->config->tokenTTL ?? 6600;
+                        cache()->save($cacheKey, $json['access_token'], $ttl);
+                        if (!empty($json['refresh_token'])) {
+                            cache()->save('ufka_api_bearer_refresh_token', $json['refresh_token'], 14 * 86400);
+                        }
+                        return $json['access_token'];
+                    }
+                }
+            } catch (\Throwable $e) {
+                log_message('error', 'UfkaApiService token refresh exception: ' . $e->getMessage());
+            }
+        }
+
+        // POST /token ile yeni token çifti al
+        try {
+            $client = Services::curlrequest(['timeout' => 10, 'verify' => false, 'http_errors' => false]);
+            $url = rtrim($this->config->baseURL, '/') . '/token';
+            $resp = $client->post($url, [
+                'form_params' => [
+                    'username'   => $this->config->username,
+                    'password'   => $this->config->password,
+                    'token_name' => 'Web-Client',
+                ],
+                'verify' => false,
+            ]);
+
+            if ($resp->getStatusCode() === 200) {
+                $json = json_decode($resp->getBody(), true);
+                if (!empty($json['access_token'])) {
+                    $ttl = $this->config->tokenTTL ?? 6600;
+                    cache()->save($cacheKey, $json['access_token'], $ttl);
+                    if (!empty($json['refresh_token'])) {
+                        cache()->save('ufka_api_bearer_refresh_token', $json['refresh_token'], 14 * 86400);
+                    }
+                    return $json['access_token'];
+                }
+            }
+        } catch (\Throwable $e) {
+            log_message('error', 'UfkaApiService getAccessToken exception: ' . $e->getMessage());
+        }
+
+        return null;
+    }
+
+    /**
+     * REST API uç noktasına HTTP isteği gönderir (Bearer Token & Basic Auth Fallback)
      *
      * @param string $endpoint   Örn: 'getWebContents', 'getAwards/34'
      * @param array  $postData   Form POST verileri
@@ -48,13 +118,24 @@ class UfkaApiService
                 'verify'      => false, // Yerel geliştirme ortamında SSL sertifika kontrolü
             ]);
 
+            $headers = [
+                'Accept'     => 'application/json',
+                'User-Agent' => 'UfkaYolculuk-CI4-Client/2.0',
+            ];
+
+            // Bearer Token'ı al ve başlığa ekle
+            $bearerToken = null;
+            if (!in_array($endpoint, ['token', 'refresh', 'revoke'])) {
+                $bearerToken = $this->getAccessToken();
+            }
+            if (!empty($bearerToken)) {
+                $headers['Authorization'] = 'Bearer ' . $bearerToken;
+            }
+
             $options = [
-                'auth' => [$this->config->username, $this->config->password],
-                'headers' => [
-                    'Accept'     => 'application/json',
-                    'User-Agent' => 'UfkaYolculuk-CI4-Client/1.0',
-                ],
-                'verify' => false,
+                'auth'    => [$this->config->username, $this->config->password], // Basic Auth fallback koruması
+                'headers' => $headers,
+                'verify'  => false,
             ];
 
             if ($method === 'POST') {
@@ -66,6 +147,17 @@ class UfkaApiService
             }
 
             $statusCode = $response->getStatusCode();
+
+            // 401 Unauthorized dönerse token'ı tazeleyip bir kez daha dene
+            if ($statusCode === 401 && !empty($bearerToken)) {
+                $newToken = $this->getAccessToken(true);
+                if (!empty($newToken)) {
+                    $options['headers']['Authorization'] = 'Bearer ' . $newToken;
+                    $response = ($method === 'POST') ? $client->post($url, $options) : $client->get($url, $options);
+                    $statusCode = $response->getStatusCode();
+                }
+            }
+
             $body = $response->getBody();
 
             if ($statusCode >= 200 && $statusCode < 300) {
@@ -87,11 +179,21 @@ class UfkaApiService
     }
 
     /**
-     * Tüm Web İçeriklerini (Duyuru, Haber, Kılavuz vb.) döner
+     * Tüm Web İçeriklerini (Duyuru, Haber, Kılavuz vb.) veya filtreli içerikleri döner
+     *
+     * @param array|bool $filtersOrCache Filtre parametreleri dizisi veya önbellek bayrağı
+     * @param bool       $useCache       Önbellek kullanılsın mı?
      */
-    public function getWebContents(bool $useCache = true): array
+    public function getWebContents($filtersOrCache = [], bool $useCache = true): array
     {
-        $result = $this->request('getWebContents', [], 'POST', $useCache);
+        $filters = [];
+        if (is_bool($filtersOrCache)) {
+            $useCache = $filtersOrCache;
+        } elseif (is_array($filtersOrCache)) {
+            $filters = $filtersOrCache;
+        }
+
+        $result = $this->request('getWebContents', $filters, 'POST', $useCache);
         return is_array($result) ? $result : [];
     }
 
@@ -102,6 +204,12 @@ class UfkaApiService
     {
         $rawTarget = trim($slugOrId);
         $targetLower = strtolower($rawTarget);
+
+        // 1. Doğrudan sunucu taraflı tekil slug sorgusu
+        $direct = $this->getWebContents(['slug' => $rawTarget], $useCache);
+        if (!empty($direct) && is_array($direct)) {
+            return reset($direct);
+        }
 
         // Yaygın URL takma adları (alias) eşleştirmesi
         $aliases = [
@@ -128,18 +236,23 @@ class UfkaApiService
             $searchSlugs = array_unique(array_merge($searchSlugs, $aliases[$targetLower]));
         }
 
-        $contents = $this->getWebContents($useCache);
+        // Alias'lar için sunucu sorgusu
+        foreach ($searchSlugs as $aliasSlug) {
+            if ($aliasSlug !== $rawTarget) {
+                $aliasItem = $this->getWebContents(['slug' => $aliasSlug], $useCache);
+                if (!empty($aliasItem) && is_array($aliasItem)) {
+                    return reset($aliasItem);
+                }
+            }
+        }
 
-        // 1. Aşama: Tam veya case-insensitive slug / ID eşleşmesi
+        // Bulunamazsa tüm içerik havuzundan ID veya slug ara (fallback)
+        $contents = $this->getWebContents([], $useCache);
         foreach ($contents as $item) {
             $itemId   = (string)($item['id'] ?? '');
             $itemSlug = strtolower(trim($item['slug'] ?? ''));
 
-            if ($itemId === $rawTarget) {
-                return $item;
-            }
-
-            if (in_array($itemSlug, $searchSlugs, true)) {
+            if ($itemId === $rawTarget || in_array($itemSlug, $searchSlugs, true)) {
                 return $item;
             }
         }
@@ -201,43 +314,56 @@ class UfkaApiService
     }
 
     /**
-     * Yalnızca Duyuruları ve Haberleri filtreleyerek en yeniye göre sıralı döner
+     * Yalnızca Duyuruları ve Haberleri filtreleyerek en yeniye göre sıralı döner (Sunucu Filtreli)
      */
     public function getAnnouncements(int $limit = 0, bool $useCache = true): array
     {
-        $contents = $this->getWebContents($useCache);
-        $announcements = [];
+        // 1. Sunucu taraflı filtre: type=annoucement ve type=news
+        $announcements = $this->getWebContents(['type' => 'annoucement'], $useCache);
+        $news = $this->getWebContents(['type' => 'news'], $useCache);
+        $combined = array_merge($announcements, $news);
 
-        foreach ($contents as $item) {
-            $type = strtolower($item['type'] ?? '');
-            if (in_array($type, ['annoucement', 'announcement', 'news', 'duyuru', 'haber'])) {
-                $announcements[] = $item;
+        // Fallback: Sunucu filtresi boş dönerse tüm içeriklerden filtrele
+        if (empty($combined)) {
+            $contents = $this->getWebContents([], $useCache);
+            foreach ($contents as $item) {
+                $type = strtolower($item['type'] ?? '');
+                if (in_array($type, ['annoucement', 'announcement', 'news', 'duyuru', 'haber'])) {
+                    $combined[] = $item;
+                }
             }
         }
 
-        // Eğer type filtrelemesiyle sonuç bulunamazsa tüm içerikleri kullan
-        if (empty($announcements)) {
-            $announcements = $contents;
+        // Benzersiz kayıt listesi oluştur
+        $unique = [];
+        foreach ($combined as $item) {
+            $id = $item['id'] ?? uniqid();
+            $unique[$id] = $item;
         }
+        $result = array_values($unique);
 
         // En yeni duyurular başta gelsin (ID DESC)
-        usort($announcements, function ($a, $b) {
+        usort($result, function ($a, $b) {
             return ((int) ($b['id'] ?? 0)) <=> ((int) ($a['id'] ?? 0));
         });
 
         if ($limit > 0) {
-            return array_slice($announcements, 0, $limit);
+            return array_slice($result, 0, $limit);
         }
 
-        return $announcements;
+        return $result;
     }
 
     /**
-     * Sıkça Sorulan Soruları (type='sss') ve kategorilerini derler
+     * Sıkça Sorulan Soruları (type='sss') ve kategorilerini derler (Sunucu Filtreli)
      */
     public function getFaqList(bool $useCache = true): array
     {
-        $allContents = $this->getWebContents($useCache);
+        // 1. Sunucu taraflı doğrudan SSS kayıtlarını çek (18 kayıt)
+        $allContents = $this->getWebContents(['type' => 'sss'], $useCache);
+        if (empty($allContents)) {
+            $allContents = $this->getWebContents([], $useCache);
+        }
         $faqs = [];
 
         $categoryConfig = [
@@ -511,6 +637,42 @@ class UfkaApiService
         }
 
         return $tiles;
+    }
+
+    /**
+     * Ufka Yolculuk Yarışma İlleri Listesi (id ve name içeren liste)
+     */
+    public function getCities(): array
+    {
+        return [
+            ['id' => 1, 'name' => 'Adana'], ['id' => 2, 'name' => 'Adıyaman'], ['id' => 3, 'name' => 'Afyonkarahisar'],
+            ['id' => 4, 'name' => 'Ağrı'], ['id' => 68, 'name' => 'Aksaray'], ['id' => 5, 'name' => 'Amasya'],
+            ['id' => 6, 'name' => 'Ankara'], ['id' => 7, 'name' => 'Antalya'], ['id' => 75, 'name' => 'Ardahan'],
+            ['id' => 8, 'name' => 'Artvin'], ['id' => 9, 'name' => 'Aydın'], ['id' => 10, 'name' => 'Balıkesir'],
+            ['id' => 74, 'name' => 'Bartın'], ['id' => 72, 'name' => 'Batman'], ['id' => 69, 'name' => 'Bayburt'],
+            ['id' => 11, 'name' => 'Bilecik'], ['id' => 12, 'name' => 'Bingöl'], ['id' => 13, 'name' => 'Bitlis'],
+            ['id' => 14, 'name' => 'Bolu'], ['id' => 15, 'name' => 'Burdur'], ['id' => 16, 'name' => 'Bursa'],
+            ['id' => 17, 'name' => 'Çanakkale'], ['id' => 18, 'name' => 'Çankırı'], ['id' => 19, 'name' => 'Çorum'],
+            ['id' => 20, 'name' => 'Denizli'], ['id' => 21, 'name' => 'Diyarbakır'], ['id' => 81, 'name' => 'Düzce'],
+            ['id' => 22, 'name' => 'Edirne'], ['id' => 23, 'name' => 'Elazığ'], ['id' => 24, 'name' => 'Erzincan'],
+            ['id' => 25, 'name' => 'Erzurum'], ['id' => 26, 'name' => 'Eskişehir'], ['id' => 27, 'name' => 'Gaziantep'],
+            ['id' => 28, 'name' => 'Giresun'], ['id' => 29, 'name' => 'Gümüşhane'], ['id' => 30, 'name' => 'Hakkari'],
+            ['id' => 31, 'name' => 'Hatay'], ['id' => 76, 'name' => 'Iğdır'], ['id' => 32, 'name' => 'Isparta'],
+            ['id' => 34, 'name' => 'İstanbul'], ['id' => 35, 'name' => 'İzmir'], ['id' => 46, 'name' => 'Kahramanmaraş'],
+            ['id' => 78, 'name' => 'Karabük'], ['id' => 70, 'name' => 'Karaman'], ['id' => 36, 'name' => 'Kars'],
+            ['id' => 37, 'name' => 'Kastamonu'], ['id' => 38, 'name' => 'Kayseri'], ['id' => 79, 'name' => 'Kilis'],
+            ['id' => 71, 'name' => 'Kırıkkale'], ['id' => 39, 'name' => 'Kırklareli'], ['id' => 40, 'name' => 'Kırşehir'],
+            ['id' => 41, 'name' => 'Kocaeli'], ['id' => 42, 'name' => 'Konya'], ['id' => 43, 'name' => 'Kütahya'],
+            ['id' => 44, 'name' => 'Malatya'], ['id' => 45, 'name' => 'Manisa'], ['id' => 47, 'name' => 'Mardin'],
+            ['id' => 33, 'name' => 'Mersin'], ['id' => 48, 'name' => 'Muğla'], ['id' => 49, 'name' => 'Muş'],
+            ['id' => 50, 'name' => 'Nevşehir'], ['id' => 51, 'name' => 'Niğde'], ['id' => 52, 'name' => 'Ordu'],
+            ['id' => 80, 'name' => 'Osmaniye'], ['id' => 53, 'name' => 'Rize'], ['id' => 54, 'name' => 'Sakarya'],
+            ['id' => 55, 'name' => 'Samsun'], ['id' => 63, 'name' => 'Şanlıurfa'], ['id' => 56, 'name' => 'Siirt'],
+            ['id' => 57, 'name' => 'Sinop'], ['id' => 73, 'name' => 'Şırnak'], ['id' => 58, 'name' => 'Sivas'],
+            ['id' => 59, 'name' => 'Tekirdağ'], ['id' => 60, 'name' => 'Tokat'], ['id' => 61, 'name' => 'Trabzon'],
+            ['id' => 62, 'name' => 'Tunceli'], ['id' => 64, 'name' => 'Uşak'], ['id' => 65, 'name' => 'Van'],
+            ['id' => 77, 'name' => 'Yalova'], ['id' => 66, 'name' => 'Yozgat'], ['id' => 67, 'name' => 'Zonguldak'],
+        ];
     }
 
     /**
@@ -939,10 +1101,49 @@ class UfkaApiService
     }
 
     /**
-     * API'deki getExams ve sınav kurallarından önemli tarihleri derler
+     * API'deki resmi getImportantDates uç noktasından aktif yarışma tarihlerini ve geri sayım sayaçlarını döner
      */
     public function getImportantDates(bool $useCache = true): array
     {
+        // 1. Yeni resmi API uç noktasını çağır (web_dates tablosundan)
+        $apiDates = $this->request('getImportantDates', [], 'GET', $useCache);
+
+        if (is_array($apiDates) && !empty($apiDates)) {
+            $dates = [];
+            foreach ($apiDates as $item) {
+                $targetIso = $item['target_iso'] ?? '';
+                if (empty($targetIso) && !empty($item['start_date'])) {
+                    $targetIso = date('Y-m-d\TH:i:s', strtotime($item['start_date']));
+                }
+
+                $timeFormatted = $item['time_formatted'] ?? '';
+                if (empty($timeFormatted) && !empty($item['start_date'])) {
+                    $timeFormatted = date('H:i', strtotime($item['start_date']));
+                }
+
+                $dates[] = [
+                    'id'              => (string)($item['id'] ?? ($item['key'] ?? uniqid())),
+                    'key'             => (string)($item['key'] ?? ''),
+                    'badge'           => $item['badge'] ?? 'Online Sınav',
+                    'title'           => $item['title'] ?? '',
+                    'sub_title'       => $item['sub_title'] ?? ('Online Sınav' . ($timeFormatted ? " (Saat {$timeFormatted})" : '')),
+                    'date_formatted'  => $item['date_formatted'] ?? '',
+                    'time_formatted'  => $timeFormatted,
+                    'target_iso'      => $targetIso,
+                    'countdown_label' => $item['countdown_label'] ?? (($item['title'] ?? 'Sınava') . ' Kalan Süre'),
+                    'icon_type'       => $item['icon_type'] ?? 'exam',
+                    'prefix'          => $item['prefix'] ?? '',
+                    'is_countdown'    => $item['is_countdown'] ?? '1',
+                    'is_past'         => !empty($item['is_past']),
+                ];
+            }
+
+            if (!empty($dates)) {
+                return $dates;
+            }
+        }
+
+        // 2. Fallback: API'den veri dönmezse getExams üzerinden derle
         $exams = $this->getExams($useCache);
         $dates = [];
 
@@ -952,7 +1153,6 @@ class UfkaApiService
             9 => 'Eylül', 10 => 'Ekim', 11 => 'Kasım', 12 => 'Aralık'
         ];
 
-        // Sınavları tarihe göre sırala
         usort($exams, function ($a, $b) {
             return strtotime($a['publish_time'] ?? '') <=> strtotime($b['publish_time'] ?? '');
         });
@@ -974,6 +1174,7 @@ class UfkaApiService
 
                 $dates[] = [
                     'id'              => 'exam_' . ($exam['id'] ?? ''),
+                    'key'             => 'exam_' . ($exam['id'] ?? ''),
                     'badge'           => 'Online Sınav',
                     'title'           => $cleanTitle . ' Sınavı',
                     'sub_title'       => 'Online Sınav (Saat ' . $timeStr . ')',
@@ -982,54 +1183,92 @@ class UfkaApiService
                     'target_iso'      => date('Y-m-d\TH:i:s', $ts),
                     'countdown_label' => $cleanTitle . ' Sınavına Kalan Süre',
                     'icon_type'       => 'exam',
+                    'prefix'          => '',
+                    'is_countdown'    => '1',
+                    'is_past'         => $ts < time(),
                 ];
             }
         }
-
-        // Cevap Anahtarı İlanı (Sınav kurallarından)
-        $dates[] = [
-            'id'              => 'answer_keys',
-            'badge'           => 'Cevap Anahtarı',
-            'title'           => 'Cevap Anahtarı İlanı',
-            'sub_title'       => 'Doğru & Yanlış Cevaplar (Saat 20:00)',
-            'date_formatted'  => '15 Mart 2026',
-            'time_formatted'  => '20:00',
-            'target_iso'      => '2026-03-15T20:00:00',
-            'countdown_label' => 'Cevap Anahtarı İlanına Kalan Süre',
-            'icon_type'       => 'answers',
-        ];
-
-        // Sınav Sonuçlarının İlanı (Sınav kurallarından)
-        $dates[] = [
-            'id'              => 'results',
-            'badge'           => 'Sonuç İlanı',
-            'title'           => 'Sınav Sonuçlarının İlanı',
-            'sub_title'       => 'Resmi Sonuçlar & Sıralamalar (Saat 20:00)',
-            'date_formatted'  => '28 Mart 2026',
-            'time_formatted'  => '20:00',
-            'target_iso'      => '2026-03-28T20:00:00',
-            'countdown_label' => 'Sonuç İlanına Kalan Süre',
-            'icon_type'       => 'results',
-        ];
 
         return $dates;
     }
 
     /**
-     * Header veya footer menü ağacını döner
+     * Ana sayfa Hero Slider kayıtlarını döner
      */
-    public function getMenu(string $type = 'header', bool $useCache = true): array
+    public function getSliders(int $limit = 5, bool $useCache = true): array
     {
-        $result = $this->request("getMenu/{$type}", [], 'POST', $useCache);
+        $result = $this->request('getSliders', ['limit' => $limit], 'GET', $useCache);
         return is_array($result) ? $result : [];
     }
 
     /**
-     * Medya ve video içeriklerini listeler (API'deki resmi video ve podcastler)
+     * Yönetim panelinden oluşturulan aktif web menülerini listeler
+     */
+    public function getWebMenus(bool $withItems = true, bool $useCache = true): array
+    {
+        $result = $this->request('getWebMenus', ['with_items' => $withItems ? 1 : 0], 'GET', $useCache);
+        return is_array($result) ? $result : [];
+    }
+
+    /**
+     * Header veya footer menü ağacını döner (Çoklu dil ve ID desteği ile)
+     */
+    public function getMenu(string $identifier = 'header', string $lang = 'tr', bool $useCache = true): array
+    {
+        $result = $this->request("getMenu/{$identifier}", ['lang' => $lang], 'GET', $useCache);
+        if (is_array($result)) {
+            $key = $identifier . 'Menu';
+            if (isset($result[$key]) && is_array($result[$key])) {
+                return $result[$key];
+            }
+            if (isset($result['items']) && is_array($result['items'])) {
+                return $result['items'];
+            }
+            return $result;
+        }
+        return [];
+    }
+
+    /**
+     * Medya, podcast ve video içeriklerini listeler (API'deki resmi getMediaContents uç noktası)
      */
     public function getMediaContents(bool $useCache = true): array
     {
-        $all = $this->getWebContents($useCache);
+        // 1. Yeni resmi API uç noktasını çağır (web_medias tablosundan)
+        $apiMedia = $this->request('getMediaContents', [], 'GET', $useCache);
+
+        if (is_array($apiMedia) && !empty($apiMedia)) {
+            $mediaList = [];
+            foreach ($apiMedia as $item) {
+                $mediaUrl = $item['media_url'] ?? ($item['url'] ?? '');
+                $isDirect = !empty($item['is_direct']) || str_ends_with(strtolower($mediaUrl), '.mp4');
+                $thumb = $item['thumbnail_url'] ?? ($item['image_url'] ?? ($item['thumbnail'] ?? ''));
+                if (empty($thumb) || !str_starts_with($thumb, 'http')) {
+                    $thumb = $this->getMediaUrl($thumb ?: 'assets/images/media-2.svg');
+                }
+
+                $mediaList[] = [
+                    'id'          => $item['id'] ?? uniqid(),
+                    'title'       => $item['title'] ?? '',
+                    'tag'         => strtoupper($item['tag'] ?? ($item['media_type'] ?? 'VIDEO')),
+                    'tag_class'   => strtolower($item['tag_class'] ?? ($item['media_type'] ?? 'video')),
+                    'url'         => $mediaUrl,
+                    'is_direct'   => $isDirect,
+                    'duration'    => $item['duration'] ?? 'Video',
+                    'thumbnail'   => $thumb,
+                    'description' => $item['description'] ?? ($item['desc'] ?? ''),
+                    'is_featured' => !empty($item['is_featured']),
+                ];
+            }
+
+            if (!empty($mediaList)) {
+                return $mediaList;
+            }
+        }
+
+        // 2. Fallback: API boşsa getWebContents üzerinden video ara
+        $all = $this->getWebContents([], $useCache);
         $mediaList = [];
 
         foreach ($all as $item) {
@@ -1060,51 +1299,22 @@ class UfkaApiService
                         'duration'    => 'Video',
                         'thumbnail'   => base_url('assets/images/media-2.svg'),
                         'description' => $cleanDesc,
+                        'is_featured' => false,
                     ];
                 }
             }
         }
 
-        // Podcasts & tamamlayıcı medya listesi
-        $podcasts = [
-            [
-                'id'          => 'podcast-1',
-                'title'       => 'Kendini Keşfetmenin Yolculuğu',
-                'tag'         => 'PODCAST',
-                'tag_class'   => 'podcast',
-                'url'         => 'https://www.youtube.com/embed/ysz5S6PUM-U?autoplay=1',
-                'is_direct'   => false,
-                'duration'    => '24:35',
-                'thumbnail'   => base_url('assets/images/media-1.svg'),
-                'description' => 'İnsanın kendi iç dünyasını, ahlaki erdemlerini ve potansiyelini keşfetmesini konu alan Ufka Yolculuk özel podcast serisi.',
-            ],
-            [
-                'id'          => 'podcast-2',
-                'title'       => 'Kitaplardan Hayata Notlar',
-                'tag'         => 'PODCAST',
-                'tag_class'   => 'podcast',
-                'url'         => 'https://www.youtube.com/embed/jfKfPfyJRdk?autoplay=1',
-                'is_direct'   => false,
-                'duration'    => '18:42',
-                'thumbnail'   => base_url('assets/images/media-3.svg'),
-                'description' => 'Ufka Yolculuk eserlerindeki ana fikirlerin günlük yaşama, okul ve aile hayatına nasıl aktarılacağına dair pratik notlar.',
-            ],
-        ];
+        return $mediaList;
+    }
 
-        // Thumbnailleri çeşitlendir
-        $thumbs = [
-            base_url('assets/images/media-2.svg'),
-            base_url('assets/images/media-4.svg'),
-            base_url('assets/images/media-2.svg'),
-        ];
-        foreach ($mediaList as $idx => &$mItem) {
-            $mItem['thumbnail'] = $thumbs[$idx % count($thumbs)];
-        }
-        unset($mItem);
-
-        // Birleştir ve ilk 4 taneyi döndür
-        $merged = array_merge($mediaList, $podcasts);
-        return array_slice($merged, 0, 4);
+    /**
+     * Belirtilen kategoriye ait yarışma sorularını döner (category_id zorunludur)
+     */
+    public function getQuestions(int $categoryId = 6, string $type = 'mini-deneme', bool $useCache = true): array
+    {
+        $result = $this->request("getQuestions/{$categoryId}", ['type' => $type], 'GET', $useCache);
+        return is_array($result) ? $result : [];
     }
 
     /**

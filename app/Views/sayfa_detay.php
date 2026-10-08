@@ -345,10 +345,10 @@
               <p class="small text-white-50 mb-3">
                 Kitaplarını oku, online sınava katıl, binlerce liralık ödülleri kazanma şansı yakala.
               </p>
-              <button type="button" class="btn-yellow w-100 justify-content-center fw-bold py-2 border-0" data-bs-toggle="modal" data-bs-target="#registerModal">
+              <a href="<?= base_url('kayit-ol') ?>" class="btn-yellow w-100 justify-content-center fw-bold py-2 border-0 text-decoration-none">
                 <span>Ücretsiz Kayıt Ol</span>
                 <span>→</span>
-              </button>
+              </a>
             </div>
 
             <!-- 4. Destek & İletişim Kutusu (WhatsApp Icon) -->

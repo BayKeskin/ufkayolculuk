@@ -7,6 +7,7 @@
       <div class="row align-items-center justify-content-between pb-3 mb-3 border-bottom gy-2" style="border-color: var(--border-light) !important;">
         <div class="col-md-auto">
           <ul class="list-inline mb-0 footer-legal-links small">
+            <li class="list-inline-item me-3"><a href="<?= base_url('kayit-ol') ?>" class="text-decoration-none text-muted hover-underline">Online Kayıt</a></li>
             <li class="list-inline-item me-3"><a href="<?= base_url('sayfa/sartname') ?>" class="text-decoration-none text-muted hover-underline">Yarışma Şartnamesi</a></li>
             <li class="list-inline-item me-3"><a href="<?= base_url('sayfa/uy-kvkk-aydinlatma-metni') ?>" class="text-decoration-none text-muted hover-underline">KVKK Aydınlatma Metni</a></li>
             <li class="list-inline-item me-3"><a href="<?= base_url('sayfa/uy-mahremiyet-politikasi') ?>" class="text-decoration-none text-muted hover-underline">Mahremiyet Politikası</a></li>

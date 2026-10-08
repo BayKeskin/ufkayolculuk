@@ -31,6 +31,11 @@ class UfkaApi extends BaseConfig
      */
     public int $cacheTTL = 600;
 
+    /**
+     * Bearer Access Token cache duration in seconds (110 mins = 6600s, token valid for 7200s)
+     */
+    public int $tokenTTL = 6600;
+
     public function __construct()
     {
         parent::__construct();

@@ -44,6 +44,7 @@ class Home extends BaseController
         }
 
         $mediaList      = $this->api->getMediaContents();
+        $sliders        = $this->api->getSliders(5);
 
         $data = [
             'title'            => 'Ufka Yolculuk - Bilgi ve Kültür Yarışması',
@@ -54,6 +55,7 @@ class Home extends BaseController
             'categories'       => $categories,
             'bookDataMap'      => $bookDataMap,
             'mediaList'        => $mediaList,
+            'sliders'          => $sliders,
             'api'              => $this->api,
         ];
 

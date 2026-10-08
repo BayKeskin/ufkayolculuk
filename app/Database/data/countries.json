@@ -1,0 +1,1006 @@
+[
+    {
+        "id": 1,
+        "name": "Afghanistan - افغانستان"
+    },
+    {
+        "id": 2,
+        "name": "Aland Islands - Åland"
+    },
+    {
+        "id": 3,
+        "name": "Albania - Shqipëria"
+    },
+    {
+        "id": 4,
+        "name": "Algeria - الجزائر"
+    },
+    {
+        "id": 5,
+        "name": "American Samoa - American Samoa"
+    },
+    {
+        "id": 6,
+        "name": "Andorra - Andorra"
+    },
+    {
+        "id": 7,
+        "name": "Angola - Angola"
+    },
+    {
+        "id": 8,
+        "name": "Anguilla - Anguilla"
+    },
+    {
+        "id": 9,
+        "name": "Antarctica - Antarctica"
+    },
+    {
+        "id": 10,
+        "name": "Antigua And Barbuda - Antigua and Barbuda"
+    },
+    {
+        "id": 11,
+        "name": "Argentina - Argentina"
+    },
+    {
+        "id": 12,
+        "name": "Armenia - Հայաստան"
+    },
+    {
+        "id": 13,
+        "name": "Aruba - Aruba"
+    },
+    {
+        "id": 14,
+        "name": "Australia - Australia"
+    },
+    {
+        "id": 15,
+        "name": "Austria - Österreich"
+    },
+    {
+        "id": 16,
+        "name": "Azerbaijan - Azərbaycan"
+    },
+    {
+        "id": 17,
+        "name": "The Bahamas - Bahamas"
+    },
+    {
+        "id": 18,
+        "name": "Bahrain - ‏البحرين"
+    },
+    {
+        "id": 19,
+        "name": "Bangladesh - Bangladesh"
+    },
+    {
+        "id": 20,
+        "name": "Barbados - Barbados"
+    },
+    {
+        "id": 21,
+        "name": "Belarus - Белару́сь"
+    },
+    {
+        "id": 22,
+        "name": "Belgium - België"
+    },
+    {
+        "id": 23,
+        "name": "Belize - Belize"
+    },
+    {
+        "id": 24,
+        "name": "Benin - Bénin"
+    },
+    {
+        "id": 25,
+        "name": "Bermuda - Bermuda"
+    },
+    {
+        "id": 26,
+        "name": "Bhutan - ʼbrug-yul"
+    },
+    {
+        "id": 27,
+        "name": "Bolivia - Bolivia"
+    },
+    {
+        "id": 28,
+        "name": "Bosnia and Herzegovina - Bosna i Hercegovina"
+    },
+    {
+        "id": 29,
+        "name": "Botswana - Botswana"
+    },
+    {
+        "id": 30,
+        "name": "Bouvet Island - Bouvetøya"
+    },
+    {
+        "id": 31,
+        "name": "Brazil - Brasil"
+    },
+    {
+        "id": 32,
+        "name": "British Indian Ocean Territory - British Indian Ocean Territory"
+    },
+    {
+        "id": 33,
+        "name": "Brunei - Negara Brunei Darussalam"
+    },
+    {
+        "id": 34,
+        "name": "Bulgaria - България"
+    },
+    {
+        "id": 35,
+        "name": "Burkina Faso - Burkina Faso"
+    },
+    {
+        "id": 36,
+        "name": "Burundi - Burundi"
+    },
+    {
+        "id": 37,
+        "name": "Cambodia - Kâmpŭchéa"
+    },
+    {
+        "id": 38,
+        "name": "Cameroon - Cameroon"
+    },
+    {
+        "id": 39,
+        "name": "Canada - Canada"
+    },
+    {
+        "id": 40,
+        "name": "Cape Verde - Cabo Verde"
+    },
+    {
+        "id": 41,
+        "name": "Cayman Islands - Cayman Islands"
+    },
+    {
+        "id": 42,
+        "name": "Central African Republic - Ködörösêse tî Bêafrîka"
+    },
+    {
+        "id": 43,
+        "name": "Chad - Tchad"
+    },
+    {
+        "id": 44,
+        "name": "Chile - Chile"
+    },
+    {
+        "id": 45,
+        "name": "China - 中国"
+    },
+    {
+        "id": 46,
+        "name": "Christmas Island - Christmas Island"
+    },
+    {
+        "id": 47,
+        "name": "Cocos (Keeling) Islands - Cocos (Keeling) Islands"
+    },
+    {
+        "id": 48,
+        "name": "Colombia - Colombia"
+    },
+    {
+        "id": 49,
+        "name": "Comoros - Komori"
+    },
+    {
+        "id": 50,
+        "name": "Congo - République du Congo"
+    },
+    {
+        "id": 51,
+        "name": "Democratic Republic of the Congo - République démocratique du Congo"
+    },
+    {
+        "id": 52,
+        "name": "Cook Islands - Cook Islands"
+    },
+    {
+        "id": 53,
+        "name": "Costa Rica - Costa Rica"
+    },
+    {
+        "id": 54,
+        "name": "Cote D'Ivoire (Ivory Coast) -"
+    },
+    {
+        "id": 55,
+        "name": "Croatia - Hrvatska"
+    },
+    {
+        "id": 56,
+        "name": "Cuba - Cuba"
+    },
+    {
+        "id": 57,
+        "name": "Cyprus - Κύπρος"
+    },
+    {
+        "id": 58,
+        "name": "Czech Republic - Česká republika"
+    },
+    {
+        "id": 59,
+        "name": "Denmark - Danmark"
+    },
+    {
+        "id": 60,
+        "name": "Djibouti - Djibouti"
+    },
+    {
+        "id": 61,
+        "name": "Dominica - Dominica"
+    },
+    {
+        "id": 62,
+        "name": "Dominican Republic - República Dominicana"
+    },
+    {
+        "id": 63,
+        "name": "East Timor - Timor-Leste"
+    },
+    {
+        "id": 64,
+        "name": "Ecuador - Ecuador"
+    },
+    {
+        "id": 65,
+        "name": "Egypt - مصر‎"
+    },
+    {
+        "id": 66,
+        "name": "El Salvador - El Salvador"
+    },
+    {
+        "id": 67,
+        "name": "Equatorial Guinea - Guinea Ecuatorial"
+    },
+    {
+        "id": 68,
+        "name": "Eritrea - ኤርትራ"
+    },
+    {
+        "id": 69,
+        "name": "Estonia - Eesti"
+    },
+    {
+        "id": 70,
+        "name": "Ethiopia - ኢትዮጵያ"
+    },
+    {
+        "id": 71,
+        "name": "Falkland Islands - Falkland Islands"
+    },
+    {
+        "id": 72,
+        "name": "Faroe Islands - Føroyar"
+    },
+    {
+        "id": 73,
+        "name": "Fiji Islands - Fiji"
+    },
+    {
+        "id": 74,
+        "name": "Finland - Suomi"
+    },
+    {
+        "id": 75,
+        "name": "France - France"
+    },
+    {
+        "id": 76,
+        "name": "French Guiana - Guyane française"
+    },
+    {
+        "id": 77,
+        "name": "French Polynesia - Polynésie française"
+    },
+    {
+        "id": 78,
+        "name": "French Southern Territories - Territoire des Terres australes et antarctiques fr"
+    },
+    {
+        "id": 79,
+        "name": "Gabon - Gabon"
+    },
+    {
+        "id": 80,
+        "name": "Gambia The - Gambia"
+    },
+    {
+        "id": 81,
+        "name": "Georgia - საქართველო"
+    },
+    {
+        "id": 82,
+        "name": "Germany - Deutschland"
+    },
+    {
+        "id": 83,
+        "name": "Ghana - Ghana"
+    },
+    {
+        "id": 84,
+        "name": "Gibraltar - Gibraltar"
+    },
+    {
+        "id": 85,
+        "name": "Greece - Ελλάδα"
+    },
+    {
+        "id": 86,
+        "name": "Greenland - Kalaallit Nunaat"
+    },
+    {
+        "id": 87,
+        "name": "Grenada - Grenada"
+    },
+    {
+        "id": 88,
+        "name": "Guadeloupe - Guadeloupe"
+    },
+    {
+        "id": 89,
+        "name": "Guam - Guam"
+    },
+    {
+        "id": 90,
+        "name": "Guatemala - Guatemala"
+    },
+    {
+        "id": 91,
+        "name": "Guernsey and Alderney - Guernsey"
+    },
+    {
+        "id": 92,
+        "name": "Guinea - Guinée"
+    },
+    {
+        "id": 93,
+        "name": "Guinea-Bissau - Guiné-Bissau"
+    },
+    {
+        "id": 94,
+        "name": "Guyana - Guyana"
+    },
+    {
+        "id": 95,
+        "name": "Haiti - Haïti"
+    },
+    {
+        "id": 96,
+        "name": "Heard Island and McDonald Islands - Heard Island and McDonald Islands"
+    },
+    {
+        "id": 97,
+        "name": "Honduras - Honduras"
+    },
+    {
+        "id": 98,
+        "name": "Hong Kong S.A.R. - 香港"
+    },
+    {
+        "id": 99,
+        "name": "Hungary - Magyarország"
+    },
+    {
+        "id": 100,
+        "name": "Iceland - Ísland"
+    },
+    {
+        "id": 101,
+        "name": "India - भारत"
+    },
+    {
+        "id": 102,
+        "name": "Indonesia - Indonesia"
+    },
+    {
+        "id": 103,
+        "name": "Iran - ایران"
+    },
+    {
+        "id": 104,
+        "name": "Iraq - العراق"
+    },
+    {
+        "id": 105,
+        "name": "Ireland - Éire"
+    },
+    {
+        "id": 106,
+        "name": "Israel - יִשְׂרָאֵל"
+    },
+    {
+        "id": 107,
+        "name": "Italy - Italia"
+    },
+    {
+        "id": 108,
+        "name": "Jamaica - Jamaica"
+    },
+    {
+        "id": 109,
+        "name": "Japan - 日本"
+    },
+    {
+        "id": 110,
+        "name": "Jersey - Jersey"
+    },
+    {
+        "id": 111,
+        "name": "Jordan - الأردن"
+    },
+    {
+        "id": 112,
+        "name": "Kazakhstan - Қазақстан"
+    },
+    {
+        "id": 113,
+        "name": "Kenya - Kenya"
+    },
+    {
+        "id": 114,
+        "name": "Kiribati - Kiribati"
+    },
+    {
+        "id": 115,
+        "name": "North Korea - 북한"
+    },
+    {
+        "id": 116,
+        "name": "South Korea - 대한민국"
+    },
+    {
+        "id": 117,
+        "name": "Kuwait - الكويت"
+    },
+    {
+        "id": 118,
+        "name": "Kyrgyzstan - Кыргызстан"
+    },
+    {
+        "id": 119,
+        "name": "Laos - ສປປລາວ"
+    },
+    {
+        "id": 120,
+        "name": "Latvia - Latvija"
+    },
+    {
+        "id": 121,
+        "name": "Lebanon - لبنان"
+    },
+    {
+        "id": 122,
+        "name": "Lesotho - Lesotho"
+    },
+    {
+        "id": 123,
+        "name": "Liberia - Liberia"
+    },
+    {
+        "id": 124,
+        "name": "Libya - ‏ليبيا"
+    },
+    {
+        "id": 125,
+        "name": "Liechtenstein - Liechtenstein"
+    },
+    {
+        "id": 126,
+        "name": "Lithuania - Lietuva"
+    },
+    {
+        "id": 127,
+        "name": "Luxembourg - Luxembourg"
+    },
+    {
+        "id": 128,
+        "name": "Macau S.A.R. - 澳門"
+    },
+    {
+        "id": 129,
+        "name": "Macedonia - Северна Македонија"
+    },
+    {
+        "id": 130,
+        "name": "Madagascar - Madagasikara"
+    },
+    {
+        "id": 131,
+        "name": "Malawi - Malawi"
+    },
+    {
+        "id": 132,
+        "name": "Malaysia - Malaysia"
+    },
+    {
+        "id": 133,
+        "name": "Maldives - Maldives"
+    },
+    {
+        "id": 134,
+        "name": "Mali - Mali"
+    },
+    {
+        "id": 135,
+        "name": "Malta - Malta"
+    },
+    {
+        "id": 136,
+        "name": "Man (Isle of) - Isle of Man"
+    },
+    {
+        "id": 137,
+        "name": "Marshall Islands - M̧ajeļ"
+    },
+    {
+        "id": 138,
+        "name": "Martinique - Martinique"
+    },
+    {
+        "id": 139,
+        "name": "Mauritania - موريتانيا"
+    },
+    {
+        "id": 140,
+        "name": "Mauritius - Maurice"
+    },
+    {
+        "id": 141,
+        "name": "Mayotte - Mayotte"
+    },
+    {
+        "id": 142,
+        "name": "Mexico - México"
+    },
+    {
+        "id": 143,
+        "name": "Micronesia - Micronesia"
+    },
+    {
+        "id": 144,
+        "name": "Moldova - Moldova"
+    },
+    {
+        "id": 145,
+        "name": "Monaco - Monaco"
+    },
+    {
+        "id": 146,
+        "name": "Mongolia - Монгол улс"
+    },
+    {
+        "id": 147,
+        "name": "Montenegro - Црна Гора"
+    },
+    {
+        "id": 148,
+        "name": "Montserrat - Montserrat"
+    },
+    {
+        "id": 149,
+        "name": "Morocco - المغرب"
+    },
+    {
+        "id": 150,
+        "name": "Mozambique - Moçambique"
+    },
+    {
+        "id": 151,
+        "name": "Myanmar - မြန်မာ"
+    },
+    {
+        "id": 152,
+        "name": "Namibia - Namibia"
+    },
+    {
+        "id": 153,
+        "name": "Nauru - Nauru"
+    },
+    {
+        "id": 154,
+        "name": "Nepal - नपल"
+    },
+    {
+        "id": 155,
+        "name": "Bonaire, Sint Eustatius and Saba - Caribisch Nederland"
+    },
+    {
+        "id": 156,
+        "name": "Netherlands - Nederland"
+    },
+    {
+        "id": 157,
+        "name": "New Caledonia - Nouvelle-Calédonie"
+    },
+    {
+        "id": 158,
+        "name": "New Zealand - New Zealand"
+    },
+    {
+        "id": 159,
+        "name": "Nicaragua - Nicaragua"
+    },
+    {
+        "id": 160,
+        "name": "Niger - Niger"
+    },
+    {
+        "id": 161,
+        "name": "Nigeria - Nigeria"
+    },
+    {
+        "id": 162,
+        "name": "Niue - Niuē"
+    },
+    {
+        "id": 163,
+        "name": "Norfolk Island - Norfolk Island"
+    },
+    {
+        "id": 164,
+        "name": "Northern Mariana Islands - Northern Mariana Islands"
+    },
+    {
+        "id": 165,
+        "name": "Norway - Norge"
+    },
+    {
+        "id": 166,
+        "name": "Oman - عمان"
+    },
+    {
+        "id": 167,
+        "name": "Pakistan - Pakistan"
+    },
+    {
+        "id": 168,
+        "name": "Palau - Palau"
+    },
+    {
+        "id": 169,
+        "name": "Palestinian Territory Occupied - فلسطين"
+    },
+    {
+        "id": 170,
+        "name": "Panama - Panamá"
+    },
+    {
+        "id": 171,
+        "name": "Papua new Guinea - Papua Niugini"
+    },
+    {
+        "id": 172,
+        "name": "Paraguay - Paraguay"
+    },
+    {
+        "id": 173,
+        "name": "Peru - Perú"
+    },
+    {
+        "id": 174,
+        "name": "Philippines - Pilipinas"
+    },
+    {
+        "id": 175,
+        "name": "Pitcairn Island - Pitcairn Islands"
+    },
+    {
+        "id": 176,
+        "name": "Poland - Polska"
+    },
+    {
+        "id": 177,
+        "name": "Portugal - Portugal"
+    },
+    {
+        "id": 178,
+        "name": "Puerto Rico - Puerto Rico"
+    },
+    {
+        "id": 179,
+        "name": "Qatar - قطر"
+    },
+    {
+        "id": 180,
+        "name": "Reunion - La Réunion"
+    },
+    {
+        "id": 181,
+        "name": "Romania - România"
+    },
+    {
+        "id": 182,
+        "name": "Russia - Россия"
+    },
+    {
+        "id": 183,
+        "name": "Rwanda - Rwanda"
+    },
+    {
+        "id": 184,
+        "name": "Saint Helena - Saint Helena"
+    },
+    {
+        "id": 185,
+        "name": "Saint Kitts And Nevis - Saint Kitts and Nevis"
+    },
+    {
+        "id": 186,
+        "name": "Saint Lucia - Saint Lucia"
+    },
+    {
+        "id": 187,
+        "name": "Saint Pierre and Miquelon - Saint-Pierre-et-Miquelon"
+    },
+    {
+        "id": 188,
+        "name": "Saint Vincent And The Grenadines - Saint Vincent and the Grenadines"
+    },
+    {
+        "id": 189,
+        "name": "Saint-Barthelemy - Saint-Barthélemy"
+    },
+    {
+        "id": 190,
+        "name": "Saint-Martin (French part) - Saint-Martin"
+    },
+    {
+        "id": 191,
+        "name": "Samoa - Samoa"
+    },
+    {
+        "id": 192,
+        "name": "San Marino - San Marino"
+    },
+    {
+        "id": 193,
+        "name": "Sao Tome and Principe - São Tomé e Príncipe"
+    },
+    {
+        "id": 194,
+        "name": "Saudi Arabia - المملكة العربية السعودية"
+    },
+    {
+        "id": 195,
+        "name": "Senegal - Sénégal"
+    },
+    {
+        "id": 196,
+        "name": "Serbia - Србија"
+    },
+    {
+        "id": 197,
+        "name": "Seychelles - Seychelles"
+    },
+    {
+        "id": 198,
+        "name": "Sierra Leone - Sierra Leone"
+    },
+    {
+        "id": 199,
+        "name": "Singapore - Singapore"
+    },
+    {
+        "id": 200,
+        "name": "Slovakia - Slovensko"
+    },
+    {
+        "id": 201,
+        "name": "Slovenia - Slovenija"
+    },
+    {
+        "id": 202,
+        "name": "Solomon Islands - Solomon Islands"
+    },
+    {
+        "id": 203,
+        "name": "Somalia - Soomaaliya"
+    },
+    {
+        "id": 204,
+        "name": "South Africa - South Africa"
+    },
+    {
+        "id": 205,
+        "name": "South Georgia - South Georgia"
+    },
+    {
+        "id": 206,
+        "name": "South Sudan - South Sudan"
+    },
+    {
+        "id": 207,
+        "name": "Spain - España"
+    },
+    {
+        "id": 208,
+        "name": "Sri Lanka - śrī laṃkāva"
+    },
+    {
+        "id": 209,
+        "name": "Sudan - السودان"
+    },
+    {
+        "id": 210,
+        "name": "Suriname - Suriname"
+    },
+    {
+        "id": 211,
+        "name": "Svalbard And Jan Mayen Islands - Svalbard og Jan Mayen"
+    },
+    {
+        "id": 212,
+        "name": "Swaziland - Swaziland"
+    },
+    {
+        "id": 213,
+        "name": "Sweden - Sverige"
+    },
+    {
+        "id": 214,
+        "name": "Switzerland - Schweiz"
+    },
+    {
+        "id": 215,
+        "name": "Syria - سوريا"
+    },
+    {
+        "id": 216,
+        "name": "Taiwan - 臺灣"
+    },
+    {
+        "id": 217,
+        "name": "Tajikistan - Тоҷикистон"
+    },
+    {
+        "id": 218,
+        "name": "Tanzania - Tanzania"
+    },
+    {
+        "id": 219,
+        "name": "Thailand - ประเทศไทย"
+    },
+    {
+        "id": 220,
+        "name": "Togo - Togo"
+    },
+    {
+        "id": 221,
+        "name": "Tokelau - Tokelau"
+    },
+    {
+        "id": 222,
+        "name": "Tonga - Tonga"
+    },
+    {
+        "id": 223,
+        "name": "Trinidad And Tobago - Trinidad and Tobago"
+    },
+    {
+        "id": 224,
+        "name": "Tunisia - تونس"
+    },
+    {
+        "id": 225,
+        "name": "Turkey - Türkiye"
+    },
+    {
+        "id": 226,
+        "name": "Turkmenistan - Türkmenistan"
+    },
+    {
+        "id": 227,
+        "name": "Turks And Caicos Islands - Turks and Caicos Islands"
+    },
+    {
+        "id": 228,
+        "name": "Tuvalu - Tuvalu"
+    },
+    {
+        "id": 229,
+        "name": "Uganda - Uganda"
+    },
+    {
+        "id": 230,
+        "name": "Ukraine - Україна"
+    },
+    {
+        "id": 231,
+        "name": "United Arab Emirates - دولة الإمارات العربية المتحدة"
+    },
+    {
+        "id": 232,
+        "name": "United Kingdom - United Kingdom"
+    },
+    {
+        "id": 233,
+        "name": "United States - United States"
+    },
+    {
+        "id": 234,
+        "name": "United States Minor Outlying Islands - United States Minor Outlying Islands"
+    },
+    {
+        "id": 235,
+        "name": "Uruguay - Uruguay"
+    },
+    {
+        "id": 236,
+        "name": "Uzbekistan - O‘zbekiston"
+    },
+    {
+        "id": 237,
+        "name": "Vanuatu - Vanuatu"
+    },
+    {
+        "id": 238,
+        "name": "Vatican City State (Holy See) - Vaticano"
+    },
+    {
+        "id": 239,
+        "name": "Venezuela - Venezuela"
+    },
+    {
+        "id": 240,
+        "name": "Vietnam - Việt Nam"
+    },
+    {
+        "id": 241,
+        "name": "Virgin Islands (British) - British Virgin Islands"
+    },
+    {
+        "id": 242,
+        "name": "Virgin Islands (US) - United States Virgin Islands"
+    },
+    {
+        "id": 243,
+        "name": "Wallis And Futuna Islands - Wallis et Futuna"
+    },
+    {
+        "id": 244,
+        "name": "Western Sahara - الصحراء الغربية"
+    },
+    {
+        "id": 245,
+        "name": "Yemen - اليَمَن"
+    },
+    {
+        "id": 246,
+        "name": "Zambia - Zambia"
+    },
+    {
+        "id": 247,
+        "name": "Zimbabwe - Zimbabwe"
+    },
+    {
+        "id": 248,
+        "name": "Kosovo - Republika e Kosovës"
+    },
+    {
+        "id": 249,
+        "name": "Curaçao - Curaçao"
+    },
+    {
+        "id": 250,
+        "name": "Sint Maarten (Dutch part) - Sint Maarten"
+    },
+    {
+        "id": 251,
+        "name": "Kuzey Kıbrıs Türk Cumhuriyeti (KKTC) - Kuzey Kıbrıs"
+    }
+]

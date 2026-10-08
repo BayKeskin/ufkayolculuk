@@ -1,0 +1,1257 @@
+[
+    {
+        "code": "93",
+        "data_id": "1",
+        "name": "Afghanistan - افغانستان (93)"
+    },
+    {
+        "code": "358-18",
+        "data_id": "2",
+        "name": "Aland Islands - Åland (358-18)"
+    },
+    {
+        "code": "355",
+        "data_id": "3",
+        "name": "Albania - Shqipëria (355)"
+    },
+    {
+        "code": "213",
+        "data_id": "4",
+        "name": "Algeria - الجزائر (213)"
+    },
+    {
+        "code": "1-684",
+        "data_id": "5",
+        "name": "American Samoa - American Samoa (1-684)"
+    },
+    {
+        "code": "376",
+        "data_id": "6",
+        "name": "Andorra - Andorra (376)"
+    },
+    {
+        "code": "244",
+        "data_id": "7",
+        "name": "Angola - Angola (244)"
+    },
+    {
+        "code": "1-264",
+        "data_id": "8",
+        "name": "Anguilla - Anguilla (1-264)"
+    },
+    {
+        "code": "672",
+        "data_id": "9",
+        "name": "Antarctica - Antarctica (672)"
+    },
+    {
+        "code": "1-268",
+        "data_id": "10",
+        "name": "Antigua And Barbuda - Antigua and Barbuda (1-268)"
+    },
+    {
+        "code": "54",
+        "data_id": "11",
+        "name": "Argentina - Argentina (54)"
+    },
+    {
+        "code": "374",
+        "data_id": "12",
+        "name": "Armenia - Հայաստան (374)"
+    },
+    {
+        "code": "297",
+        "data_id": "13",
+        "name": "Aruba - Aruba (297)"
+    },
+    {
+        "code": "61",
+        "data_id": "14",
+        "name": "Australia - Australia (61)"
+    },
+    {
+        "code": "43",
+        "data_id": "15",
+        "name": "Austria - Österreich (43)"
+    },
+    {
+        "code": "994",
+        "data_id": "16",
+        "name": "Azerbaijan - Azərbaycan (994)"
+    },
+    {
+        "code": "1-242",
+        "data_id": "17",
+        "name": "The Bahamas - Bahamas (1-242)"
+    },
+    {
+        "code": "973",
+        "data_id": "18",
+        "name": "Bahrain - ‏البحرين (973)"
+    },
+    {
+        "code": "880",
+        "data_id": "19",
+        "name": "Bangladesh - Bangladesh (880)"
+    },
+    {
+        "code": "1-246",
+        "data_id": "20",
+        "name": "Barbados - Barbados (1-246)"
+    },
+    {
+        "code": "375",
+        "data_id": "21",
+        "name": "Belarus - Белару́сь (375)"
+    },
+    {
+        "code": "32",
+        "data_id": "22",
+        "name": "Belgium - België (32)"
+    },
+    {
+        "code": "501",
+        "data_id": "23",
+        "name": "Belize - Belize (501)"
+    },
+    {
+        "code": "229",
+        "data_id": "24",
+        "name": "Benin - Bénin (229)"
+    },
+    {
+        "code": "1-441",
+        "data_id": "25",
+        "name": "Bermuda - Bermuda (1-441)"
+    },
+    {
+        "code": "975",
+        "data_id": "26",
+        "name": "Bhutan - ʼbrug-yul (975)"
+    },
+    {
+        "code": "591",
+        "data_id": "27",
+        "name": "Bolivia - Bolivia (591)"
+    },
+    {
+        "code": "387",
+        "data_id": "28",
+        "name": "Bosnia and Herzegovina - Bosna i Hercegovina (387)"
+    },
+    {
+        "code": "267",
+        "data_id": "29",
+        "name": "Botswana - Botswana (267)"
+    },
+    {
+        "code": "0055",
+        "data_id": "30",
+        "name": "Bouvet Island - Bouvetøya (0055)"
+    },
+    {
+        "code": "55",
+        "data_id": "31",
+        "name": "Brazil - Brasil (55)"
+    },
+    {
+        "code": "246",
+        "data_id": "32",
+        "name": "British Indian Ocean Territory - British Indian Ocean Territory (246)"
+    },
+    {
+        "code": "673",
+        "data_id": "33",
+        "name": "Brunei - Negara Brunei Darussalam (673)"
+    },
+    {
+        "code": "359",
+        "data_id": "34",
+        "name": "Bulgaria - България (359)"
+    },
+    {
+        "code": "226",
+        "data_id": "35",
+        "name": "Burkina Faso - Burkina Faso (226)"
+    },
+    {
+        "code": "257",
+        "data_id": "36",
+        "name": "Burundi - Burundi (257)"
+    },
+    {
+        "code": "855",
+        "data_id": "37",
+        "name": "Cambodia - Kâmpŭchéa (855)"
+    },
+    {
+        "code": "237",
+        "data_id": "38",
+        "name": "Cameroon - Cameroon (237)"
+    },
+    {
+        "code": "1",
+        "data_id": "39",
+        "name": "Canada - Canada (1)"
+    },
+    {
+        "code": "238",
+        "data_id": "40",
+        "name": "Cape Verde - Cabo Verde (238)"
+    },
+    {
+        "code": "1-345",
+        "data_id": "41",
+        "name": "Cayman Islands - Cayman Islands (1-345)"
+    },
+    {
+        "code": "236",
+        "data_id": "42",
+        "name": "Central African Republic - Ködörösêse tî Bêafrîka (236)"
+    },
+    {
+        "code": "235",
+        "data_id": "43",
+        "name": "Chad - Tchad (235)"
+    },
+    {
+        "code": "56",
+        "data_id": "44",
+        "name": "Chile - Chile (56)"
+    },
+    {
+        "code": "86",
+        "data_id": "45",
+        "name": "China - 中国 (86)"
+    },
+    {
+        "code": "61",
+        "data_id": "46",
+        "name": "Christmas Island - Christmas Island (61)"
+    },
+    {
+        "code": "61",
+        "data_id": "47",
+        "name": "Cocos (Keeling) Islands - Cocos (Keeling) Islands (61)"
+    },
+    {
+        "code": "57",
+        "data_id": "48",
+        "name": "Colombia - Colombia (57)"
+    },
+    {
+        "code": "269",
+        "data_id": "49",
+        "name": "Comoros - Komori (269)"
+    },
+    {
+        "code": "242",
+        "data_id": "50",
+        "name": "Congo - République du Congo (242)"
+    },
+    {
+        "code": "243",
+        "data_id": "51",
+        "name": "Democratic Republic of the Congo - République démocratique du Congo (243)"
+    },
+    {
+        "code": "682",
+        "data_id": "52",
+        "name": "Cook Islands - Cook Islands (682)"
+    },
+    {
+        "code": "506",
+        "data_id": "53",
+        "name": "Costa Rica - Costa Rica (506)"
+    },
+    {
+        "code": "225",
+        "data_id": "54",
+        "name": "Cote D'Ivoire (Ivory Coast) -  (225)"
+    },
+    {
+        "code": "385",
+        "data_id": "55",
+        "name": "Croatia - Hrvatska (385)"
+    },
+    {
+        "code": "53",
+        "data_id": "56",
+        "name": "Cuba - Cuba (53)"
+    },
+    {
+        "code": "357",
+        "data_id": "57",
+        "name": "Cyprus - Κύπρος (357)"
+    },
+    {
+        "code": "420",
+        "data_id": "58",
+        "name": "Czech Republic - Česká republika (420)"
+    },
+    {
+        "code": "45",
+        "data_id": "59",
+        "name": "Denmark - Danmark (45)"
+    },
+    {
+        "code": "253",
+        "data_id": "60",
+        "name": "Djibouti - Djibouti (253)"
+    },
+    {
+        "code": "1-767",
+        "data_id": "61",
+        "name": "Dominica - Dominica (1-767)"
+    },
+    {
+        "code": "1-809",
+        "data_id": "62",
+        "name": "Dominican Republic - República Dominicana (1-809)"
+    },
+    {
+        "code": "670",
+        "data_id": "63",
+        "name": "East Timor - Timor-Leste (670)"
+    },
+    {
+        "code": "593",
+        "data_id": "64",
+        "name": "Ecuador - Ecuador (593)"
+    },
+    {
+        "code": "20",
+        "data_id": "65",
+        "name": "Egypt - مصر‎ (20)"
+    },
+    {
+        "code": "503",
+        "data_id": "66",
+        "name": "El Salvador - El Salvador (503)"
+    },
+    {
+        "code": "240",
+        "data_id": "67",
+        "name": "Equatorial Guinea - Guinea Ecuatorial (240)"
+    },
+    {
+        "code": "291",
+        "data_id": "68",
+        "name": "Eritrea - ኤርትራ (291)"
+    },
+    {
+        "code": "372",
+        "data_id": "69",
+        "name": "Estonia - Eesti (372)"
+    },
+    {
+        "code": "251",
+        "data_id": "70",
+        "name": "Ethiopia - ኢትዮጵያ (251)"
+    },
+    {
+        "code": "500",
+        "data_id": "71",
+        "name": "Falkland Islands - Falkland Islands (500)"
+    },
+    {
+        "code": "298",
+        "data_id": "72",
+        "name": "Faroe Islands - Føroyar (298)"
+    },
+    {
+        "code": "679",
+        "data_id": "73",
+        "name": "Fiji Islands - Fiji (679)"
+    },
+    {
+        "code": "358",
+        "data_id": "74",
+        "name": "Finland - Suomi (358)"
+    },
+    {
+        "code": "33",
+        "data_id": "75",
+        "name": "France - France (33)"
+    },
+    {
+        "code": "594",
+        "data_id": "76",
+        "name": "French Guiana - Guyane française (594)"
+    },
+    {
+        "code": "689",
+        "data_id": "77",
+        "name": "French Polynesia - Polynésie française (689)"
+    },
+    {
+        "code": "262",
+        "data_id": "78",
+        "name": "French Southern Territories - Territoire des Terres australes et antarctiques fr (262)"
+    },
+    {
+        "code": "241",
+        "data_id": "79",
+        "name": "Gabon - Gabon (241)"
+    },
+    {
+        "code": "220",
+        "data_id": "80",
+        "name": "Gambia The - Gambia (220)"
+    },
+    {
+        "code": "995",
+        "data_id": "81",
+        "name": "Georgia - საქართველო (995)"
+    },
+    {
+        "code": "49",
+        "data_id": "82",
+        "name": "Germany - Deutschland (49)"
+    },
+    {
+        "code": "233",
+        "data_id": "83",
+        "name": "Ghana - Ghana (233)"
+    },
+    {
+        "code": "350",
+        "data_id": "84",
+        "name": "Gibraltar - Gibraltar (350)"
+    },
+    {
+        "code": "30",
+        "data_id": "85",
+        "name": "Greece - Ελλάδα (30)"
+    },
+    {
+        "code": "299",
+        "data_id": "86",
+        "name": "Greenland - Kalaallit Nunaat (299)"
+    },
+    {
+        "code": "1-473",
+        "data_id": "87",
+        "name": "Grenada - Grenada (1-473)"
+    },
+    {
+        "code": "590",
+        "data_id": "88",
+        "name": "Guadeloupe - Guadeloupe (590)"
+    },
+    {
+        "code": "1-671",
+        "data_id": "89",
+        "name": "Guam - Guam (1-671)"
+    },
+    {
+        "code": "502",
+        "data_id": "90",
+        "name": "Guatemala - Guatemala (502)"
+    },
+    {
+        "code": "44-1481",
+        "data_id": "91",
+        "name": "Guernsey and Alderney - Guernsey (44-1481)"
+    },
+    {
+        "code": "224",
+        "data_id": "92",
+        "name": "Guinea - Guinée (224)"
+    },
+    {
+        "code": "245",
+        "data_id": "93",
+        "name": "Guinea-Bissau - Guiné-Bissau (245)"
+    },
+    {
+        "code": "592",
+        "data_id": "94",
+        "name": "Guyana - Guyana (592)"
+    },
+    {
+        "code": "509",
+        "data_id": "95",
+        "name": "Haiti - Haïti (509)"
+    },
+    {
+        "code": "672",
+        "data_id": "96",
+        "name": "Heard Island and McDonald Islands - Heard Island and McDonald Islands (672)"
+    },
+    {
+        "code": "504",
+        "data_id": "97",
+        "name": "Honduras - Honduras (504)"
+    },
+    {
+        "code": "852",
+        "data_id": "98",
+        "name": "Hong Kong S.A.R. - 香港 (852)"
+    },
+    {
+        "code": "36",
+        "data_id": "99",
+        "name": "Hungary - Magyarország (36)"
+    },
+    {
+        "code": "354",
+        "data_id": "100",
+        "name": "Iceland - Ísland (354)"
+    },
+    {
+        "code": "91",
+        "data_id": "101",
+        "name": "India - भारत (91)"
+    },
+    {
+        "code": "62",
+        "data_id": "102",
+        "name": "Indonesia - Indonesia (62)"
+    },
+    {
+        "code": "98",
+        "data_id": "103",
+        "name": "Iran - ایران (98)"
+    },
+    {
+        "code": "964",
+        "data_id": "104",
+        "name": "Iraq - العراق (964)"
+    },
+    {
+        "code": "353",
+        "data_id": "105",
+        "name": "Ireland - Éire (353)"
+    },
+    {
+        "code": "972",
+        "data_id": "106",
+        "name": "Israel - יִשְׂרָאֵל (972)"
+    },
+    {
+        "code": "39",
+        "data_id": "107",
+        "name": "Italy - Italia (39)"
+    },
+    {
+        "code": "1-876",
+        "data_id": "108",
+        "name": "Jamaica - Jamaica (1-876)"
+    },
+    {
+        "code": "81",
+        "data_id": "109",
+        "name": "Japan - 日本 (81)"
+    },
+    {
+        "code": "44-1534",
+        "data_id": "110",
+        "name": "Jersey - Jersey (44-1534)"
+    },
+    {
+        "code": "962",
+        "data_id": "111",
+        "name": "Jordan - الأردن (962)"
+    },
+    {
+        "code": "7",
+        "data_id": "112",
+        "name": "Kazakhstan - Қазақстан (7)"
+    },
+    {
+        "code": "254",
+        "data_id": "113",
+        "name": "Kenya - Kenya (254)"
+    },
+    {
+        "code": "686",
+        "data_id": "114",
+        "name": "Kiribati - Kiribati (686)"
+    },
+    {
+        "code": "850",
+        "data_id": "115",
+        "name": "North Korea - 북한 (850)"
+    },
+    {
+        "code": "82",
+        "data_id": "116",
+        "name": "South Korea - 대한민국 (82)"
+    },
+    {
+        "code": "965",
+        "data_id": "117",
+        "name": "Kuwait - الكويت (965)"
+    },
+    {
+        "code": "996",
+        "data_id": "118",
+        "name": "Kyrgyzstan - Кыргызстан (996)"
+    },
+    {
+        "code": "856",
+        "data_id": "119",
+        "name": "Laos - ສປປລາວ (856)"
+    },
+    {
+        "code": "371",
+        "data_id": "120",
+        "name": "Latvia - Latvija (371)"
+    },
+    {
+        "code": "961",
+        "data_id": "121",
+        "name": "Lebanon - لبنان (961)"
+    },
+    {
+        "code": "266",
+        "data_id": "122",
+        "name": "Lesotho - Lesotho (266)"
+    },
+    {
+        "code": "231",
+        "data_id": "123",
+        "name": "Liberia - Liberia (231)"
+    },
+    {
+        "code": "218",
+        "data_id": "124",
+        "name": "Libya - ‏ليبيا (218)"
+    },
+    {
+        "code": "423",
+        "data_id": "125",
+        "name": "Liechtenstein - Liechtenstein (423)"
+    },
+    {
+        "code": "370",
+        "data_id": "126",
+        "name": "Lithuania - Lietuva (370)"
+    },
+    {
+        "code": "352",
+        "data_id": "127",
+        "name": "Luxembourg - Luxembourg (352)"
+    },
+    {
+        "code": "853",
+        "data_id": "128",
+        "name": "Macau S.A.R. - 澳門 (853)"
+    },
+    {
+        "code": "389",
+        "data_id": "129",
+        "name": "Macedonia - Северна Македонија (389)"
+    },
+    {
+        "code": "261",
+        "data_id": "130",
+        "name": "Madagascar - Madagasikara (261)"
+    },
+    {
+        "code": "265",
+        "data_id": "131",
+        "name": "Malawi - Malawi (265)"
+    },
+    {
+        "code": "60",
+        "data_id": "132",
+        "name": "Malaysia - Malaysia (60)"
+    },
+    {
+        "code": "960",
+        "data_id": "133",
+        "name": "Maldives - Maldives (960)"
+    },
+    {
+        "code": "223",
+        "data_id": "134",
+        "name": "Mali - Mali (223)"
+    },
+    {
+        "code": "356",
+        "data_id": "135",
+        "name": "Malta - Malta (356)"
+    },
+    {
+        "code": "44-1624",
+        "data_id": "136",
+        "name": "Man (Isle of) - Isle of Man (44-1624)"
+    },
+    {
+        "code": "692",
+        "data_id": "137",
+        "name": "Marshall Islands - M̧ajeļ (692)"
+    },
+    {
+        "code": "596",
+        "data_id": "138",
+        "name": "Martinique - Martinique (596)"
+    },
+    {
+        "code": "222",
+        "data_id": "139",
+        "name": "Mauritania - موريتانيا (222)"
+    },
+    {
+        "code": "230",
+        "data_id": "140",
+        "name": "Mauritius - Maurice (230)"
+    },
+    {
+        "code": "262",
+        "data_id": "141",
+        "name": "Mayotte - Mayotte (262)"
+    },
+    {
+        "code": "52",
+        "data_id": "142",
+        "name": "Mexico - México (52)"
+    },
+    {
+        "code": "691",
+        "data_id": "143",
+        "name": "Micronesia - Micronesia (691)"
+    },
+    {
+        "code": "373",
+        "data_id": "144",
+        "name": "Moldova - Moldova (373)"
+    },
+    {
+        "code": "377",
+        "data_id": "145",
+        "name": "Monaco - Monaco (377)"
+    },
+    {
+        "code": "976",
+        "data_id": "146",
+        "name": "Mongolia - Монгол улс (976)"
+    },
+    {
+        "code": "382",
+        "data_id": "147",
+        "name": "Montenegro - Црна Гора (382)"
+    },
+    {
+        "code": "1-664",
+        "data_id": "148",
+        "name": "Montserrat - Montserrat (1-664)"
+    },
+    {
+        "code": "212",
+        "data_id": "149",
+        "name": "Morocco - المغرب (212)"
+    },
+    {
+        "code": "258",
+        "data_id": "150",
+        "name": "Mozambique - Moçambique (258)"
+    },
+    {
+        "code": "95",
+        "data_id": "151",
+        "name": "Myanmar - မြန်မာ (95)"
+    },
+    {
+        "code": "264",
+        "data_id": "152",
+        "name": "Namibia - Namibia (264)"
+    },
+    {
+        "code": "674",
+        "data_id": "153",
+        "name": "Nauru - Nauru (674)"
+    },
+    {
+        "code": "977",
+        "data_id": "154",
+        "name": "Nepal - नपल (977)"
+    },
+    {
+        "code": "599",
+        "data_id": "155",
+        "name": "Bonaire, Sint Eustatius and Saba - Caribisch Nederland (599)"
+    },
+    {
+        "code": "31",
+        "data_id": "156",
+        "name": "Netherlands - Nederland (31)"
+    },
+    {
+        "code": "687",
+        "data_id": "157",
+        "name": "New Caledonia - Nouvelle-Calédonie (687)"
+    },
+    {
+        "code": "64",
+        "data_id": "158",
+        "name": "New Zealand - New Zealand (64)"
+    },
+    {
+        "code": "505",
+        "data_id": "159",
+        "name": "Nicaragua - Nicaragua (505)"
+    },
+    {
+        "code": "227",
+        "data_id": "160",
+        "name": "Niger - Niger (227)"
+    },
+    {
+        "code": "234",
+        "data_id": "161",
+        "name": "Nigeria - Nigeria (234)"
+    },
+    {
+        "code": "683",
+        "data_id": "162",
+        "name": "Niue - Niuē (683)"
+    },
+    {
+        "code": "672",
+        "data_id": "163",
+        "name": "Norfolk Island - Norfolk Island (672)"
+    },
+    {
+        "code": "1-670",
+        "data_id": "164",
+        "name": "Northern Mariana Islands - Northern Mariana Islands (1-670)"
+    },
+    {
+        "code": "47",
+        "data_id": "165",
+        "name": "Norway - Norge (47)"
+    },
+    {
+        "code": "968",
+        "data_id": "166",
+        "name": "Oman - عمان (968)"
+    },
+    {
+        "code": "92",
+        "data_id": "167",
+        "name": "Pakistan - Pakistan (92)"
+    },
+    {
+        "code": "680",
+        "data_id": "168",
+        "name": "Palau - Palau (680)"
+    },
+    {
+        "code": "970",
+        "data_id": "169",
+        "name": "Palestinian Territory Occupied - فلسطين (970)"
+    },
+    {
+        "code": "507",
+        "data_id": "170",
+        "name": "Panama - Panamá (507)"
+    },
+    {
+        "code": "675",
+        "data_id": "171",
+        "name": "Papua new Guinea - Papua Niugini (675)"
+    },
+    {
+        "code": "595",
+        "data_id": "172",
+        "name": "Paraguay - Paraguay (595)"
+    },
+    {
+        "code": "51",
+        "data_id": "173",
+        "name": "Peru - Perú (51)"
+    },
+    {
+        "code": "63",
+        "data_id": "174",
+        "name": "Philippines - Pilipinas (63)"
+    },
+    {
+        "code": "870",
+        "data_id": "175",
+        "name": "Pitcairn Island - Pitcairn Islands (870)"
+    },
+    {
+        "code": "48",
+        "data_id": "176",
+        "name": "Poland - Polska (48)"
+    },
+    {
+        "code": "351",
+        "data_id": "177",
+        "name": "Portugal - Portugal (351)"
+    },
+    {
+        "code": "1-787",
+        "data_id": "178",
+        "name": "Puerto Rico - Puerto Rico (1-787)"
+    },
+    {
+        "code": "974",
+        "data_id": "179",
+        "name": "Qatar - قطر (974)"
+    },
+    {
+        "code": "262",
+        "data_id": "180",
+        "name": "Reunion - La Réunion (262)"
+    },
+    {
+        "code": "40",
+        "data_id": "181",
+        "name": "Romania - România (40)"
+    },
+    {
+        "code": "7",
+        "data_id": "182",
+        "name": "Russia - Россия (7)"
+    },
+    {
+        "code": "250",
+        "data_id": "183",
+        "name": "Rwanda - Rwanda (250)"
+    },
+    {
+        "code": "290",
+        "data_id": "184",
+        "name": "Saint Helena - Saint Helena (290)"
+    },
+    {
+        "code": "1-869",
+        "data_id": "185",
+        "name": "Saint Kitts And Nevis - Saint Kitts and Nevis (1-869)"
+    },
+    {
+        "code": "1-758",
+        "data_id": "186",
+        "name": "Saint Lucia - Saint Lucia (1-758)"
+    },
+    {
+        "code": "508",
+        "data_id": "187",
+        "name": "Saint Pierre and Miquelon - Saint-Pierre-et-Miquelon (508)"
+    },
+    {
+        "code": "1-784",
+        "data_id": "188",
+        "name": "Saint Vincent And The Grenadines - Saint Vincent and the Grenadines (1-784)"
+    },
+    {
+        "code": "590",
+        "data_id": "189",
+        "name": "Saint-Barthelemy - Saint-Barthélemy (590)"
+    },
+    {
+        "code": "590",
+        "data_id": "190",
+        "name": "Saint-Martin (French part) - Saint-Martin (590)"
+    },
+    {
+        "code": "685",
+        "data_id": "191",
+        "name": "Samoa - Samoa (685)"
+    },
+    {
+        "code": "378",
+        "data_id": "192",
+        "name": "San Marino - San Marino (378)"
+    },
+    {
+        "code": "239",
+        "data_id": "193",
+        "name": "Sao Tome and Principe - São Tomé e Príncipe (239)"
+    },
+    {
+        "code": "966",
+        "data_id": "194",
+        "name": "Saudi Arabia - المملكة العربية السعودية (966)"
+    },
+    {
+        "code": "221",
+        "data_id": "195",
+        "name": "Senegal - Sénégal (221)"
+    },
+    {
+        "code": "381",
+        "data_id": "196",
+        "name": "Serbia - Србија (381)"
+    },
+    {
+        "code": "248",
+        "data_id": "197",
+        "name": "Seychelles - Seychelles (248)"
+    },
+    {
+        "code": "232",
+        "data_id": "198",
+        "name": "Sierra Leone - Sierra Leone (232)"
+    },
+    {
+        "code": "65",
+        "data_id": "199",
+        "name": "Singapore - Singapore (65)"
+    },
+    {
+        "code": "421",
+        "data_id": "200",
+        "name": "Slovakia - Slovensko (421)"
+    },
+    {
+        "code": "386",
+        "data_id": "201",
+        "name": "Slovenia - Slovenija (386)"
+    },
+    {
+        "code": "677",
+        "data_id": "202",
+        "name": "Solomon Islands - Solomon Islands (677)"
+    },
+    {
+        "code": "252",
+        "data_id": "203",
+        "name": "Somalia - Soomaaliya (252)"
+    },
+    {
+        "code": "27",
+        "data_id": "204",
+        "name": "South Africa - South Africa (27)"
+    },
+    {
+        "code": "500",
+        "data_id": "205",
+        "name": "South Georgia - South Georgia (500)"
+    },
+    {
+        "code": "211",
+        "data_id": "206",
+        "name": "South Sudan - South Sudan (211)"
+    },
+    {
+        "code": "34",
+        "data_id": "207",
+        "name": "Spain - España (34)"
+    },
+    {
+        "code": "94",
+        "data_id": "208",
+        "name": "Sri Lanka - śrī laṃkāva (94)"
+    },
+    {
+        "code": "249",
+        "data_id": "209",
+        "name": "Sudan - السودان (249)"
+    },
+    {
+        "code": "597",
+        "data_id": "210",
+        "name": "Suriname - Suriname (597)"
+    },
+    {
+        "code": "47",
+        "data_id": "211",
+        "name": "Svalbard And Jan Mayen Islands - Svalbard og Jan Mayen (47)"
+    },
+    {
+        "code": "268",
+        "data_id": "212",
+        "name": "Swaziland - Swaziland (268)"
+    },
+    {
+        "code": "46",
+        "data_id": "213",
+        "name": "Sweden - Sverige (46)"
+    },
+    {
+        "code": "41",
+        "data_id": "214",
+        "name": "Switzerland - Schweiz (41)"
+    },
+    {
+        "code": "963",
+        "data_id": "215",
+        "name": "Syria - سوريا (963)"
+    },
+    {
+        "code": "886",
+        "data_id": "216",
+        "name": "Taiwan - 臺灣 (886)"
+    },
+    {
+        "code": "992",
+        "data_id": "217",
+        "name": "Tajikistan - Тоҷикистон (992)"
+    },
+    {
+        "code": "255",
+        "data_id": "218",
+        "name": "Tanzania - Tanzania (255)"
+    },
+    {
+        "code": "66",
+        "data_id": "219",
+        "name": "Thailand - ประเทศไทย (66)"
+    },
+    {
+        "code": "228",
+        "data_id": "220",
+        "name": "Togo - Togo (228)"
+    },
+    {
+        "code": "690",
+        "data_id": "221",
+        "name": "Tokelau - Tokelau (690)"
+    },
+    {
+        "code": "676",
+        "data_id": "222",
+        "name": "Tonga - Tonga (676)"
+    },
+    {
+        "code": "1-868",
+        "data_id": "223",
+        "name": "Trinidad And Tobago - Trinidad and Tobago (1-868)"
+    },
+    {
+        "code": "216",
+        "data_id": "224",
+        "name": "Tunisia - تونس (216)"
+    },
+    {
+        "code": "90",
+        "data_id": "225",
+        "name": "Turkey - Türkiye (90)"
+    },
+    {
+        "code": "993",
+        "data_id": "226",
+        "name": "Turkmenistan - Türkmenistan (993)"
+    },
+    {
+        "code": "1-649",
+        "data_id": "227",
+        "name": "Turks And Caicos Islands - Turks and Caicos Islands (1-649)"
+    },
+    {
+        "code": "688",
+        "data_id": "228",
+        "name": "Tuvalu - Tuvalu (688)"
+    },
+    {
+        "code": "256",
+        "data_id": "229",
+        "name": "Uganda - Uganda (256)"
+    },
+    {
+        "code": "380",
+        "data_id": "230",
+        "name": "Ukraine - Україна (380)"
+    },
+    {
+        "code": "971",
+        "data_id": "231",
+        "name": "United Arab Emirates - دولة الإمارات العربية المتحدة (971)"
+    },
+    {
+        "code": "44",
+        "data_id": "232",
+        "name": "United Kingdom - United Kingdom (44)"
+    },
+    {
+        "code": "1",
+        "data_id": "233",
+        "name": "United States - United States (1)"
+    },
+    {
+        "code": "1",
+        "data_id": "234",
+        "name": "United States Minor Outlying Islands - United States Minor Outlying Islands (1)"
+    },
+    {
+        "code": "598",
+        "data_id": "235",
+        "name": "Uruguay - Uruguay (598)"
+    },
+    {
+        "code": "998",
+        "data_id": "236",
+        "name": "Uzbekistan - O‘zbekiston (998)"
+    },
+    {
+        "code": "678",
+        "data_id": "237",
+        "name": "Vanuatu - Vanuatu (678)"
+    },
+    {
+        "code": "379",
+        "data_id": "238",
+        "name": "Vatican City State (Holy See) - Vaticano (379)"
+    },
+    {
+        "code": "58",
+        "data_id": "239",
+        "name": "Venezuela - Venezuela (58)"
+    },
+    {
+        "code": "84",
+        "data_id": "240",
+        "name": "Vietnam - Việt Nam (84)"
+    },
+    {
+        "code": "1-284",
+        "data_id": "241",
+        "name": "Virgin Islands (British) - British Virgin Islands (1-284)"
+    },
+    {
+        "code": "1-340",
+        "data_id": "242",
+        "name": "Virgin Islands (US) - United States Virgin Islands (1-340)"
+    },
+    {
+        "code": "681",
+        "data_id": "243",
+        "name": "Wallis And Futuna Islands - Wallis et Futuna (681)"
+    },
+    {
+        "code": "212",
+        "data_id": "244",
+        "name": "Western Sahara - الصحراء الغربية (212)"
+    },
+    {
+        "code": "967",
+        "data_id": "245",
+        "name": "Yemen - اليَمَن (967)"
+    },
+    {
+        "code": "260",
+        "data_id": "246",
+        "name": "Zambia - Zambia (260)"
+    },
+    {
+        "code": "263",
+        "data_id": "247",
+        "name": "Zimbabwe - Zimbabwe (263)"
+    },
+    {
+        "code": "383",
+        "data_id": "248",
+        "name": "Kosovo - Republika e Kosovës (383)"
+    },
+    {
+        "code": "599",
+        "data_id": "249",
+        "name": "Curaçao - Curaçao (599)"
+    },
+    {
+        "code": "1721",
+        "data_id": "250",
+        "name": "Sint Maarten (Dutch part) - Sint Maarten (1721)"
+    },
+    {
+        "code": "90",
+        "data_id": "251",
+        "name": "Kuzey Kıbrıs Türk Cumhuriyeti (KKTC) - Kuzey Kıbrıs (90)"
+    }
+]

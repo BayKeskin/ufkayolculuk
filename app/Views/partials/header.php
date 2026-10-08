@@ -118,10 +118,10 @@
                 </ul>
               </div>
             <?php else: ?>
-              <!-- Kayıt Ol Butonu (Modal Açıcı) -->
-              <button type="button" class="btn-yellow" data-bs-toggle="modal" data-bs-target="#registerModal">
+              <!-- Kayıt Ol Butonu -->
+              <a href="<?= base_url('kayit-ol') ?>" class="btn-yellow text-decoration-none">
                 Kayıt Ol
-              </button>
+              </a>
 
               <!-- Giriş Yap Butonu (Modal Açıcı) -->
               <button type="button" class="btn-outline-minimal" data-bs-toggle="modal" data-bs-target="#loginModal"

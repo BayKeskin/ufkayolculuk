@@ -24,7 +24,57 @@
       <!-- Carousel Slaytları Kapsayıcısı -->
       <div class="hero-slides-wrapper" id="heroSlidesWrapper">
 
-        <!-- Slayt 1 (Aktif Banner - 12. Yarışma) -->
+        <?php if (!empty($sliders)): ?>
+          <?php foreach ($sliders as $sIdx => $sl): ?>
+            <!-- API Slayt <?= ($sIdx + 1) ?> -->
+            <div class="hero-slide <?= $sIdx === 0 ? 'active' : '' ?>" data-slide-index="<?= $sIdx ?>">
+              <div class="hero-banner-card">
+                <picture>
+                  <?php if (!empty($sl['mobile_image'])): ?>
+                    <source media="(max-width: 768px)" srcset="<?= esc($api->getMediaUrl($sl['mobile_image'])) ?>">
+                  <?php endif; ?>
+                  <img src="<?= esc($api->getMediaUrl($sl['image'] ?? 'assets/images/banner-1.webp')) ?>" alt="<?= esc($sl['title'] ?? 'Ufka Yolculuk') ?>"
+                    class="hero-banner-img" width="1200" height="460">
+                </picture>
+                <div class="hero-banner-overlay">
+                  <div class="hero-content-wrap">
+                    <?php if (!empty($sl['badge_text'])): ?>
+                      <div class="hero-badge-pill">
+                        <span class="badge-dot"></span>
+                        <span><?= esc($sl['badge_text']) ?></span>
+                      </div>
+                    <?php endif; ?>
+                    <h1 class="hero-main-title">
+                      <?= esc($sl['title'] ?? '') ?>
+                      <?php if (!empty($sl['title_highlight'])): ?>
+                        <br><span class="text-highlight-gold"><?= esc($sl['title_highlight']) ?></span>
+                      <?php endif; ?>
+                    </h1>
+                    <?php if (!empty($sl['description'])): ?>
+                      <p class="hero-subtext">
+                        <?= esc($sl['description']) ?>
+                      </p>
+                    <?php endif; ?>
+                    <div class="hero-action-buttons">
+                      <?php if (!empty($sl['button_1_text'])): ?>
+                        <a href="<?= esc($sl['button_1_url'] ?? '#') ?>" class="btn-hero-primary border-0">
+                          <span><?= esc($sl['button_1_text']) ?></span>
+                        </a>
+                      <?php endif; ?>
+                      <?php if (!empty($sl['button_2_text'])): ?>
+                        <a href="<?= esc($sl['button_2_url'] ?? '#') ?>" class="btn-hero-glass">
+                          <span><?= esc($sl['button_2_text']) ?></span>
+                        </a>
+                      <?php endif; ?>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          <?php endforeach; ?>
+        <?php else: ?>
+
+        <!-- Slayt 1 (Aktif Banner - 12. Yarışma - Fallback) -->
         <div class="hero-slide active" data-slide-index="0">
           <div class="hero-banner-card">
             <img src="<?= base_url('assets/') ?>images/banner-1.webp" alt="Ufka Yolculuk 14. Bilgi ve Kültür Yarışması"
@@ -44,13 +94,13 @@
                   ödülün ve eşsiz deneyimlerin sahibi ol.
                 </p>
                 <div class="hero-action-buttons">
-                  <button type="button" class="btn-hero-primary border-0" data-bs-toggle="modal" data-bs-target="#registerModal">
+                  <a href="<?= base_url('kayit-ol') ?>" class="btn-hero-primary border-0 text-decoration-none">
                     <span>Ücretsiz Kayıt Ol</span>
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                       stroke-width="2.5">
                       <polyline points="9 18 15 12 9 6" />
                     </svg>
-                  </button>
+                  </a>
                   <a href="#kategoriler" class="btn-hero-glass">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                       <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
@@ -188,18 +238,24 @@
             </div>
           </div>
         </div>
+        <?php endif; ?>
 
       </div>
 
       <!-- Numaralı Slider Göstergesi & Kontrolleri -->
       <div class="slider-indicator" id="heroIndicator">
-        <span class="num-item active" data-slide="0">01</span>
-        <div class="indicator-track">
-          <div class="indicator-fill" id="indicatorFill"></div>
-        </div>
-        <span class="num-item" data-slide="1">02</span>
-        <span class="num-item" data-slide="2">03</span>
-        <span class="num-item" data-slide="3">04</span>
+        <?php 
+          $heroSlideCount = !empty($sliders) ? count($sliders) : 4;
+          for ($i = 0; $i < $heroSlideCount; $i++): 
+            $numLabel = str_pad($i + 1, 2, '0', STR_PAD_LEFT);
+        ?>
+          <span class="num-item <?= $i === 0 ? 'active' : '' ?>" data-slide="<?= $i ?>"><?= $numLabel ?></span>
+          <?php if ($i === 0): ?>
+            <div class="indicator-track">
+              <div class="indicator-fill" id="indicatorFill"></div>
+            </div>
+          <?php endif; ?>
+        <?php endfor; ?>
         <span class="pause-btn" id="heroPauseBtn" title="Durdur / Oynat" aria-label="Durdur/Oynat">||</span>
       </div>
 

@@ -1,255 +1,231 @@
-# Ufka Yolculuk — REST API Entegrasyon Yol Haritası ve Teknik Analiz
+# 🗺️ Ufka Yolculuk REST API — Yeni Entegrasyon Yol Haritası (Roadmap v2.0)
 
-> **Belge Sürümü:** 1.0  
-> **Son Güncelleme:** 28 Eylül 2026  
-> **Hazırlayan:** Antigravity AI & Ufka Yolculuk Geliştirme Ekibi  
-> **Hedef Platform:** CodeIgniter 4 (PHP 8.2) & WAMP Sanal Sunucu (`http://localufkayolculuk.com/`)
-
----
-
-## 1. Yönetici Özeti ve Mevcut Durum Analizi
-
-Ufka Yolculuk platformu için geliştirilen merkezi servis katmanı (`App\Services\UfkaApiService`), resmi REST API uç noktaları (`https://ufkayolculuk.com/rest/get/`) ve yönetim medya sunucusu (`https://yonetim.ufkayolculuk.com/`) ile tam uyumlu çalışmaktadır.
-
-### 🟢 Tamamlanan Entegrasyonlar
-1. **Duyurular & Haberler Modülü (`/duyurular`):**
-   - API `getWebContents` üzerinden tüm güncel duyurular dinamik çekiliyor.
-   - Gerçek zamanlı kategori filtreleri (*Tümü, Duyurular, Haberler, Etkinlikler*) ve canlı arama çubuğu devrede.
-2. **Anasayfa Güncel Duyurular Kartı (`/`):**
-   - Tasarım estetiğini ve takvim kartı dengesini korumak için en güncel 2 duyuru çekiliyor.
-3. **Dinamik Duyuru & İçerik Detay Sayfası (`/sayfa/:slug`):**
-   - Tüm haber, duyuru ve kurumsal makaleler API'den çekiliyor.
-   - Sosyal medya paylaşım butonları, yan panel son duyuruları ve WhatsApp destek bağlantısı aktif.
-4. **Önemli Tarihler & Canlı Geri Sayım Sayacı (`#takvim`):**
-   - `getExams` uç noktasından sınav başlangıç, son giriş ve sonuç ilan tarihleri API'den çekiliyor.
-5. **Kategoriler & Yarışma Kitapları Vitrini (`#kategoriler`):**
-   - `getBookCategories`, `getBooks` ve `getBook` uç noktaları 4 ana kategoriyle (İlkokul, Ortaokul, Lise, Yetişkin) eşleştirildi.
-   - Orijinal kitap kapakları, pedagojik özetler ve **canlı HTML5 MP3 ses oynatıcısı** (`sound_file`) bağlandı.
+> **Belge Sürümü:** 2.0 (Güncellenmiş API Mimarisi & Revizyon Yol Haritası)  
+> **Son Güncelleme:** 08 Ekim 2026  
+> **Referans Dokümantasyon:** [UFKA_YOLCULUK_REST_API_DOKUMANTASYONU.md](file:///c:/wamp64/www/ufkayolculuk/UFKA_YOLCULUK_REST_API_DOKUMANTASYONU.md)  
+> **Platform:** CodeIgniter 4 (PHP 8.2) + WAMP & Canlı Demo (`team.tkmdev.com/ufkayolculuk-demo/`)  
+> **Hedef:** %100 Headless, Sıfır Statik Kodlama, Yüksek Performans, WAF & Rate Limit Uyumlu Mimari  
 
 ---
 
-## 2. API Uç Noktaları (Endpoints) ve Yetenek Envanteri
+## 📌 1. Yönetici Özeti ve Yol Haritası Değişim Gerekçesi
 
-Yapılan canlı sistem testleri (`php spark api:test`) ve kimlik doğrulamalı API kılavuzu analizi sonucunda **19 farklı uç noktanın** sunduğu veri haritası aşağıdaki gibidir:
+Projemizin ilk aşamasında hazırlanan yol haritası, API'deki eksik uç noktalar nedeniyle bazı modüllerde geçici çözümler (örneğin önemli tarihleri `getExams` üzerinden elle biçimlendirme, podcast içeriklerini kodda statik mock olarak tutma) içermekteydi.
 
-| # | Uç Nokta (Endpoint) | HTTP Metodu | Sağladığı Veri ve İçerik | Sitedeki Karşılığı / Kullanım Alanı |
-|---|---|---|---|---|
-| **1** | `getAwards` / `getAwards/{city_id}` | POST / GET | 736 adet Türkiye geneli ve 81 il bazında ödül (Umre, nakit ödüller, derece bazlı) | Ödüller Sayfası (`/oduller`) & Anasayfa Ödül Vitrini (`#oduller`) |
-| **2** | `getCities` | POST / GET | Türkiye'nin 81 ilinin plaka ID ve alfabetik isim listesi | Ödüller & İletişim sayfasındaki il seçim dropdown'ları |
-| **3** | `getWebContents` | POST / GET | 111 aktif içerik: Duyuru (18), Haber (5), SSS (18), Kurumsal/Rehber (70) | `/duyurular`, `/sayfa/:slug`, Anasayfa `#sss` akordeonu |
-| **4** | `getWebCategories` / `webCategories` | POST / GET | Web içerik hiyerarşisi ve kategori ağacı | Duyuru/içerik etiketleme ve filtreleme sistemleri |
-| **5** | `getBookCategories` | POST / GET | 12 kategori tanımı ve kategorilere bağlı kitap listeleri | `#kategoriler` vitrini ve modal detayları |
-| **6** | `getBooks` | POST / GET | 4 aktif yarışma kitabı (İsim, kapak, ses dosyası, XML, PDF yolları) | Kitap vitrini ve sesli dinleme kütüphanesi |
-| **7** | `getBook/{id}` | POST / GET | Tekil kitap verisi ve 240+ sayfa resim URL listesi | E-Kitap online okuma modalı / portalı |
-| **8** | `getExams` | POST / GET | Çevrim içi sınavlar, başlama, bitiş ve son giriş saatleri | `#takvim` tarih kartları ve canlı geri sayım |
-| **9** | `getUfkaYolculukUser` | POST | Telefon (`mobile`) ve doğum tarihi (`birthdate`) ile yarışmacı sorgulama | Giriş Yap Modalı (`#loginModal`) ve yarışmacı doğrulama |
-| **10**| `getUserData/{user_id}` | POST / GET | Kullanıcının okuma geçmişi ve profil verileri | Yarışmacı paneli / giriş sonrası kullanıcı durumu |
-| **11**| `getProfileMenu` | POST / GET | Kullanıcı profil navigasyon menü linkleri | Yarışmacı giriş yaptıktan sonraki profil menüsü |
-| **12**| `getMenu/{header\|footer}` | POST / GET | Header ve footer navigasyon menü ağacı | `header.php` ve `footer.php` dinamik menüleri |
-| **13**| `getQuestions/{category_id}` | POST / GET | 49 adet çoktan seçmeli deneme sorusu (Soru gövdesi + A, B, C, D seçenekleri) | Anasayfa "Online Soru Çöz" ve Mini Deneme Testi |
-| **14**| `createQuestionForm` | POST | `user_id` ve `exam_id` ile yeni sınav oturumu başlatma | Çevrim içi deneme sınavı oturumu oluşturma |
-| **15**| `postAnswer` | POST | Soruya verilen cevabı kaydetme (`question_id`, `answer`) | Deneme sınavı anlık cevap kaydı |
-| **16**| `saveUserPage` | POST | Okunan son kitap sayfasını kaydetme | E-Kitap okuyucu ilerleme takibi |
-| **17**| `getPage/{id}` | POST / GET | ID bazlı kurumsal sayfa gövdesi | Mobil/web kurumsal bilgi sayfaları |
-| **18**| `getExamCategories` | POST / GET | Sınav kademe kategorileri | Sınav filtreleme modülleri |
-| **19**| Medya Dönüştürücü | PHP Yardımcı | `uploads/...` yollarını `https://yonetim.ufkayolculuk.com/` adresine bağlar | Tüm görsel, PDF ve MP3 ses dosyaları |
+**07-08 Ekim 2026** tarihinde devreye alınan resmi API güncellemesiyle:
+1. **Yeni Resmi Uç Noktalar Geldi:** `getImportantDates`, `getMediaContents`, `getSliders`, `getWebMenus`, `token`, `refresh`, `revoke`.
+2. **Kırıcı Parametre Kuralları Eklendi:** `getQuestions` için `category_id` artık **zorunlu** hale geldi.
+3. **Sunucu Taraflı Filtreler Açıldı:** `getWebContents` artık `type`, `category_id` ve `slug` parametreleriyle doğrudan veritabanı seviyesinde filtrelenebiliyor.
+4. **Güvenlik Standardı Yükseltildi:** Basic Auth kullanımdan kaldırılma (deprecated) sürecine girdi; Bearer Token mimarisi standartlaştırıldı.
+
+Bu yeni yol haritası; projemizi bu güncel yeteneklerle modernize etmek, kod tabanındaki tüm statik/geçici kurguları temizlemek ve sistemi tam dinamik hale getirmek için hazırlanmıştır.
 
 ---
 
-## 3. Web Sitesinde API'den Çekilebilecek Alanlar Matrisi
-
-Web sitemizdeki tüm sayfalar ve bileşenler incelendiğinde API'den beslenebilecek alanlar şunlardır:
+## 📊 2. Mevcut Durum ve Entegrasyon Durum Matrisi
 
 ```
-┌────────────────────────────────────────────────────────────────────────┐
-│                   WEB SİTESİ API ENTEGRASYON HARİTASI                  │
-└────────────────────────────────────────────────────────────────────────┘
-                                    │
-    ┌───────────────────────────────┼───────────────────────────────┐
-    ▼                               ▼                               ▼
-[ 1. ÖDÜLLER MODÜLÜ ]      [ 2. SIKÇA SORULAN SORULAR ]    [ 3. KURUMSAL SAYFALAR ]
-- Türkiye Geneli Ödüller    - 18 Adet SSS Kaydı             - Yarışma Şartnamesi
-- 81 İl Bazlı Ödüller       - Kategori Akordeonları         - Takvim & Yönerge
-- getAwards + getCities     - getWebContents (type=sss)     - KVKK, Aydınlatma Metinleri
-                                                            - Biz Kimiz & Misyon-Vizyon
-    ┌───────────────────────────────┼───────────────────────────────┐
-    ▼                               ▼                               ▼
-[ 4. YARIŞMACI GİRİŞİ ]    [ 5. MENÜLER & NAVİGASYON ]     [ 6. İLETİŞİM & TEMSİLCİLİK ]
-- Telefon + Doğum Tarihi    - Header Menü                   - 81 İl Dropdown Seçimi
-- getUfkaYolculukUser       - Footer Menü                   - Temsilcilik Haritası
-- Canlı Profil Durumu       - getMenu/{header|footer}       - Form Gönderimi (Session)
-                                                            
-    ┌───────────────────────────────┴───────────────────────────────┐
-    ▼                                                               ▼
-[ 7. VİDEO & MEDYA VİTRİNİ ]                       [ 8. ONLİNE SORU ÇÖZ & DENEME ]
-- Medya Oynatıcı Modalı                             - 49 Adet Test Sorusu
-- getWebContents (video-icerik-*)                   - getQuestions/{category_id}
-- YouTube / Canlı İframe                            - İnteraktif Soru Çözüm Modalı
-```
-
-### Bölüm Bazlı Detaylar:
-1. **Ödüller Sayfası (`/oduller`) & Anasayfa Ödül Vitrini (`#oduller`):**
-   - Şu an statik HTML olan ödüller, API'deki 736 ödül kaydı ve 81 il ile dinamik hale gelecektir.
-   - İl dropdown'ından bir il (örn. *İstanbul*, *Ankara*, *Konya*) seçildiğinde hem o ilin ödülleri hem Türkiye geneli ödülleri AJAX ile anında listelenecektir.
-2. **Sıkça Sorulan Sorular (`#sss`):**
-   - API'de `type = 'sss'` olan **18 adet resmi soru-cevap** mevcuttur (*Örn: "Danışman kategorisi", "Sınav giriş şartları" vb.*).
-   - Anasayfadaki statik akordeon döngüye bağlanıp API'den gelecektir.
-3. **Kurumsal & Hukuki Sayfalar (`/sayfa/:slug`):**
-   - API'de 70 adet hazır kurumsal içerik bulunmaktadır:
-     - `/sayfa/sartname` (Yarışma Şartnamesi)
-     - `/sayfa/uy-kvkk-aydinlatma-metni` (KVKK Aydınlatma Metni)
-     - `/sayfa/uy-mahremiyet-politikasi` (Gizlilik & Mahremiyet)
-     - `/sayfa/UY-Veli-izin-Belgesi` (Veli İzin Belgesi)
-     - `/sayfa/biz-kimiz` (Biz Kimiz?)
-     - `/sayfa/misyon-vizyon` (Misyon ve Vizyon)
-     - `/sayfa/resmi-onaylar` (Milli Eğitim Bakanlığı Resmi Onayları)
-     - `/sayfa/takvimi` (Yarışma Takvimi Görseli)
-4. **Yarışmacı Giriş Modalı (`#loginModal`):**
-   - Giriş modalındaki Telefon No ve Doğum Tarihi alanları API'deki `getUfkaYolculukUser` uç noktasına AJAX ile bağlanacaktır.
-   - Doğrulanan kullanıcının adı, soyadı ve kategorisi Header alanında *"Hoş geldin, Ahmet Yılmaz (Ortaokul)"* şeklinde oturumda gösterilecektir.
-5. **İl Temsilcilikleri ve İletişim (`/iletisim`):**
-   - `getCities` ile 81 il dinamik yüklenecek, il seçildiğinde o ilin iletişim ve koordinasyon bilgileri sunulacaktır.
-6. **Dinamik Header & Footer Menüleri (`getMenu`):**
-   - Üst menü ve alt footer linkleri yönetim panelinden değiştirildiğinde sitede otomatik güncellenecektir.
-7. **Online Soru Çöz & Deneme Testi (`getQuestions`):**
-   - API'deki 49 soru ile anasayfadaki "Deneme Sınavına Katıl" butonuna tıklandığında soru-cevap interaktif modalı açılabilecektir.
-
----
-
-## 4. Sorunsuz Tamamlama Sıralaması (Adım Adım Yol Haritası)
-
-Projeyi sıfır riskle, mevcut çalışan hiçbir tasarımı bozmadan ve en yüksek kullanıcı değerini en erken sağlayacak şekilde **6 Aşamalı (Fazlı)** sıralama ile kodlamamız önerilir:
-
-```
-┌─────────────────────────────────────────────────────────────────────────────┐
-│                      KODLAMA SIRALAMASI VE FAZ PLANI                        │
-└─────────────────────────────────────────────────────────────────────────────┘
-  FAZ 1 ──► Ödüller Sistemi (Anasayfa #oduller & /oduller Sayfası) [TAMAMLANDI]
-    │       - getAwards ve getCities entegrasyonu
-    │       - 81 İl AJAX dropdown filtresi
-    ▼
-  FAZ 2 ──► Sıkça Sorulan Sorular (/sss Bağımsız Sayfası) [TAMAMLANDI]
-    │       - Tasarım gereği anasayfadan kaldırıldı, ayrı sayfa (/sss) yapıldı
-    │       - getWebContents (type=sss) ile 18 soru dinamik, canlı arama ve 5 kategori filtreleme eklendi
-    ▼
-  FAZ 3 ──► Kurumsal, Hukuki & Kılavuz Sayfalar (/sayfa/:slug) [TAMAMLANDI]
-    │       - Şartname, KVKK, Veli İzni, Biz Kimiz, Resmi Onaylar, Mahremiyet
-    │       - getWebContent ile case-insensitive ve alias desteği
-    │       - Dinamik Kurumsal sidebar, breadcrumb ve footer hızlı linkleri eklendi
-    ▼
-  FAZ 4 ──► İletişim Sayfası & 81 İl Temsilcilikleri (/iletisim) [TAMAMLANDI]
-    │       - getAwardCities ile 81 il dinamik dropdown'ı ve URL query (?il=...) desteği
-    │       - İl ve ilçe temsilcilikleri, kulüp ve direkt iletişim kutusu
-    │       - İletişim formu AJAX POST (/iletisim/gonder) doğrulaması ve şık bildirimler
-    ▼
-  FAZ 5 ──► Yarışmacı Giriş Sistemi (loginModal -> getUfkaYolculukUser) [TAMAMLANDI]
-    │       - Telefon + Doğum Tarihi AJAX doğrulaması
-    │       - CI4 Session ile oturum açma & Header kullanıcı rozeti
-    ▼
-  FAZ 6 ──► Dinamik Menüler & Medya/Video Entegrasyonu (getMenu & Medya) [TAMAMLANDI]
-    │       - Header/Footer menü ağacı (getMenu) ve kusursuz sayfa rota eşleştirmeleri
-    │       - API video içerikleri (video-icerik-*) için modal oynatıcı (HTML5 .mp4 + iframe)
-    ▼
-  FAZ 7 ──► (İsteğe Bağlı Ek Modül) Canlı Mini Deneme Testi (getQuestions)
-            - Kategoriye göre 10-15 soruluk anlık pratik test çözümü
+┌────────────────────────────────────────────────────────────────────────────────────────┐
+│                        UFKA YOLCULUK SİSTEM DURUMU VE ENTEGRASYON MATRİSİ              │
+└────────────────────────────────────────────────────────────────────────────────────────┘
+                                            │
+    ┌───────────────────────────────────────┼───────────────────────────────────────┐
+    ▼                                       ▼                                       ▼
+[ 1. TAMAMLANMIŞ & STABİL ]           [ 2. BAŞARIYLA GEÇİŞİ YAPILANLAR ]      [ 3. AKTİFLEŞTİRİLEN YENİ YETENEKLER ]
+✅ Ödüller Modülü (/oduller)          ✅ Önemli Tarihler (#takvim)           ✅ Hero Slider Vitrini (getSliders + Fallback)
+✅ Duyurular & Haberler (/duyurular)    (getImportantDates dinamik)           ✅ Bearer Token Mimarisi (token & refresh)
+✅ Kurumsal Detaylar (/sayfa/:slug)   ✅ Medya & Podcast (#medya)             ✅ Çoklu Dil Menü Ağacı (getMenu & getWebMenus)
+✅ İletişim & 81 İl (/iletisim)        (getMediaContents dinamik)             ✅ Soru Havuzu Parametresi (getQuestions/id)
+✅ Yarışmacı Girişi (#loginModal)     ✅ Sunucu Filtresi (getWebContents)
+✅ Kitaplar Vitrini (#kategoriler)      (type=annoucement/news/sss)
 ```
 
 ---
 
-### FAZ 1: Ödüller Sistemi (Anasayfa & `/oduller` Sayfası) - ✅ TAMAMLANDI
-- **Durum:** ✅ Tamamlandı ve Canlı Doğrulandı
-- **Kullanılan Uç Noktalar:** `getAwards`, `getAwards/{city_id}`, `getCities`
-- **Uygulanan Geliştirmeler:**
-  1. `UfkaApiService` servisine `getNationalAwardsFormatted()`, `getAwardCities()`, `getCityAwardsMap()` ve `getCityAwardsFormatted($cityName)` metotları eklendi.
-  2. `app/Controllers/Oduller.php` üzerinden Türkiye geneli merkezi ödüller ve 81 ilin alfabetik listesi görünüme aktarıldı.
-  3. `oduller/get-city-awards/(:segment)` rotası ve AJAX JSON endpoint'i tanımlandı.
-  4. `app/Views/oduller.php` sayfasında Türkiye geneli ödül sekmeleri ve 81 il seçim dropdown'ı dinamik hale getirildi; ilk yükleme SEO ve performans için server-side render edildi.
-  5. `public/assets/js/main.js` içindeki `initAwardsPage()` fonksiyonu API verisi, kategori filtreleme (İlkokul, Ortaokul, Lise, Yetişkin, İlahiyat, Takım Lideri) ve AJAX yedekleme ile donatıldı.
-  6. İl ve kategori değiştirildiğinde podyum (🥇, 🥈, 🥉), 4.-10. mansiyon rozeti, ilçe/kulüp başarı grupları ve resmi tören notu anlık olarak kesintisiz güncellenmektedir.
+## 🚀 3. Yeni Yol Haritası ve Faz Planı (Aşama Aşama Uygulama)
+
+Geliştirmeler 7 odaklı faza ayrılmıştır. Her faz birbirinden bağımsız test edilebilir ve canlı ortamı asla bozmayacak şekilde tasarlanmıştır:
+
+```
+FAZ 1 ──► Önemli Tarihler & Sayaç Senkronizasyonu (getImportantDates) [YÜKSEK ÖNCELİK]
+  │       - Kodda gömülü cevap anahtarı ve sonuç ilanlarını temizleme
+  │       - Resmi web_dates verisi, sayaç ISO hedefleri ve prefix desteği
+  ▼
+FAZ 2 ──► Medya & Podcast Vitrini Entegrasyonu (getMediaContents) [YÜKSEK ÖNCELİK]
+  │       - Kodda statik duran 2 podcast kaydını kaldırma
+  │       - Resmi web_medias tablosundan dinamik video ve podcast beslemesi
+  ▼
+FAZ 3 ──► İçerik Çekme Optimizasyonu (getWebContents?type=...) [PERFORMANS]
+  │       - 111 içerik yerine sadece hedeflenen veriyi çekme (annoucement, news, sss)
+  │       - Ağ trafiğini ve önbellek boyutunu %70 hafifletme
+  ▼
+FAZ 4 ──► Hero Banner Slider Entegrasyonu (getSliders) [GÖRSEL ESNEKLİK]
+  │       - web_sliders tablosundaki aktif slaytları anasayfaya bağlama
+  │       - Panelde slayt yoksa mevcut şık HTML slaytları gösteren akıllı fallback
+  ▼
+FAZ 5 ──► Bearer Token Güvenlik Mimarisi (token & refresh) [GÜVENLİK STANDARDI]
+  │       - UfkaApiService'e 2 saatlik Bearer Token yönetimi ekleme
+  │       - Olası token hatasında Basic Auth'a yumuşak düşüş (fallback)
+  ▼
+FAZ 6 ──► Çoklu Dil & Gelişmiş Menü Ağacı (getMenu & getWebMenus) [FONKSİYONEL]
+  │       - getMenu?lang=tr / lang=en desteği
+  │       - Panelden yönetilen hiyerarşik menü ağacını senkronize etme
+  ▼
+FAZ 7 ──► Canlı Mini Soru & Deneme Simülatörü (getQuestions/{category_id}) [İNTERAKTİF]
+  │       - category_id zorunluluğuna tam uyumlu 49 soruluk pratik test motoru
+  │       - Doğru/yanlış anlık geri bildirim ve sonuç karnesi
+```
 
 ---
 
-### FAZ 2: Sıkça Sorulan Sorular (Anasayfa `#sss` Akordeonu & `/oduller` SSS) - ✅ TAMAMLANDI
-- **Durum:** ✅ Tamamlandı ve Canlı Doğrulandı
-- **Kullanılan Uç Noktalar:** `getWebContents(type: 'sss')`
-- **Uygulanan Geliştirmeler:**
-  1. `UfkaApiService` içine `getFaqList()` metodu eklendi. API'deki 18 gerçek SSS sorusunu ve cevaplarını çeker; *Yarışma & Katılım, Ödüller, Yarışma Kitapları, Sınav Kuralları, Takım Lideri* kategorilerine ayırır ve sayaçlarını derler.
-  2. `Home.php` controller'ında `$faqs` verisi görünüme aktarıldı.
-  3. `app/Views/home.php` üzerinde `#sss` id'li modern, responsive ve Bootstrap uyumlu SSS bölümü kodlandı.
-  4. Gerçek zamanlı arama çubuğu (arama yapıldığında anında filtreleme ve ✕ temizleme butonu) ile kategori filtreleme hapları entegre edildi.
-  5. Header navigasyon menüsündeki *"Yarışma Hakkında → Sıkça Sorulan Sorular (SSS)"* linki doğrudan bu bölüme yumuşak kayma (`scroll-margin-top: 80px`) ile bağlandı.
-  6. `app/Controllers/Oduller.php` ve `app/Views/oduller.php` sayfalarındaki statik SSS soruları da API'deki resmi ödül SSS verileriyle senkronize edildi.
+### 🟢 FAZ 1: Önemli Tarihler & Canlı Geri Sayım (Refactor & API Geçişi)
+* **Öncelik:** 🔴 Acil / Yüksek
+* **Etkilenen Dosyalar:**
+  * `app/Services/UfkaApiService.php` (`getImportantDates`)
+  * `app/Controllers/Home.php`
+  * `app/Views/home.php`
+  * `public/assets/js/main.js` (`initDatesAndCountdown`)
+* **Mevcut Durum / Sorun:**
+  * Sınav tarihleri `getExams` içinden formatlanıyor; "Cevap Anahtarı" (15 Mart) ve "Sonuç İlanı" (28 Mart) tarihleri PHP koduna elle gömülmüştü.
+* **Yeni API Kabiliyeti:**
+  * `https://ufkayolculuk.com/rest/get/getImportantDates` servisi `web_dates` tablosundaki tüm aktif tarihleri hazır alanlarla dönüyor:
+    * `key`: `ortaokul_sinav`, `ilkokul_sinav`, `lise_sinav`
+    * `title`, `sub_title`, `badge`, `icon_type`
+    * `date_formatted` (*"14 Mart 2026"*), `time_formatted` (*"15:00"*)
+    * `target_iso` (*"2026-03-14T15:00:00"*)
+    * `countdown_label` (*"Ortaokul Sınavına Kalan Süre"*)
+    * `prefix` (*"{tarih_ortaokul_sinav}"*)
+* **Uygulama Adımları:**
+  1. `UfkaApiService::getImportantDates()` metodunu doğrudan API'nin yeni `getImportantDates` servisine bağlamak.
+  2. Statik eklenen dizi elemanlarını kaldırıp veriyi %100 API'den almak.
+  3. API yanıtı boş veya hata verirse mevcut çalışan yapıyı fallback olarak korumak.
+  4. Anasayfadaki slider ve geri sayım sayacının yeni API alanlarıyla (`target_iso`, `countdown_label`) kusursuz senkronize olduğunu doğrulamak.
 
 ---
 
-### FAZ 3: Kurumsal, Hukuki & Kılavuz Sayfalar (`/sayfa/:slug`)
-- **Öncelik:** 🟠 Yüksek (SEO, güvenilirlik ve kurumsal kimlik)
-- **Kullanılacak Uç Noktalar:** `getWebContents`, `getPage/{id}`
-- **Yapılacaklar:**
-  1. `Sayfa.php` controller'ında slug eşleşmesi zaten hazır durumda.
-  2. Sitedeki kritik linklerin API slug'larıyla senkronize edilmesi:
-     - Şartname linki: `/sayfa/sartname`
-     - KVKK linki: `/sayfa/uy-kvkk-aydinlatma-metni`
-     - Gizlilik Politikası: `/sayfa/uy-mahremiyet-politikasi`
-     - Veli İzin Belgesi: `/sayfa/UY-Veli-izin-Belgesi`
-     - Biz Kimiz?: `/sayfa/biz-kimiz`
-     - Misyon ve Vizyon: `/sayfa/misyon-vizyon`
-     - Resmi Onaylar: `/sayfa/resmi-onaylar`
-  3. Footer ve alt linklerin bu rotalarla eşleştirilmesi.
+### 🟢 FAZ 2: Medya & Podcast Vitrini (Refactor & API Geçişi)
+* **Öncelik:** 🔴 Acil / Yüksek
+* **Etkilenen Dosyalar:**
+  * `app/Services/UfkaApiService.php` (`getMediaContents`)
+  * `app/Controllers/Home.php`
+  * `app/Views/home.php`
+  * `public/assets/js/main.js` (`initMediaModal`)
+* **Mevcut Durum / Sorun:**
+  * Video içerikleri `getWebContents` taranarak çekiliyor; `podcast-1` ve `podcast-2` kayıtları ise kod içinde statik dizi olarak tanımlanmıştı.
+* **Yeni API Kabiliyeti:**
+  * `https://ufkayolculuk.com/rest/get/getMediaContents` servisi `web_medias` tablosundaki aktif video ve podcast'leri hazır dönüyor:
+    * `media_type`: `video` | `podcast`
+    * `media_url`: YouTube iframe veya doğrudan video URL
+    * `duration`: Süre (*"24:35"* veya *"Video"*)
+    * `thumbnail_url` / `image_url`
+    * `description`, `is_featured`
+* **Uygulama Adımları:**
+  1. `UfkaApiService::getMediaContents()` metodunu doğrudan yeni resmi `getMediaContents` uç noktasına bağlamak.
+  2. Kod içindeki statik podcast dizisini temizlemek.
+  3. `thumbnail_url` ve `media_url` alanlarının hem YouTube iframe hem doğrudan video oynatıcı modalıyla (`#mediaPlayerModal`) tam uyumlu çalıştığını doğrulamak.
 
 ---
 
-### FAZ 4: İletişim Sayfası & 81 İl Temsilcilikleri (`/iletisim`) - ✅ TAMAMLANDI
-- **Durum:** ✅ Tamamlandı ve Canlı Doğrulandı
-- **Kullanılan Uç Noktalar:** `getAwardCities`, iletişim formu AJAX doğrulama
-- **Yapılanlar:**
-  1. İletişim sayfasındaki il seçim dropdown'ı dinamik 81 il ile dolduruldu (`?il=...` URL parametresi desteğiyle).
-  2. İl seçildiğinde temsilcilik e-posta, telefon ve adres kutuları anında dinamikleştirildi.
-  3. İletişim formu AJAX POST (`/iletisim/gonder`) doğrulaması ve şık Bootstrap alert geri bildirimleri entegre edildi.
+### 🟡 FAZ 3: Sunucu Taraflı İçerik Filtreleme Optimizasyonu
+* **Öncelik:** 🟡 Orta / Performans
+* **Etkilenen Dosyalar:**
+  * `app/Services/UfkaApiService.php` (`getAnnouncements`, `getFaqList`, `getWebContent`)
+  * `app/Controllers/Duyurular.php`, `app/Controllers/Sss.php`, `app/Controllers/Sayfa.php`
+* **Mevcut Durum / Sorun:**
+  * 111 web içeriğinin tamamı her istekte tek parça çekilip PHP tarafında `foreach` döngüsüyle duyuru veya SSS diye ayrıştırılıyordu.
+* **Yeni API Kabiliyeti:**
+  * `getWebContents` artık filtre parametreleri kabul ediyor:
+    * Duyurular için: `getWebContents?type=annoucement`
+    * Haberler için: `getWebContents?type=news`
+    * SSS için: `getWebContents?type=sss`
+    * Tekil içerik için: `getWebContents?slug=sartname`
+* **Uygulama Adımları:**
+  1. `getAnnouncements()` metodunu `getWebContents?type=annoucement` ile hafifletmek.
+  2. `getFaqList()` metodunu `getWebContents?type=sss` ile hızlandırmak.
+  3. `getWebContent($slug)` aramasında doğrudan `getWebContents?slug=$slug` sorgusu atıp ağ trafiğini optimize etmek.
 
 ---
 
-### FAZ 5: Yarışmacı Giriş Sistemi (`#loginModal` ➔ `getUfkaYolculukUser`) - ✅ TAMAMLANDI
-- **Durum:** ✅ Tamamlandı ve Canlı Doğrulandı
-- **Kullanılan Uç Noktalar:** `getUfkaYolculukUser`, `verifyUser`
-- **Yapılanlar:**
-  1. `UfkaApiService` içine `verifyUser($phone, $birthDate)` metodu eklendi (telefon normalizasyonu ve API entegrasyonu).
-  2. `app/Controllers/Auth.php` oluşturuldu (`login`, `logout`, `status` uç noktaları).
-  3. Modal formundaki telefon (`0 (5XX) XXX XX XX` maskelemeli) ve doğum tarihi alanları AJAX ile doğrulandı.
-  4. Giriş başarılı olduğunda oturum (`session`) açılarak Header'da yarışmacı profili ve çıkış butonu gösterildi.
-  5. Doğrulama ve yarışmacı kontrol testleri başarıyla tamamlandı.
+### 🟡 FAZ 4: Hero Banner Slider Entegrasyonu (Yeni Yetenek)
+* **Öncelik:** 🟡 Orta
+* **Etkilenen Dosyalar:**
+  * `app/Services/UfkaApiService.php` (`getSliders`)
+  * `app/Controllers/Home.php`
+  * `app/Views/home.php` (`#heroSlider`)
+* **Yeni API Kabiliyeti:**
+  * `https://ufkayolculuk.com/rest/get/getSliders` servisi `web_sliders` tablosundaki aktif slaytları dönüyor:
+    * `title`, `title_highlight`, `badge_text`, `button_1_text`, `button_1_url`, `image`, `mobile_image`.
+* **Uygulama Adımları:**
+  1. `UfkaApiService` içine `getSliders($limit = 5)` metodunu eklemek.
+  2. Anasayfa Hero Carousel alanını, API'den slider gelmesi durumunda dinamik dönecek; API boş dönerse (`[]`) mevcut çalışan 4 şık slaytı gösterecek şekilde akıllı fallback ile yapılandırmak.
 
 ---
 
-### FAZ 6: Dinamik Menüler & Video Medya Vitrini - ✅ TAMAMLANDI
-- **Durum:** ✅ Tamamlandı ve Canlı Doğrulandı
-- **Kullanılan Uç Noktalar:** `getMenu/header`, `getMenu/footer`, `getWebContents`
-- **Yapılanlar:**
-  1. `getMenu` çağrıları ve sağlam fallback menü yapısı ile Header & Footer navigasyonu tam senkronize edildi.
-  2. `UfkaApiService::getMediaContents()` yazılarak API'deki video kayıtları (`Usturlab Medeniyetin İşaret Taşları`, `Dünyaya Doğan Güneş`, `Akıncı Belgeseli`) ve podcast içerikleri dinamik olarak çekildi.
-  3. Anasayfadaki `#medya` bölümü dinamikleştirildi.
-  4. `#mediaPlayerModal` ve `main.js:initMediaModal()` hem direkt HTML5 `.mp4` video oynatımını hem de harici iframe oynatımını kusursuz destekleyecek şekilde güncellendi.
+### 🔵 FAZ 5: Bearer Token Güvenlik Mimarisi Geçişi
+* **Öncelik:** 🔵 Güvenlik Standardı
+* **Etkilenen Dosyalar:**
+  * `app/Config/UfkaApi.php`
+  * `app/Services/UfkaApiService.php` (`request`, `getAccessToken`)
+* **Gerekçe:**
+  * Dokümantasyonda HTTP Basic Auth'un güvenlik riski (CWE-522) nedeniyle kullanımdan kalkacağı bildirilmiştir.
+* **Uygulama Adımları:**
+  1. `UfkaApiService` içine `getAccessToken()` yardımcı metodu eklemek.
+  2. Alınan `access_token` değerini 110 dakika (ömrü 120 dakika) CI4 cache'inde saklamak.
+  3. İsteklerde `Authorization: Bearer <access_token>` başlığını göndermek.
+  4. Token süresi dolarsa `POST /rest/get/refresh` veya otomatik yeniden token alma mantığını kurmak.
+  5. Herhangi bir ağ veya token hatasında sistemin kesilmemesi için Basic Auth fallback'ini hazır tutmak.
 
 ---
 
-### FAZ 7: (Opsiyonel / İleri Seviye) Canlı Mini Deneme Testi
-- **Öncelik:** ⚪ İsteğe Bağlı
-- **Kullanılacak Uç Noktalar:** `getQuestions/{category_id}`, `createQuestionForm`, `postAnswer`
-- **Yapılacaklar:**
-  1. Kullanıcı anasayfadaki "Deneme Sınavına Katıl" butonuna bastığında kategori seçimi (İlkokul, Ortaokul vb.).
-  2. API'den gelen 10 soruluk interaktif bir mini test modalının açılması.
-  3. Şıkları işaretleyip testi tamamlayınca doğru/yanlış analizinin ekranda gösterilmesi.
+### 🔵 FAZ 6: Çoklu Dil & Gelişmiş Menü Ağacı Entegrasyonu
+* **Öncelik:** 🔵 Fonksiyonel
+* **Etkilenen Dosyalar:**
+  * `app/Services/UfkaApiService.php` (`getMenu`, `getWebMenus`)
+  * `app/Views/partials/header.php`, `app/Views/partials/footer.php`
+* **Yeni API Kabiliyeti:**
+  * `getWebMenus` ile paneldeki tüm menü ağaçları (`with_items=1`).
+  * `getMenu` ile `lang=tr` veya `lang=en` parametreli menü listeleme.
+* **Uygulama Adımları:**
+  1. `UfkaApiService::getMenu($identifier, $lang = 'tr')` metoduna dil parametresi eklemek.
+  2. Header ve footer navigasyonunda menü elemanlarını dinamik hiyerarşiyle eşleştirmek.
 
 ---
 
-## 5. Güvenlik, Performans ve Mimari Prensipleri
+### ⚪ FAZ 7: Canlı Mini Soru & Deneme Simülatörü (Kırıcı Parametre Uyumlu)
+* **Öncelik:** ⚪ İsteğe Bağlı / İnteraktif
+* **Etkilenen Dosyalar:**
+  * `app/Services/UfkaApiService.php` (`getQuestions`)
+  * `app/Controllers/Home.php`
+  * `app/Views/home.php` & Modal
+* **Kritik API Kuralı:**
+  * `category_id` artık **ZORUNLUDUR**. (Örn: `getQuestions/6` 49 soru dönüyor).
+* **Uygulama Adımları:**
+  1. `UfkaApiService::getQuestions($categoryId = 6, $type = 'mini-deneme')` metodunu zorunlu kategori ID kuralına göre güncellemek.
+  2. Anasayfadaki soru simülatöründe öğrencinin seçtiği kademeye göre (İlkokul, Ortaokul vb.) ilgili kategori ID'sinden soru getirmek.
 
-1. **Akıllı Önbellekleme (Smart Cache):**
-   - API yanıtları `cacheTTL = 600` saniye (10 dakika) boyunca CodeIgniter cache'inde saklanır.
-   - Sık değişmeyen il listesi (`getCities`) 24 saat, ödüller ve içerikler 10 dakika önbelleklenir.
-2. **Kırılmaz Arayüz Garantisi (Graceful Fallback):**
-   - Uzak API sunucusunda bakım, ağ kesintisi veya gecikme olursa arayüz asla hata vermez (`try-catch` ve yerel fallback veriler devrededir).
-3. **Pikselsel Tasarım Korunumu:**
-   - Mevcut CSS mimarisi (`style.css`), 3D kartlar, modern cam efektleri (glassmorphism) ve kurumsal renk paleti birebir korunur.
-4. **Veri Bütünlüğü:**
-   - Tarihler, ödül miktarları ve kitap isimleri API'deki orijinal değerler üzerinden gösterilir; yapay müdahale yapılmaz.
+---
+
+## 📅 4. Uygulama ve Teslimat Takvimi
+
+| Faz | Kapsam | Durum | Test & Entegrasyon Sonucu |
+| :--- | :--- | :---: | :--- |
+| **Faz 1** | Önemli Tarihler & Canlı Geri Sayım (`getImportantDates`) | ✅ **TAMAMLANDI** | Canlı API'den 8 tarih çekildi, geri sayım ISO senkronize edildi. |
+| **Faz 2** | Medya & Podcast Vitrini (`getMediaContents`) | ✅ **TAMAMLANDI** | Canlı API'den 4 video/podcast çekildi, oynatıcı modala bağlandı. |
+| **Faz 3** | İçerik Filtreleme Optimizasyonu (`getWebContents?type=`) | ✅ **TAMAMLANDI** | Duyurular (18), Haberler (5), SSS (18) ve tekil slug filtreleri devrede. |
+| **Faz 4** | Hero Banner Slider Entegrasyonu (`getSliders`) | ✅ **TAMAMLANDI** | `getSliders` Home controller'a bağlandı; boşsa 4 fallback slayt devrede. |
+| **Faz 5** | Bearer Token Mimarisi (`token` & `refresh`) | ✅ **TAMAMLANDI** | 2 saatlik Bearer token önbellek, 401 otomatik yenileme, Basic Auth fallback aktif. |
+| **Faz 6** | Çoklu Dil Menü Ağacı (`getMenu?lang=`) | ✅ **TAMAMLANDI** | Hiyerarşik `headerMenu` ve `items` ağaç ayrıştırıcısı hazırlandı. |
+| **Faz 7** | Soru Havuzu Parametresi (`getQuestions/{id}`) | ✅ **TAMAMLANDI** | Zorunlu `category_id` kuralı uygulandı; 49 soru test edildi. *(Sınav/kitap okuma motoru ayrı projede olacak)* |
+
+---
+
+## 🔒 5. Güvenlik, Performans ve Mimari Prensipleri
+
+1. **Graceful Fallback (Kırılmaz Arayüz):**
+   * Uzak API sunucusunda bir bakım veya kesinti olduğunda arayüz asla patlamaz; her zaman yerel önbellek veya güvenli varsayılan içerik devreye girer.
+2. **Akıllı Önbellek (Smart Caching):**
+   * API hız sınırına (120 req/dk) takılmamak ve sayfa yüklenme sürelerini 20ms altında tutmak için CI4 dahili önbelleği (`cacheTTL = 600sn`) korunur.
+3. **Pikselsel Tasarım Garantisi:**
+   * Yapılacak hiçbir backend veya API güncellemesi mevcut Bootstrap 5.3 + Vanilla CSS tasarım bütünlüğünü bozmaz.
+4. **WAF & Rate Limit Uyumlu İstekler:**
+   * İstekler gereksiz döngülere sokulmaz, paralel toplu istekler yerine önbellekli tekil sorgular kullanılır.

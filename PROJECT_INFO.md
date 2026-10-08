@@ -276,18 +276,18 @@ Yarışma kategorileri ve yarışma kitapları REST API (`getBookCategories`, `g
 
 ---
 
-## 10. API Entegrasyon Yol Haritası (Kapsamlı Rehber)
+## 10. API Entegrasyon Yol Haritası (Roadmap v2.0)
 
-Projenin kalan tüm alanlarının hangi API uç noktalarından besleneceği ve hangi sıralama ile kodlanacağı detaylı bir dosya halinde hazırlanmıştır:
+Güncellenen API mimarisine, yeni uç noktalara ve güvenlik kurallarına göre revize edilen yol haritası:
 - 📄 **Detaylı Dosya:** [API_ENTEGRASYON_YOL_HARITASI.md](file:///c:/wamp64/www/ufkayolculuk/API_ENTEGRASYON_YOL_HARITASI.md)
-- **Geliştirme Sıralaması (Fazlar):**
-  1. **Faz 1:** Ödüller Sistemi (Anasayfa `#oduller` & `/oduller` Sayfası - `getAwards` + `getCities`)
-  2. **Faz 2:** Sıkça Sorulan Sorular (Anasayfa `#sss` Akordeonu - `getWebContents` type=`sss`, 18 soru)
-  3. **Faz 3:** Kurumsal & Hukuki Sayfalar (`/sayfa/:slug` - Şartname, KVKK, Veli İzni, Biz Kimiz vb. 70 içerik)
-  4. **Faz 4:** İletişim Sayfası & 81 İl Temsilcilikleri (`/iletisim` - `getCities`)
-  5. **Faz 5:** Yarışmacı Giriş Sistemi (`#loginModal` ➔ `getUfkaYolculukUser` & Oturum)
-  6. **Faz 6:** Dinamik Menüler & Video Medya Vitrini (`getMenu` & `video-icerik-*`)
-  7. **Faz 7:** (Opsiyonel) Canlı Mini Deneme Sınavı Test Modülü (`getQuestions`, 49 soru)
+- **Yeni Faz Planı (Roadmap v2.0):**
+  1. **Faz 1:** Önemli Tarihler & Canlı Geri Sayım (`getImportantDates` - Statik tarihleri kaldırıp resmi API'ye geçiş)
+  2. **Faz 2:** Medya & Podcast Vitrini (`getMediaContents` - Statik mock'ları kaldırıp resmi API'ye geçiş)
+  3. **Faz 3:** İçerik Çekme Optimizasyonu (`getWebContents?type=annoucement|sss` sunucu taraflı filtreleme)
+  4. **Faz 4:** Hero Banner Slider Entegrasyonu (`getSliders` dinamik slider + yerel fallback)
+  5. **Faz 5:** Bearer Token Güvenlik Mimarisi (`token` & `refresh` - 2 saatlik access_token yönetimi)
+  6. **Faz 6:** Çoklu Dil & Menü Ağacı (`getMenu?lang=tr|en` & `getWebMenus`)
+  7. **Faz 7:** Canlı Mini Soru & Deneme Simülatörü (`getQuestions/{category_id}` - zorunlu kategori kuralıyla)
 
 ---
 
@@ -326,3 +326,13 @@ Ufka Yolculuk SSS sistemi REST API (`getWebContents` type=`sss`) üzerinden tam 
   3. **Canlı Arama**: Başlık ve cevap metinlerinde anlık arama (arama temizleme butonu ve boş sonuç uyarısı ile).
   4. **Entegre AI Desteği**: Sorusu listede olmayan kullanıcılar için tek tıkla Ufyo AI asistanını açma butonu.
   5. **Header Menü Entegrasyonu**: Header'daki "Sıkça Sorulan Sorular" bağlantısı doğrudan `#sss` bölümüne yumuşak geçiş yapar.
+
+---
+
+## 13. Canlı API Dokümantasyonu & Senkronizasyon Kuralı (.agents/rules/api_sync_rules.md)
+
+- **Resmi ve Kapsamlı Dokümantasyon Dosyası:** [UFKA_YOLCULUK_REST_API_DOKUMANTASYONU.md](file:///c:/wamp64/www/ufkayolculuk/UFKA_YOLCULUK_REST_API_DOKUMANTASYONU.md) (26 uç nokta, WAF kuralları, Rate Limit 120/dk, Bearer token ve cURL örnekleri).
+- **Otomatik API Senkronizasyon Kuralı:** [.agents/rules/api_sync_rules.md](file:///c:/wamp64/www/ufkayolculuk/.agents/rules/api_sync_rules.md)
+  - Kullanıcı *"api güncellendi"*, *"api değişiklikleri"* dediğinde Antigravity otomatik olarak `https://ufkayolculuk.com/rest` adresine `uy_Rest-Worker` / `UfkA_Yol-1448` ile bağlanır.
+  - Canlı dokümanı yerel dokümantasyonla karşılaştırıp farkları (yeni uç noktalar, parametre zorunlulukları, WAF/Rate limit değişimleri) analiz eder ve kullanıcıya fark raporu sunar.
+

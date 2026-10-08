@@ -90,7 +90,7 @@
         <div class="modal-footer border-0 pt-0 pb-4 px-4 justify-content-center flex-column gap-2 text-center">
           <div class="small text-muted">
             Henüz kayıt olmadınız mı? 
-            <a href="#registerModal" data-bs-toggle="modal" data-bs-target="#registerModal" class="fw-bold text-dark text-decoration-underline">
+            <a href="<?= base_url('kayit-ol') ?>" class="fw-bold text-dark text-decoration-underline">
               Hemen Ücretsiz Kayıt Ol
             </a>
           </div>
@@ -433,7 +433,7 @@
           </div>
           <div class="d-flex gap-2">
             <button type="button" class="btn btn-light px-4 fw-semibold" data-bs-dismiss="modal">Kapat</button>
-            <button type="button" class="btn-yellow px-4 py-2 fw-bold border-0" data-bs-toggle="modal" data-bs-target="#registerModal">Ücretsiz Kayıt Ol</button>
+            <a href="<?= base_url('kayit-ol') ?>" class="btn-yellow px-4 py-2 fw-bold border-0 text-decoration-none">Ücretsiz Kayıt Ol</a>
           </div>
         </div>
 

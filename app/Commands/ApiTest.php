@@ -155,13 +155,47 @@ class ApiTest extends BaseCommand
         }
         CLI::newLine();
 
-        // 6. Şehirler Testi (getCities)
-        CLI::write("6. 81 İl Listesi Çekiliyor (getCities)...", 'cyan');
-        $cities = $service->request('getCities', [], 'POST', false);
-        if (!empty($cities) && is_array($cities)) {
-            CLI::write("   [BAŞARILI] " . count($cities) . " il listelendi. İlk 3: " . json_encode(array_slice($cities, 0, 3), JSON_UNESCAPED_UNICODE), 'green');
+        // 5.1. Önemli Tarihler (getImportantDates)
+        CLI::write("5.1. Önemli Tarihler Çekiliyor (getImportantDates)...", 'cyan');
+        $impDates = $service->getImportantDates(false);
+        if (!empty($impDates)) {
+            CLI::write("   [BAŞARILI] " . count($impDates) . " önemli tarih alındı.", 'green');
+            foreach ($impDates as $idat) {
+                CLI::write("     * [{$idat['badge']}] {$idat['title']} -> {$idat['date_formatted']} {$idat['time_formatted']} (Hedef ISO: {$idat['target_iso']})");
+            }
         } else {
-            CLI::write("   [UYARI] Şehir listesi boş veya alınamadı.", 'yellow');
+            CLI::write("   [UYARI] Önemli tarihler boş döndü.", 'yellow');
+        }
+        CLI::newLine();
+
+        // 5.2. Medya & Podcast (getMediaContents)
+        CLI::write("5.2. Medya & Podcast İçerikleri Çekiliyor (getMediaContents)...", 'cyan');
+        $mediaList = $service->getMediaContents(false);
+        if (!empty($mediaList)) {
+            CLI::write("   [BAŞARILI] " . count($mediaList) . " medya içeriği alındı.", 'green');
+            foreach ($mediaList as $m) {
+                CLI::write("     * [{$m['tag']}] {$m['title']} ({$m['duration']}) -> URL: {$m['url']}");
+            }
+        } else {
+            CLI::write("   [UYARI] Medya listesi boş döndü.", 'yellow');
+        }
+        CLI::newLine();
+
+        // 5.3. Hero Sliders (getSliders)
+        CLI::write("5.3. Hero Slider Çekiliyor (getSliders)...", 'cyan');
+        $sliders = $service->getSliders(5, false);
+        CLI::write("   Sliders Sayısı: " . count($sliders), count($sliders) > 0 ? 'green' : 'yellow');
+        CLI::newLine();
+
+        // 6. Şehirler ve İl Haritası Testi (getAwardCities & getCityAwardsMap)
+        CLI::write("6. İl Listesi ve Ödül Haritası Çekiliyor (getAwardCities)...", 'cyan');
+        $awardCities = $service->getAwardCities(false);
+        if (!empty($awardCities)) {
+            CLI::write("   [BAŞARILI] " . count($awardCities) . " il listelendi. İlk 5: " . implode(', ', array_slice($awardCities, 0, 5)), 'green');
+            $cityMap = $service->getCityAwardsMap(false);
+            CLI::write("   [BAŞARILI] " . count($cityMap) . " il için ödül haritası derlendi.", 'green');
+        } else {
+            CLI::write("   [UYARI] Şehir listesi boş döndü.", 'yellow');
         }
         CLI::newLine();
 
@@ -209,6 +243,36 @@ class ApiTest extends BaseCommand
         CLI::write("   getUfkaYolculukUser Yanıtı: " . json_encode($userTest, JSON_UNESCAPED_UNICODE));
         CLI::newLine();
 
-        CLI::write("Tüm API Testleri Başarıyla Tamamlandı!", 'light_green');
+        // 11. Sayfa Görünümleri ve Web İstek Testi
+        CLI::write("11. Sayfa Web Yanıtları Test Ediliyor (http://localufkayolculuk.com)...", 'cyan');
+        $pagesToTest = [
+            'Ana Sayfa'                      => '/',
+            'Duyurular'                      => '/duyurular',
+            'Ödüller'                        => '/oduller',
+            'Sıkça Sorulan Sorular'          => '/sss',
+            'İletişim & İl Temsilcilikleri' => '/iletisim',
+            'Kurumsal (Hakkımızda)'          => '/sayfa/hakkimizda',
+            'Kurumsal (Misyon & Vizyon)'     => '/sayfa/misyon-vizyon',
+        ];
+
+        foreach ($pagesToTest as $label => $uri) {
+            $ch = curl_init('http://localufkayolculuk.com' . $uri);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($ch, CURLOPT_TIMEOUT, 6);
+            $start = microtime(true);
+            $res = curl_exec($ch);
+            $ms = round((microtime(true) - $start) * 1000);
+            $http = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+            curl_close($ch);
+
+            if ($http === 200) {
+                CLI::write("   [BAŞARILI] {$label} -> HTTP 200 OK (" . strlen($res) . " bytes, {$ms}ms)", 'green');
+            } else {
+                CLI::write("   [UYARI] {$label} -> HTTP {$http}", 'yellow');
+            }
+        }
+        CLI::newLine();
+
+        CLI::write("Tüm API Testleri ve Sayfa Renderları Başarıyla Tamamlandı!", 'light_green');
     }
 }

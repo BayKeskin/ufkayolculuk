@@ -93,45 +93,131 @@
               </ul>
             </div>
 
-            <?php $authUser = session()->get('ufka_user'); ?>
-            <?php if (!empty($authUser)): ?>
-              <!-- Giriş Yapmış Yarışmacı Profil Rozeti & Menüsü -->
-              <div class="dropdown">
-                <button class="btn btn-warning text-dark fw-bold rounded-pill px-3 py-1 d-flex align-items-center gap-2 dropdown-toggle shadow-xs" type="button" data-bs-toggle="dropdown" aria-expanded="false" id="userMenuBtn">
-                  <span>👤</span>
-                  <span class="small"><?= esc(mb_substr($authUser['name'] ?? 'Yarışmacı', 0, 16)) ?></span>
-                </button>
-                <ul class="dropdown-menu dropdown-menu-end shadow-sm" aria-labelledby="userMenuBtn">
-                  <li class="px-3 py-2 border-bottom">
-                    <div class="fw-bold text-dark small"><?= esc($authUser['name'] ?? 'Yarışmacı') ?></div>
-                    <div class="text-muted" style="font-size: 0.75rem;"><?= esc($authUser['category_title'] ?? $authUser['grade'] ?? 'Yarışmacı') ?></div>
-                    <?php if (!empty($authUser['city'])): ?>
-                      <div class="text-muted" style="font-size: 0.72rem;">📍 <?= esc($authUser['city']) ?></div>
-                    <?php endif; ?>
-                  </li>
-                  <li>
-                    <a class="dropdown-item py-2 small" href="<?= base_url('/#kitaplar') ?>">📚 Kitaplarım & Sınav</a>
-                  </li>
-                  <li>
-                    <a class="dropdown-item py-2 small text-danger" href="<?= base_url('auth/logout') ?>">🚪 Güvenli Çıkış</a>
-                  </li>
-                </ul>
+            <!-- ==========================================
+                 HIZLI ARAMA / OTOMATİK TAMAMLAMA (Görsel 2 Referanslı)
+                 ========================================== -->
+            <div class="dropdown">
+              <button class="header-search-btn" type="button" id="headerSearchDropdownBtn" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false" title="Arama Yap">
+                <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2"
+                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+              </button>
+              <div class="dropdown-menu dropdown-menu-end search-dropdown-menu shadow-lg p-3" aria-labelledby="headerSearchDropdownBtn" id="headerSearchMenu">
+                <div class="search-input-header-wrapper">
+                  <span class="search-input-header-icon">
+                    <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                    </svg>
+                  </span>
+                  <input type="text" class="search-input-header" id="globalSearchInput" placeholder="Aramak istediğiniz kelimeyi yazın" autocomplete="off">
+                </div>
+
+                <div class="search-sub-title" id="searchCategoryHeader">Sık Sorulan Sorular:</div>
+
+                <!-- Öneri / Arama Sonuç Listesi -->
+                <div class="search-results-list" id="searchResultsContainer">
+                  <a href="<?= base_url('oduller') ?>" class="search-faq-item">
+                    <span class="search-faq-icon-bubble">?</span>
+                    <span>Ödülleri</span>
+                  </a>
+                  <a href="<?= base_url('sss#yarisma') ?>" class="search-faq-item">
+                    <span class="search-faq-icon-bubble">?</span>
+                    <span>Bu sene düzenlenecek olan yarışmanın konusu nedir?</span>
+                  </a>
+                  <a href="<?= base_url('/#kategoriler') ?>" class="search-faq-item">
+                    <span class="search-faq-icon-bubble">?</span>
+                    <span>E-kitaplara nasıl ulaşabilirim?</span>
+                  </a>
+                  <a href="<?= base_url('sss#sinav') ?>" class="search-faq-item">
+                    <span class="search-faq-icon-bubble">?</span>
+                    <span>Yarışmada kitaptaki dipnotlardan sorumlu muyuz ?</span>
+                  </a>
+                  <a href="<?= base_url('sayfa/sartname') ?>" class="search-faq-item">
+                    <span class="search-faq-icon-bubble">?</span>
+                    <span>Sınav kuralları nelerdir?</span>
+                  </a>
+                </div>
               </div>
-            <?php else: ?>
+            </div>
+
+            <!-- ==========================================
+                 KULLANICI PROFİL MENÜSÜ (Görsel 1 Referanslı)
+                 ========================================== -->
+            <?php 
+              $authUser = session()->get('ufka_user');
+              $displayName = !empty($authUser['name']) ? $authUser['name'] : 'ibrahim._. tekmen';
+              $displayCategory = !empty($authUser['category_title']) ? $authUser['category_title'] : 'Yarışmacı';
+            ?>
+            <div class="dropdown">
+              <button class="header-user-btn" type="button" id="userProfileDropdownBtn" data-bs-toggle="dropdown" aria-expanded="false" title="Yarışmacı Paneli">
+                <svg width="22" height="22" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
+                </svg>
+              </button>
+              <div class="dropdown-menu dropdown-menu-end user-profile-menu-dropdown shadow-lg" aria-labelledby="userProfileDropdownBtn">
+                <!-- Üst Kullanıcı Bilgisi -->
+                <div class="d-flex align-items-center gap-3 pb-2">
+                  <div class="profile-avatar-box">
+                    <svg width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
+                    </svg>
+                  </div>
+                  <div>
+                    <div class="fw-bold text-dark text-truncate" style="max-width: 170px; font-size: 0.95rem;">
+                      <?= esc($displayName) ?>
+                    </div>
+                    <span class="user-badge-yarisma">Yarışmacı</span>
+                  </div>
+                </div>
+
+                <!-- Hızlı Sertifikalarım Butonu (Mavi Hap) -->
+                <a href="<?= base_url('sertifikalarim') ?>" class="btn-profile-cert-quick">
+                  Sertifikalarım
+                </a>
+
+                <!-- Menü Linkleri (Görsel 1 Birebir) -->
+                <div class="pt-2">
+                  <a href="<?= base_url('sertifikalarim') ?>" class="profile-menu-link">
+                    <span>📜</span>
+                    <span>Sertifikalarım</span>
+                  </a>
+                  <a href="<?= base_url('sinavlarim') ?>" class="profile-menu-link">
+                    <span>📝</span>
+                    <span>Sınavlarım</span>
+                  </a>
+                  <a href="<?= base_url('takim-lideri') ?>" class="profile-menu-link">
+                    <span>👥</span>
+                    <span>Takım Lideri</span>
+                  </a>
+                  <a href="<?= base_url('vesile-olduklarim') ?>" class="profile-menu-link">
+                    <span>🔗</span>
+                    <span>Davet Et</span>
+                  </a>
+
+                  <hr class="my-2 border-secondary-subtle">
+
+                  <?php if (!empty($authUser)): ?>
+                    <a href="<?= base_url('auth/logout') ?>" class="profile-menu-link text-danger">
+                      <span>🚪</span>
+                      <span>Çıkış Yap</span>
+                    </a>
+                  <?php else: ?>
+                    <a href="#" class="profile-menu-link text-primary" data-bs-toggle="modal" data-bs-target="#loginModal">
+                      <span>🔑</span>
+                      <span>Giriş Yap</span>
+                    </a>
+                  <?php endif; ?>
+                </div>
+              </div>
+            </div>
+
+            <?php if (empty($authUser)): ?>
               <!-- Kayıt Ol Butonu -->
-              <a href="<?= base_url('kayit-ol') ?>" class="btn-yellow text-decoration-none">
+              <a href="<?= base_url('kayit-ol') ?>" class="btn-yellow text-decoration-none d-none d-md-inline-flex">
                 Kayıt Ol
               </a>
-
-              <!-- Giriş Yap Butonu (Modal Açıcı) -->
-              <button type="button" class="btn-outline-minimal" data-bs-toggle="modal" data-bs-target="#loginModal"
-                aria-label="Giriş Yap">
-                <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                </svg>
-                <span>Giriş Yap</span>
-              </button>
             <?php endif; ?>
           </div>
         </div>

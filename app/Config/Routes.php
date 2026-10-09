@@ -44,3 +44,17 @@ $routes->get('kayit/get-schools/(:num)/(:num)', 'Kayit::getSchools/$1/$2');
 $routes->post('kayit/check-leader', 'Kayit::checkLeader');
 $routes->post('kayit/ajax-register', 'Kayit::ajaxRegister');
 $routes->get('kayit/register-done/(:segment)', 'Kayit::registerDone/$1');
+
+// Yarışmacı Portalı Rotaları (Sınavlarım, Sertifikalarım, Davet Et, Takım Lideri)
+$routes->match(['GET', 'HEAD'], 'sinavlarim', 'Kullanici::sinavlarim');
+$routes->match(['GET', 'HEAD'], 'sonuclarim', 'Kullanici::sinavlarim');
+$routes->match(['GET', 'HEAD'], 'sertifikalarim', 'Kullanici::sertifikalarim');
+$routes->match(['GET', 'HEAD'], 'vesile-olduklarim', 'Kullanici::davet');
+$routes->match(['GET', 'HEAD'], 'davet-et', 'Kullanici::davet');
+$routes->match(['GET', 'HEAD'], 'hosgeldin/(:segment)', 'Kullanici::davet');
+$routes->match(['GET', 'HEAD'], 'takim-lideri', 'Kullanici::takimLideri');
+$routes->match(['GET', 'HEAD'], 'lider-olmak-istiyorum', 'Kullanici::takimLideri');
+
+// Hızlı Arama & Otomatik Tamamlama
+$routes->get('arama/autocomplete', 'Arama::autocomplete');
+

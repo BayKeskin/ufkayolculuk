@@ -2498,6 +2498,87 @@
     });
   }
 
+  /**
+   * ==========================================================
+   * 18. HEADER HIZLI ARAMA & OTOMATİK TAMAMLAMA (Görsel 2)
+   * ==========================================================
+   */
+  function initHeaderSearchAutocomplete() {
+    const searchInput = document.getElementById('globalSearchInput');
+    const resultsContainer = document.getElementById('searchResultsContainer');
+    const headerTitle = document.getElementById('searchCategoryHeader');
+    const dropdownMenu = document.getElementById('headerSearchMenu');
+
+    if (!searchInput || !resultsContainer) return;
+
+    let debounceTimer = null;
+    const defaultHtml = resultsContainer.innerHTML;
+
+    searchInput.addEventListener('input', function () {
+      const q = this.value.trim();
+
+      clearTimeout(debounceTimer);
+
+      if (q.length === 0) {
+        if (headerTitle) headerTitle.textContent = 'Sık Sorulan Sorular:';
+        resultsContainer.innerHTML = defaultHtml;
+        return;
+      }
+
+      debounceTimer = setTimeout(() => {
+        const apiUrl = (window.BASE_URL || '/') + 'arama/autocomplete?q=' + encodeURIComponent(q);
+
+        fetch(apiUrl)
+          .then(res => res.json())
+          .then(data => {
+            if (!data.results || data.results.length === 0) {
+              if (headerTitle) headerTitle.textContent = 'Arama Sonucu:';
+              resultsContainer.innerHTML = `
+                <div class="text-muted small py-3 px-2 text-center">
+                  "<strong>${escapeHtml(q)}</strong>" ile eşleşen bir sonuç bulunamadı.
+                </div>
+              `;
+              return;
+            }
+
+            if (headerTitle) {
+              headerTitle.textContent = data.is_default ? 'Sık Sorulan Sorular:' : `Arama Sonuçları (${data.results.length}):`;
+            }
+
+            let html = '';
+            data.results.forEach(item => {
+              const icon = item.type === 'sss' ? '?' : '🔗';
+              const badge = item.badge ? `<span class="badge bg-light text-secondary ms-auto small" style="font-size: 0.68rem;">${escapeHtml(item.badge)}</span>` : '';
+              html += `
+                <a href="${item.url}" class="search-faq-item">
+                  <span class="search-faq-icon-bubble">${icon}</span>
+                  <span class="text-truncate" style="max-width: 280px;">${escapeHtml(item.title)}</span>
+                  ${badge}
+                </a>
+              `;
+            });
+
+            resultsContainer.innerHTML = html;
+          })
+          .catch(err => {
+            console.error('Search error:', err);
+          });
+      }, 200);
+    });
+
+    function escapeHtml(str) {
+      return (str || '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+  }
+
+  // Arama başlat
+  initHeaderSearchAutocomplete();
+
 })();
 
 

@@ -57,6 +57,27 @@ class Auth extends BaseController
         $user = $this->api->verifyUser($phone, $birthDate);
 
         if ($user) {
+            // Kullanıcının API'deki detay profilini, sınav sonuçlarını ve kodlarını yükle
+            if (!empty($user['id'])) {
+                try {
+                    $userData = $this->api->getUserData((int)$user['id']);
+                    if (!empty($userData['user'])) {
+                        $user['inviter_code']     = $userData['user']['inviter_code'] ?? null;
+                        $user['consultant_code']  = $userData['user']['consultant_code'] ?? null;
+                        $user['is_consultant']    = $userData['user']['is_consultant'] ?? null;
+                        $user['consultant_type']  = $userData['user']['consultant_type'] ?? null;
+                    }
+                    $userResults = $this->api->getUserResults((int)$user['id']);
+                    if (!empty($userResults['user_summary'])) {
+                        $user['general_score'] = $userResults['user_summary']['overall_score'] ?? null;
+                        $user['turkey_rank']   = $userResults['user_summary']['global_rank'] ?? null;
+                        $user['city_rank']     = $userResults['user_summary']['city_rank'] ?? null;
+                    }
+                } catch (\Throwable $e) {
+                    log_message('error', 'Auth login user stats fetch error: ' . $e->getMessage());
+                }
+            }
+
             // Oturumu başlat
             session()->set('ufka_user', $user);
 

@@ -305,13 +305,51 @@ class UfkaApiService
     }
 
     /**
-     * Kullanıcı ID'sine göre profil ve okuma verilerini döner
+     * Kullanıcı ID'sine göre profil, liderlik ve okuma verilerini döner
      */
     public function getUserData(int $userId): ?array
     {
         $result = $this->request("getUserData/{$userId}", [], 'POST', false);
         return is_array($result) ? $result : null;
     }
+
+    /**
+     * Kullanıcı ID'sine göre sınav sonuçlarını, genel puanı, Türkiye ve il derecelerini döner
+     * API Uç Noktası: getUserResults/{userId}
+     */
+    public function getUserResults(int $userId, bool $useCache = false): ?array
+    {
+        $result = $this->request("getUserResults/{$userId}", [], 'POST', $useCache);
+        if (is_array($result) && !empty($result['status'])) {
+            return $result;
+        }
+        return null;
+    }
+
+    /**
+     * Kullanıcı ID'sine göre hak kazanılan katılım ve başarı sertifikalarını döner
+     * API Uç Noktası: getCertificates/{userId}
+     */
+    public function getUserCertificates(int $userId, bool $useCache = false): array
+    {
+        $result = $this->request("getCertificates/{$userId}", [], 'POST', $useCache);
+        if (is_array($result) && !empty($result['certificates'])) {
+            return $result['certificates'];
+        }
+        return [];
+    }
+
+    /**
+     * Kullanıcı ID'sine göre dinamik profil menüsünü döner
+     * API Uç Noktası: getProfileMenu/{userId}
+     */
+    public function getProfileMenu(?int $userId = null, bool $useCache = true): array
+    {
+        $endpoint = 'getProfileMenu' . ($userId ? "/{$userId}" : '');
+        $result = $this->request($endpoint, [], 'POST', $useCache);
+        return is_array($result) ? $result : [];
+    }
+
 
     /**
      * Yalnızca Duyuruları ve Haberleri filtreleyerek en yeniye göre sıralı döner (Sunucu Filtreli)

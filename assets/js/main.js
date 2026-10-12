@@ -646,9 +646,11 @@
     const chatForm = document.getElementById('ufyoChatForm');
     const chatInput = document.getElementById('ufyoInput');
     const chatBody = document.getElementById('ufyoChatBody');
-    const quickChips = document.querySelectorAll('.ufyo-chip-btn');
 
     if (!botTrigger || !chatPanel) return;
+
+    let botConfig = null;
+    let botKnowledgeLoaded = false;
 
     // Toggle Chat Paneli
     function toggleChat(open = null) {
@@ -656,6 +658,9 @@
       if (shouldOpen) {
         chatPanel.classList.add('active');
         chatPanel.setAttribute('aria-hidden', 'false');
+        if (!botKnowledgeLoaded) {
+          loadBotKnowledge();
+        }
         if (chatInput) chatInput.focus();
       } else {
         chatPanel.classList.remove('active');
@@ -671,6 +676,17 @@
       });
     }
 
+    // Dışarıdan veya FAQ sayfasından tetikleme için global fonksiyon
+    window.openUfyoChat = function(prefillQuestion = '', autoSubmit = false) {
+      toggleChat(true);
+      if (chatInput && prefillQuestion) {
+        chatInput.value = prefillQuestion;
+        if (autoSubmit) {
+          handleUserQuestion(prefillQuestion);
+        }
+      }
+    };
+
     // Scroll to Bottom
     function scrollToBottom() {
       if (chatBody) {
@@ -682,10 +698,12 @@
     }
 
     // Mesaj Ekleme
-    function appendMessage(text, isUser = false) {
+    function appendMessage(text, isUser = false, suggestions = []) {
       if (!chatBody) return;
       const msgDiv = document.createElement('div');
       msgDiv.className = `chat-msg ${isUser ? 'user-msg' : 'bot-msg'}`;
+
+      const avatarSrc = (botConfig && botConfig.avatar_url) ? resolveMediaUrl(botConfig.avatar_url) : 'assets/images/icon6.png';
 
       if (isUser) {
         msgDiv.innerHTML = `
@@ -696,12 +714,32 @@
       } else {
         msgDiv.innerHTML = `
           <div class="chat-msg-avatar">
-            <img src="assets/images/icon6.png" alt="Ufyo">
+            <img src="${avatarSrc}" alt="Ufyo">
           </div>
           <div class="chat-msg-content">
             ${text}
           </div>
         `;
+
+        // Önerilen takip soruları varsa çip olarak ekle
+        if (suggestions && Array.isArray(suggestions) && suggestions.length > 0) {
+          const suggWrapper = document.createElement('div');
+          suggWrapper.className = 'ufyo-suggestions mt-2 pt-2 border-top border-light-subtle';
+          let suggHtml = '<small class="text-muted d-block mb-1 fw-semibold">Önerilen Sorular:</small><div class="d-flex flex-wrap gap-1">';
+          suggestions.forEach(s => {
+            suggHtml += `<button type="button" class="ufyo-chip-btn ufyo-sugg-chip" data-question="${escapeHtml(s)}">${escapeHtml(s)}</button>`;
+          });
+          suggHtml += '</div>';
+          suggWrapper.innerHTML = suggHtml;
+          msgDiv.querySelector('.chat-msg-content').appendChild(suggWrapper);
+
+          suggWrapper.querySelectorAll('.ufyo-sugg-chip').forEach(btn => {
+            btn.addEventListener('click', function() {
+              const q = this.getAttribute('data-question');
+              handleUserQuestion(q);
+            });
+          });
+        }
       }
 
       chatBody.appendChild(msgDiv);
@@ -710,12 +748,13 @@
 
     // Typing Göstergesi
     function showTypingIndicator() {
+      const avatarSrc = (botConfig && botConfig.avatar_url) ? resolveMediaUrl(botConfig.avatar_url) : 'assets/images/icon6.png';
       const typingDiv = document.createElement('div');
       typingDiv.className = 'chat-msg bot-msg typing-msg';
       typingDiv.id = 'ufyoTyping';
       typingDiv.innerHTML = `
         <div class="chat-msg-avatar">
-          <img src="assets/images/icon6.png" alt="Ufyo">
+          <img src="${avatarSrc}" alt="Ufyo">
         </div>
         <div class="typing-indicator">
           <span class="typing-dot"></span>
@@ -732,61 +771,111 @@
       if (el) el.remove();
     }
 
-    // Yapay Zeka Cevap Üretici (Keyword Matching & Semantic Context)
-    function generateBotAnswer(userMsg) {
-      const q = userMsg.toLowerCase();
-
-      if (q.includes('sınav') || q.includes('tarih') || q.includes('zaman') || q.includes('takvim')) {
-        return `<p class="mb-1">📅 <strong>12. Ufka Yolculuk Yarışma Takvimi:</strong></p>
-                <p class="mb-1">• <strong>Kayıt Dönemi:</strong> 15 Ekim 2025 - 15 Mart 2026</p>
-                <p class="mb-1">• <strong>1. Aşama Online Sınav:</strong> 18-19 Nisan 2026</p>
-                <p class="mb-0">• <strong>2. Aşama Türkiye Finali:</strong> 17 Mayıs 2026</p>`;
-      }
-
-      if (q.includes('kitap') || q.includes('temin') || q.includes('oku') || q.includes('nereden')) {
-        return `<p class="mb-1">📚 <strong>Yarışma Kitapları Temini:</strong></p>
-                <p class="mb-1">Kategorinize ait yarışma kitabını web sitemizden online sipariş edebilir, seçkin kitapçılardan veya il/ilçe temsilciliklerimizden temin edebilirsiniz.</p>
-                <p class="mb-0">Ayrıca sayfamızdaki kitap bölümünden örnek bölümleri <strong>dinleyebilir</strong> veya <strong>okuyabilirsiniz</strong>.</p>`;
-      }
-
-      if (q.includes('ödül') || q.includes('odul') || q.includes('hediye') || q.includes('kazan')) {
-        return `<p class="mb-1">🏆 <strong>12. Dönem Muhteşem Ödülleri:</strong></p>
-                <p class="mb-1">• <strong>Türkiye Dereceleri:</strong> Umre seyahatleri, tabletler, laptoplar ve para ödülleri.</p>
-                <p class="mb-1">• <strong>İl & İlçe Ödülleri:</strong> Her ilde ilk 10'a giren yarışmacılara özel ödüller.</p>
-                <p class="mb-0">• <strong>Takım Lideri Ödülleri:</strong> Danışman öğretmenlerimize özel başarı ödülleri.</p>`;
-      }
-
-      if (q.includes('oyun') || q.includes('soru') || q.includes('deneme') || q.includes('market') || q.includes('mağaza') || q.includes('subdomain') || q.includes('test')) {
-        return `<p class="mb-1">🎯 <strong>Özel Platformlarımız:</strong></p>
-                <p class="mb-1">🎮 <strong>Oyun Dünyası:</strong> <a href="https://oyun.ufkayolculuk.com" target="_blank" class="fw-bold text-primary">oyun.ufkayolculuk.com</a> adresinden mini oyunlara katılabilirsiniz.</p>
-                <p class="mb-1">📝 <strong>Online Soru Çözüm:</strong> <a href="https://soru.ufkayolculuk.com" target="_blank" class="fw-bold text-primary">soru.ufkayolculuk.com</a> üzerinden deneme sınavları çözebilirsiniz.</p>
-                <p class="mb-0">🛍️ <strong>Ufyo Market:</strong> <a href="https://market.ufkayolculuk.com" target="_blank" class="fw-bold text-primary">market.ufkayolculuk.com</a> üzerinden kitap ve ödül ürünlerine ulaşabilirsiniz.</p>`;
-      }
-
-      if (q.includes('kayıt') || q.includes('başvuru') || q.includes('nasıl katılırım')) {
-        return `<p class="mb-1">✍️ <strong>Yarışmaya Katılım Adımları:</strong></p>
-                <p class="mb-1">1. Sağ üstteki <strong>Giriş / Kayıt</strong> butonundan telefon ve doğum tarihinizle kayıt olun.</p>
-                <p class="mb-1">2. Yaş grubunuza uygun kitabı edinin.</p>
-                <p class="mb-0">3. Online soru havuzumuzla pratik yaparak sınav gününe hazırlanın!</p>`;
-      }
-
-      if (q.includes('takım') || q.includes('öğretmen') || q.includes('okul') || q.includes('lider')) {
-        return `<p class="mb-1">👥 <strong>Takım Lideri Portalı:</strong></p>
-                <p class="mb-0">Öğretmenlerimiz ve danışmanlarımız Takım Lideri Portalı üzerinden sınıflarını ve okuma gruplarını oluşturarak öğrencilerinin ilerlemelerini anlık takip edebilirler.</p>`;
-      }
-
-      // Genel Cevap
-      return `<p class="mb-1">Sorunuz için teşekkür ederim! ✨</p>
-              <p class="mb-0">Ufka Yolculuk ile ilgili merak ettiğiniz tüm detaylara ana sayfamızdaki menülerden, <strong>Rehber</strong> ve <strong>Sıkça Sorulan Sorular</strong> sayfalarımızdan veya çağrı merkezimizden dilediğiniz zaman ulaşabilirsiniz.</p>`;
+    function resolveMediaUrl(url) {
+      if (!url) return 'assets/images/icon6.png';
+      if (url.startsWith('http://') || url.startsWith('https://')) return url;
+      const base = window.BASE_URL || '/';
+      return base.replace(/\/+$/, '') + '/' + url.replace(/^\/+/, '');
     }
 
     function escapeHtml(text) {
+      if (!text) return '';
       const map = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' };
-      return text.replace(/[&<>"']/g, (m) => map[m]);
+      return String(text).replace(/[&<>"']/g, (m) => map[m]);
     }
 
-    // Soru Gönderme İşlemi
-    function handleUserQuestion(questionText) {
+    // API'den Bot Bilgi Seti ve Ayarlarını Yükle
+    async function loadBotKnowledge() {
+      try {
+        const knowledgeUrl = (window.BASE_URL || '/') + 'bot/knowledge';
+        const resp = await fetch(knowledgeUrl, {
+          headers: { 'X-Requested-With': 'XMLHttpRequest' }
+        });
+        if (!resp.ok) return;
+
+        const data = await resp.json();
+        if (!data || !data.bot) return;
+
+        botConfig = data.bot;
+        botKnowledgeLoaded = true;
+
+        // Bot pasif ise tüm arayüzü gizle
+        if (botConfig.is_active === false || botConfig.is_active === 0) {
+          botTrigger.style.display = 'none';
+          chatPanel.style.display = 'none';
+          return;
+        }
+
+        // Başlık, alt başlık ve balon metni güncelle
+        const titleEl = document.getElementById('ufyoChatTitle');
+        if (titleEl && botConfig.name) {
+          titleEl.textContent = botConfig.name;
+        }
+
+        const subEl = chatPanel.querySelector('.ufyo-subtitle');
+        if (subEl && botConfig.subtitle) {
+          subEl.textContent = botConfig.subtitle;
+        }
+
+        const bubbleEl = document.getElementById('ufyoBubble');
+        if (bubbleEl && botConfig.bubble_text) {
+          bubbleEl.innerHTML = botConfig.bubble_text;
+        }
+
+        // Avatar görselleri
+        if (botConfig.avatar_url) {
+          const avUrl = resolveMediaUrl(botConfig.avatar_url);
+          chatPanel.querySelectorAll('img[alt="Ufyo"]').forEach(img => {
+            img.src = avUrl;
+          });
+          const mascot = botTrigger.querySelector('.bot-mascot-img');
+          if (mascot) {
+            mascot.src = avUrl;
+          }
+        }
+
+        // Karşılama mesajı
+        if (botConfig.greeting_message) {
+          const firstMsg = chatBody.querySelector('.chat-msg.bot-msg:not(.typing-msg) .chat-msg-content');
+          if (firstMsg) {
+            firstMsg.innerHTML = botConfig.greeting_message;
+          }
+        }
+
+        // Hızlı Soru Çipleri (Quick Chips) Dinamik Oluşturma
+        if (data.quick_chips && Array.isArray(data.quick_chips) && data.quick_chips.length > 0) {
+          const chipsWrapper = document.getElementById('ufyoQuickChips');
+          if (chipsWrapper) {
+            let container = chipsWrapper.querySelector('.d-flex');
+            if (!container) {
+              container = document.createElement('div');
+              container.className = 'd-flex flex-wrap gap-1 mt-1';
+              chipsWrapper.appendChild(container);
+            }
+            container.innerHTML = '';
+            data.quick_chips.forEach(chip => {
+              const btn = document.createElement('button');
+              btn.type = 'button';
+              btn.className = 'ufyo-chip-btn';
+              btn.setAttribute('data-question', chip.question);
+              btn.textContent = chip.label;
+              btn.addEventListener('click', function() {
+                handleUserQuestion(chip.question);
+              });
+              container.appendChild(btn);
+            });
+          }
+        }
+      } catch (err) {
+        console.warn('Ufyo bot bilgisi yüklenirken hata:', err);
+      }
+    }
+
+    // Sayfa yüklenir yüklenmez arka planda bot ayarlarını çek
+    loadBotKnowledge();
+
+    // Soru Gönderme İşlemi (Tamamen API Üzerinden)
+    async function handleUserQuestion(questionText) {
       const q = questionText.trim();
       if (!q) return;
 
@@ -795,11 +884,41 @@
 
       showTypingIndicator();
 
-      setTimeout(() => {
+      try {
+        const askUrl = (window.BASE_URL || '/') + 'bot/ask';
+        const formData = new URLSearchParams();
+        formData.append('question', q);
+
+        const resp = await fetch(askUrl, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'X-Requested-With': 'XMLHttpRequest'
+          },
+          body: formData.toString()
+        });
+
         removeTypingIndicator();
-        const answer = generateBotAnswer(q);
-        appendMessage(answer, false);
-      }, 600);
+
+        if (resp.ok) {
+          const data = await resp.json();
+          const answer = (data && data.answer) 
+            ? data.answer 
+            : ((botConfig && botConfig.fallback_message) ? botConfig.fallback_message : 'Sorunuz için teşekkürler!');
+          appendMessage(answer, false, data.suggestions || []);
+        } else {
+          const fallback = (botConfig && botConfig.fallback_message) 
+            ? botConfig.fallback_message 
+            : 'Sorunuz için teşekkür ederim! Detaylı bilgi için menülerimizi inceleyebilirsiniz.';
+          appendMessage(fallback, false);
+        }
+      } catch (err) {
+        removeTypingIndicator();
+        const fallback = (botConfig && botConfig.fallback_message) 
+          ? botConfig.fallback_message 
+          : 'Bağlantı hatası oluştu, lütfen internet bağlantınızı kontrol ediniz.';
+        appendMessage(fallback, false);
+      }
     }
 
     // Form Gönderimi
@@ -812,8 +931,9 @@
       });
     }
 
-    // Hızlı Soru Çipleri Tıklaması
-    quickChips.forEach((chip) => {
+    // Mevcut statik çiplere de dinleyici ata (API yüklenmeden tıklanırsa çalışması için)
+    const existingChips = document.querySelectorAll('.ufyo-chip-btn');
+    existingChips.forEach((chip) => {
       chip.addEventListener('click', function () {
         const question = this.getAttribute('data-question') || this.textContent.trim();
         handleUserQuestion(question);

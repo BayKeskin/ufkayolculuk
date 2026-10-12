@@ -32,6 +32,9 @@ class Kullanici extends BaseController
             $userResults = $this->api->getUserResults($userId);
             $summary     = $userResults['user_summary'] ?? [];
 
+            // 3. API'den gerçek takım liderliği istatistiklerini sorgula
+            $leaderStats = $this->api->getLeaderStats($userId);
+
             // Gerçek davet kodu (API'deki inviter_code veya hesaplanan benzersiz kod)
             $inviteCode = !empty($rawApiUser['inviter_code'])
                 ? $rawApiUser['inviter_code']
@@ -39,53 +42,78 @@ class Kullanici extends BaseController
                     ? $rawApiUser['consultant_code']
                     : ('UY' . strtoupper(substr(md5((string)$userId), 0, 10))));
 
-            // Gerçek istatistikler (Varsa API'den, yoksa mantıklı gösterge)
+            // Gerçek sınav sonuç istatistikleri
+            $resultStatus = $summary['result_status'] ?? null;
+            $statusMsg    = $summary['status_message'] ?? null;
+            $totalGlobal  = $summary['total_participants_global'] ?? null;
+
             $generalScore = $summary['overall_score'] !== null ? (string)$summary['overall_score'] : '3.27';
             $turkeyRank   = $summary['global_rank'] !== null ? (string)$summary['global_rank'] : '48296';
             $cityRank     = $summary['city_rank'] !== null ? (string)$summary['city_rank'] : '460';
 
-            $leaderCategory = !empty($rawApiUser['consultant_type'])
-                ? ($rawApiUser['consultant_type'] . ' Kategorisi')
-                : 'DİĞER Kategorisi';
+            $leaderCategory = !empty($leaderStats['consultant_type'])
+                ? ($leaderStats['consultant_type'] . ' Kategorisi')
+                : (!empty($rawApiUser['consultant_type'])
+                    ? ($rawApiUser['consultant_type'] . ' Kategorisi')
+                    : 'DİĞER Kategorisi');
 
-            $isLeader = !empty($rawApiUser['is_consultant']) || !empty($apiUserData['is_leader']);
+            $leaderScore = !empty($leaderStats['leader_score'])
+                ? (string)$leaderStats['leader_score']
+                : '0.0000000';
+
+            $totalStudents  = (int)($leaderStats['total_students'] ?? ($apiUserData['invited_count'] ?? 0));
+            $activeStudents = (int)($leaderStats['active_exam_students'] ?? 0);
+
+            $isLeader = !empty($rawApiUser['is_consultant']) || !empty($apiUserData['is_leader']) || !empty($leaderStats['is_leader']);
 
             return [
-                'id'              => $userId,
-                'name'            => $sessionUser['name'] ?? ($rawApiUser['name'] ?? 'Yarışmacı'),
-                'category_title'  => $sessionUser['category_title'] ?? ($rawApiUser['category_title'] ?? 'Yetişkin Kategorisi'),
-                'grade'           => $sessionUser['grade'] ?? '',
-                'city'            => $sessionUser['city'] ?? ($rawApiUser['city_name'] ?? 'İstanbul'),
-                'school'          => $sessionUser['school'] ?? ($rawApiUser['school_name'] ?? ''),
-                'invite_code'     => $inviteCode,
-                'general_score'   => $generalScore,
-                'turkey_rank'     => $turkeyRank,
-                'city_rank'       => $cityRank,
-                'is_leader'       => $isLeader,
-                'leader_category' => $leaderCategory,
-                'leader_score'    => '0.0000000',
-                'is_demo'         => false,
-                'raw_results'     => $userResults,
-                'raw_user'        => $rawApiUser,
+                'id'                        => $userId,
+                'name'                      => $sessionUser['name'] ?? ($rawApiUser['name'] ?? 'Yarışmacı'),
+                'category_title'            => $sessionUser['category_title'] ?? ($rawApiUser['category_title'] ?? 'Yetişkin Kategorisi'),
+                'grade'                     => $sessionUser['grade'] ?? '',
+                'city'                      => $sessionUser['city'] ?? ($rawApiUser['city_name'] ?? 'İstanbul'),
+                'school'                    => $sessionUser['school'] ?? ($rawApiUser['school_name'] ?? ''),
+                'invite_code'               => $inviteCode,
+                'general_score'             => $generalScore,
+                'turkey_rank'               => $turkeyRank,
+                'city_rank'                 => $cityRank,
+                'result_status'             => $resultStatus,
+                'status_message'            => $statusMsg,
+                'total_participants_global' => $totalGlobal,
+                'is_leader'                 => $isLeader,
+                'leader_category'           => $leaderCategory,
+                'leader_score'              => $leaderScore,
+                'total_students'            => $totalStudents,
+                'active_exam_students'      => $activeStudents,
+                'leader_stats'              => $leaderStats,
+                'is_demo'                   => false,
+                'raw_results'               => $userResults,
+                'raw_user'                  => $rawApiUser,
             ];
         }
 
         // Demo / Önizleme kullanıcısı (Resimdeki ibrahim._. tekmen referans profili)
         return [
-            'id'              => 48296,
-            'name'            => 'ibrahim._. tekmen',
-            'category_title'  => 'Yetişkin Kategorisi',
-            'grade'           => 'Yetişkin',
-            'city'            => 'İstanbul',
-            'school'          => 'İstanbul Üniversitesi',
-            'invite_code'     => 'UYCOPBLLH1YDO',
-            'general_score'   => '3.27',
-            'turkey_rank'     => '48296',
-            'city_rank'       => '460',
-            'is_leader'       => true,
-            'leader_category' => 'DİĞER Kategorisi',
-            'leader_score'    => '0.0000000',
-            'is_demo'         => true,
+            'id'                        => 48296,
+            'name'                      => 'ibrahim._. tekmen',
+            'category_title'            => 'Yetişkin Kategorisi',
+            'grade'                     => 'Yetişkin',
+            'city'                      => 'İstanbul',
+            'school'                    => 'İstanbul Üniversitesi',
+            'invite_code'               => 'UYCOPBLLH1YDO',
+            'general_score'             => '3.27',
+            'turkey_rank'               => '48296',
+            'city_rank'                 => '460',
+            'result_status'             => 'announced',
+            'status_message'            => null,
+            'total_participants_global' => 185420,
+            'is_leader'                 => true,
+            'leader_category'           => 'DİĞER Kategorisi',
+            'leader_score'              => '0.0000000',
+            'total_students'            => 0,
+            'active_exam_students'      => 0,
+            'leader_stats'              => null,
+            'is_demo'                   => true,
         ];
     }
 
@@ -159,10 +187,24 @@ class Kullanici extends BaseController
         $user = $this->getActiveUser();
         $inviteLink = base_url('hosgeldin/' . $user['invite_code']);
 
-        // Davet edilen yarışmacılar listesi
-        // Not: API'de davet edilen kişileri listeleyen harici bir endpoint bulunmadığından
-        // sistem orijinal ekran görüntüsündeki gibi boş tablo durumunu göstermektedir.
+        // API'den gerçek davet edilen yarışmacılar listesini çek
+        $rawInvited = !$user['is_demo'] ? $this->api->getInvitedUsers($user['id']) : [];
+
         $invitedList = [];
+        if (!empty($rawInvited) && is_array($rawInvited)) {
+            foreach ($rawInvited as $row) {
+                $dateStr = !empty($row['registration_date']) 
+                    ? date('d.m.Y H:i', strtotime($row['registration_date']))
+                    : (!empty($row['create_time']) ? date('d.m.Y', strtotime($row['create_time'])) : '-');
+
+                $invitedList[] = [
+                    'name'       => $row['full_name'] ?? ($row['name'] ?? 'Yarışmacı'),
+                    'category'   => $row['category'] ?? ($row['category_title'] ?? 'Yarışmacı'),
+                    'school'     => $row['school'] ?? ($row['school_name'] ?? '-'),
+                    'created_at' => $dateStr,
+                ];
+            }
+        }
 
         return view('kullanici/davet', [
             'title'        => 'Davet Et & Vesile Olduklarım - Ufka Yolculuk',
@@ -184,7 +226,7 @@ class Kullanici extends BaseController
         $apiCerts = !$user['is_demo'] ? $this->api->getUserCertificates($user['id']) : [];
 
         $certificates = [];
-        if (!empty($apiCerts)) {
+        if (!empty($apiCerts) && is_array($apiCerts)) {
             foreach ($apiCerts as $c) {
                 $certificates[] = [
                     'id'       => $c['id'] ?? uniqid('cert_'),
@@ -193,7 +235,8 @@ class Kullanici extends BaseController
                     'date'     => $c['year'] ?? '2026',
                     'badge'    => $c['type_name'] ?? 'Resmi Belge',
                     'color'    => 'primary',
-                    'code'     => $c['code'] ?? ('UY-' . strtoupper(substr(md5((string)$user['id']), 0, 8))),
+                    'code'     => $c['verification_code'] ?? ($c['code'] ?? ('UY-' . strtoupper(substr(md5((string)$user['id']), 0, 8)))),
+                    'pdf_url'  => $c['pdf_url'] ?? null,
                     'desc'     => $c['description'] ?? 'Yarışmaya katılımınızdan ötürü takdim edilmiştir.',
                 ];
             }

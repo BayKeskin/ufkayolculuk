@@ -213,7 +213,18 @@
           🔗 Davet Et & Kazan
         </a>
       </div>
-    </div>
+    <!-- Sınav Durum / Bekleme Bildirimi (API'den Gelen) -->
+    <?php if (!empty($user['status_message']) || ($user['result_status'] ?? '') === 'pending'): ?>
+      <div class="alert alert-info border-0 rounded-4 shadow-xs d-flex align-items-center gap-3 mb-4 p-3">
+        <span class="fs-4">⏳</span>
+        <div>
+          <div class="fw-bold text-dark mb-0"><?= esc($user['status_message'] ?? 'Sınav tamamlandı, sonuçlar değerlendirme aşamasında.') ?></div>
+          <?php if (!empty($user['total_participants_global'])): ?>
+            <small class="text-muted">Türkiye Geneli Katılımcı Sayısı: <strong><?= number_format((int)$user['total_participants_global'], 0, ',', '.') ?></strong></small>
+          <?php endif; ?>
+        </div>
+      </div>
+    <?php endif; ?>
 
     <!-- 1. Satır: 3 Ana İstatistik Kartı (Resimdeki Gibi) -->
     <div class="row g-3 g-md-4 mb-4">

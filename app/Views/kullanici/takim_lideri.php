@@ -46,16 +46,21 @@
         <div class="leader-card text-center">
           <div class="display-5 mb-2">👥</div>
           <h3 class="fw-bold fs-5 text-dark">Kayıtlı Takım Üyesi</h3>
-          <div class="display-6 fw-bold text-primary mt-2">0</div>
-          <div class="mt-2 text-muted small">Rehberlik ettiğiniz toplam yarışmacı sayısı.</div>
+          <div class="display-6 fw-bold text-primary mt-2"><?= esc($user['total_students'] ?? 0) ?></div>
+          <div class="mt-2 text-muted small">
+            Rehberlik ettiğiniz toplam yarışmacı sayısı.
+            <?php if (!empty($user['active_exam_students'])): ?>
+              <br><span class="text-success fw-semibold">● <?= (int)$user['active_exam_students'] ?> danışan sınava katıldı</span>
+            <?php endif; ?>
+          </div>
         </div>
       </div>
       <div class="col-12 col-md-4">
         <div class="leader-card text-center">
           <div class="display-5 mb-2">🎯</div>
           <h3 class="fw-bold fs-5 text-dark">Liderlik Puanı</h3>
-          <div class="display-6 fw-bold text-success mt-2"><?= esc($user['leader_score'] ?? '0.00') ?></div>
-          <div class="mt-2 text-muted small">Öğrencilerinizin başarısına göre biriken puanınız.</div>
+          <div class="display-6 fw-bold text-success mt-2"><?= esc($user['leader_score'] ?? '0.0000000') ?></div>
+          <div class="mt-2 text-muted small">Öğrencilerinizin başarısına göre biriken liderlik puanınız.</div>
         </div>
       </div>
     </div>

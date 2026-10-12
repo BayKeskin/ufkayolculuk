@@ -340,6 +340,43 @@ class UfkaApiService
     }
 
     /**
+     * Kullanıcının davet linkiyle kaydolan yarışmacıların listesini döner
+     * API Uç Noktası: getInvitedUsers/{userId}
+     */
+    public function getInvitedUsers(int $userId, bool $useCache = false): array
+    {
+        $result = $this->request("getInvitedUsers/{$userId}", [], 'GET', $useCache);
+        if (is_array($result)) {
+            if (!empty($result['invited_users']) && is_array($result['invited_users'])) {
+                return $result['invited_users'];
+            }
+            if (!empty($result['data']) && is_array($result['data'])) {
+                return $result['data'];
+            }
+            if (!empty($result['users']) && is_array($result['users'])) {
+                return $result['users'];
+            }
+            if (isset($result[0]) && is_array($result[0])) {
+                return $result;
+            }
+        }
+        return [];
+    }
+
+    /**
+     * Takım liderinin danışan istatistiklerini ve liderlik puanını döner
+     * API Uç Noktası: getLeaderStats/{userId}
+     */
+    public function getLeaderStats(int $userId, bool $useCache = false): ?array
+    {
+        $result = $this->request("getLeaderStats/{$userId}", [], 'GET', $useCache);
+        if (is_array($result) && (!empty($result['status']) || !empty($result['leader_info']))) {
+            return $result['leader_info'] ?? $result;
+        }
+        return null;
+    }
+
+    /**
      * Kullanıcı ID'sine göre dinamik profil menüsünü döner
      * API Uç Noktası: getProfileMenu/{userId}
      */
@@ -349,6 +386,7 @@ class UfkaApiService
         $result = $this->request($endpoint, [], 'POST', $useCache);
         return is_array($result) ? $result : [];
     }
+
 
 
     /**

@@ -173,6 +173,11 @@
                   onclick="openCertPreview('<?= esc($cert['title']) ?>', '<?= esc($cert['category']) ?>', '<?= esc($cert['code']) ?>')">
                   👁️ Önizle
                 </button>
+                <?php if (!empty($cert['pdf_url'])): ?>
+                  <a href="<?= esc($cert['pdf_url']) ?>" target="_blank" download class="btn btn-warning rounded-pill px-3 py-2 small fw-bold">
+                    📥 PDF
+                  </a>
+                <?php endif; ?>
                 <button type="button" class="btn btn-outline-secondary rounded-pill px-3 py-2 small fw-bold"
                   onclick="window.print()">
                   🖨️ Yazdır

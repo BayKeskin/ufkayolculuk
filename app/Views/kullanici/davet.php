@@ -216,7 +216,7 @@
             <option value="50">50</option>
           </select>
           <span>kayıt göster</span>
-          <span class="ms-3 text-muted">Kayıt yok</span>
+          <span class="ms-3 text-muted"><?= !empty($invitedList) ? (count($invitedList) . ' kayıt listeleniyor') : 'Kayıt yok' ?></span>
         </div>
 
         <div class="d-flex align-items-center gap-3">

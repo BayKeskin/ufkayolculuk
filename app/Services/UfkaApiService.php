@@ -1168,6 +1168,85 @@ class UfkaApiService
     }
 
     /**
+     * Kitabın tüm detaylarını, bölümlerini, sayfalarını ve cümle-ses senkronizasyon metinlerini döner
+     *
+     * @param int      $bookId    Kitap ID
+     * @param bool     $withText  Cümle zaman damgaları ve metinler gelsin mi?
+     * @param int|null $page      Opsiyonel başlangıç sayfası
+     * @param int|null $limit     Opsiyonel sayfa adedi limiti
+     * @param bool     $useCache  Önbellek kullanılsın mı?
+     * @return array|null
+     */
+    public function getBookDetails(int $bookId, bool $withText = true, ?int $page = null, ?int $limit = null, bool $useCache = true): ?array
+    {
+        $params = ['with_text' => $withText ? 1 : 0];
+        if ($page !== null) {
+            $params['page'] = $page;
+        }
+        if ($limit !== null) {
+            $params['limit'] = $limit;
+        }
+        return $this->request("getBook/{$bookId}", $params, 'POST', $useCache);
+    }
+
+    /**
+     * Kullanıcının kitap okuma ve ses dinleme ilerlemesini kaydeder
+     *
+     * @param int   $userId       Kullanıcı ID
+     * @param int   $bookId       Kitap ID
+     * @param int   $page         Kalınan son sayfa no
+     * @param float $audioTime    Ses çaların kaldığı saniye
+     * @param int   $readSeconds  Bu oturumda okunan süre (saniye)
+     * @param int   $isCompleted  Kitap bitti mi? (0 veya 1)
+     * @return array
+     */
+    public function saveUserProgress(int $userId, int $bookId, int $page, float $audioTime = 0.0, int $readSeconds = 0, int $isCompleted = 0): array
+    {
+        $postData = [
+            'user_id'      => $userId,
+            'book_id'      => $bookId,
+            'page'         => $page,
+            'audio_time'   => $audioTime,
+            'read_seconds' => $readSeconds,
+            'is_completed' => $isCompleted,
+        ];
+        $result = $this->request('saveUserProgress', $postData, 'POST', false);
+        return is_array($result) ? $result : ['status' => false, 'code' => 500, 'message' => 'API bağlantı hatası'];
+    }
+
+    /**
+     * Kullanıcının kitap okuma ve ses dinleme ilerlemesini döner
+     *
+     * @param int      $userId   Kullanıcı ID
+     * @param int|null $bookId   Kitap ID (boş ise tüm kitaplar döner)
+     * @param bool     $useCache Önbellek kullanılsın mı?
+     * @return array|null
+     */
+    public function getUserProgress(int $userId, ?int $bookId = null, bool $useCache = false): ?array
+    {
+        $endpoint = $bookId ? "getUserProgress/{$userId}/{$bookId}" : "getUserProgress/{$userId}";
+        return $this->request($endpoint, ['user_id' => $userId, 'book_id' => $bookId], 'POST', $useCache);
+    }
+
+    /**
+     * Kullanıcının kitapta kaldığı sayfayı kaydeder (Geriye dönük uyumluluk)
+     *
+     * @param int $userId  Kullanıcı ID
+     * @param int $bookId  Kitap ID
+     * @param int $page    Kalınan sayfa no
+     * @return array
+     */
+    public function saveUserPage(int $userId, int $bookId, int $page): array
+    {
+        $result = $this->request("saveUserPage/{$userId}/{$bookId}/{$page}", [
+            'user_id' => $userId,
+            'book_id' => $bookId,
+            'page'    => $page,
+        ], 'POST', false);
+        return is_array($result) ? $result : ['status' => false];
+    }
+
+    /**
      * Çevrim içi deneme sınavlarını döner
      */
     public function getExams(bool $useCache = true): array
@@ -1402,10 +1481,32 @@ class UfkaApiService
             return '';
         }
 
-        if (str_starts_with($path, 'http://') || str_starts_with($path, 'https://')) {
-            return $path;
-        }
-
         return rtrim($this->config->uploadsURL, '/') . '/' . ltrim($path, '/');
+    }
+
+    /**
+     * Ufyo AI Sohbet Botu genel ayarları, karşılama metinleri ve hızlı soru çiplerini döner
+     */
+    public function getBotKnowledge(bool $useCache = true): ?array
+    {
+        return $this->request('getBotKnowledge', [], 'GET', $useCache);
+    }
+
+    /**
+     * Ufyo AI Botuna soru sorar ve bilgi tabanından akıllı yanıt döner
+     */
+    public function askBot(string $question): array
+    {
+        $result = $this->request('askBot', ['question' => $question], 'POST', false);
+        if (is_array($result)) {
+            return $result;
+        }
+        return [
+            'status'      => false,
+            'code'        => 500,
+            'matched'     => false,
+            'answer'      => 'Üzgünüm, şu anda yanıt sunucusuna erişilemiyor. Lütfen biraz sonra tekrar deneyiniz.',
+            'suggestions' => []
+        ];
     }
 }

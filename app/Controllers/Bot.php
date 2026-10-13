@@ -51,13 +51,42 @@ class Bot extends BaseController
      */
     public function ask()
     {
-        $rawPost = $this->request->getPost('question') ?: $this->request->getGet('question');
-        $rawVar = $this->request->getVar('question') ?: $this->request->getVar('q') ?: $this->request->getVar('message');
-        $json = $this->request->getJSON(true);
-        $jsonQ = (is_array($json) && isset($json['question'])) ? $json['question'] : null;
-        $superQ = isset($_POST['question']) ? $_POST['question'] : (isset($_GET['question']) ? $_GET['question'] : null);
+        $question = '';
 
-        $question = trim((string)($rawPost ?: ($rawVar ?: ($jsonQ ?: ($superQ ?: '')))));
+        // 1. Standart Form POST veya GET parametreleri
+        $rawPost = $this->request->getPost('question');
+        $rawGet = $this->request->getGet('question');
+        $rawVar = $this->request->getVar('question') ?: $this->request->getVar('q') ?: $this->request->getVar('message');
+
+        if (!empty($rawPost)) {
+            $question = (string)$rawPost;
+        } elseif (!empty($rawGet)) {
+            $question = (string)$rawGet;
+        } elseif (!empty($rawVar)) {
+            $question = (string)$rawVar;
+        }
+
+        // 2. JSON gövde ile istek geldiyse güvenli şekilde ayrıştır
+        if (empty($question)) {
+            $body = (string)$this->request->getBody();
+            if (!empty($body) && (str_starts_with(trim($body), '{') || str_contains((string)$this->request->getHeaderLine('Content-Type'), 'json'))) {
+                try {
+                    $json = json_decode($body, true);
+                    if (is_array($json)) {
+                        $question = $json['question'] ?? ($json['q'] ?? ($json['message'] ?? ''));
+                    }
+                } catch (\Throwable $e) {
+                    // JSON parse hatası yoksayılır
+                }
+            }
+        }
+
+        // 3. Fallback: $_POST / $_GET süper globalleri
+        if (empty($question)) {
+            $question = $_POST['question'] ?? ($_GET['question'] ?? ($_POST['q'] ?? ($_GET['q'] ?? '')));
+        }
+
+        $question = trim((string)$question);
 
         if (empty($question)) {
             return $this->response->setStatusCode(400)->setJSON([

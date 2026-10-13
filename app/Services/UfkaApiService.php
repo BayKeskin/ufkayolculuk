@@ -1509,4 +1509,63 @@ class UfkaApiService
             'suggestions' => []
         ];
     }
+
+    /**
+     * Web sitesi aktif tema ve arayüz yapılandırmasını döner.
+     */
+    public function getThemeConfig(bool $useCache = true): array
+    {
+        $cacheKey = 'ufka_theme_config';
+        if ($useCache) {
+            $cached = cache($cacheKey);
+            if ($cached !== null) {
+                return $cached;
+            }
+        }
+
+        $result = $this->request('getThemeConfig', [], 'GET', false);
+        if (is_array($result) && !empty($result['status'])) {
+            if ($useCache) {
+                // 300 saniye (5 dakika) önbellek
+                cache()->save($cacheKey, $result, 300);
+            }
+            return $result;
+        }
+
+        // Fallback varsayılan tema
+        return [
+            'status'        => true,
+            'active_theme'  => 'modern',
+            'theme_id'      => 'modern',
+            'available_themes' => [
+                'modern'  => ['name' => 'Yeni Modern Tema (v14)', 'slug' => 'modern'],
+                'classic' => ['name' => 'Klasik Tema (M2)', 'slug' => 'classic'],
+            ],
+            'visual_settings' => [],
+        ];
+    }
+
+    /**
+     * Aktif tema adını döner ('modern' veya 'classic')
+     */
+    public function getActiveTheme(): string
+    {
+        // URL query parametresi ile önizleme/test desteği: ?theme=classic veya ?theme=modern
+        try {
+            $req = service('request');
+            if ($req && $req->getGet('theme')) {
+                $previewTheme = strtolower(trim((string)$req->getGet('theme')));
+                if (in_array($previewTheme, ['modern', 'classic', 'm2'])) {
+                    return ($previewTheme === 'm2') ? 'classic' : $previewTheme;
+                }
+            }
+        } catch (\Throwable $e) {
+            // sessiz devam et
+        }
+
+        $config = $this->getThemeConfig();
+        $theme = $config['active_theme'] ?? 'modern';
+        return in_array($theme, ['classic', 'm2']) ? 'classic' : 'modern';
+    }
 }
+

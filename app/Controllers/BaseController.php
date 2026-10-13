@@ -21,25 +21,39 @@ use Psr\Log\LoggerInterface;
 abstract class BaseController extends Controller
 {
     /**
-     * Be sure to declare properties for any property fetch you initialized.
-     * The creation of dynamic property is deprecated in PHP 8.2.
+     * Aktif tema adı ('modern' veya 'classic')
      */
+    protected string $activeTheme = 'modern';
 
-    // protected $session;
+    /**
+     * API Servisi
+     */
+    protected ?UfkaApiService $apiService = null;
 
     /**
      * @return void
      */
     public function initController(RequestInterface $request, ResponseInterface $response, LoggerInterface $logger)
     {
-        // Load here all helpers you want to be available in your controllers that extend BaseController.
-        // Caution: Do not put the this below the parent::initController() call below.
-        // $this->helpers = ['form', 'url'];
-
         // Caution: Do not edit this line.
         parent::initController($request, $response, $logger);
 
         // Preload any models, libraries, etc, here.
-        // $this->session = service('session');
+        try {
+            $this->apiService = new \App\Services\UfkaApiService();
+            $this->activeTheme = $this->apiService->getActiveTheme();
+        } catch (\Throwable $e) {
+            $this->activeTheme = 'modern';
+        }
+    }
+
+    /**
+     * Temaya duyarlı View çağırma yardımcısı
+     */
+    protected function renderTheme(string $viewName, array $data = []): string
+    {
+        $data['activeTheme']   = $this->activeTheme;
+        $data['themeAssetUrl'] = base_url("assets/themes/{$this->activeTheme}/");
+        return view($viewName, $data);
     }
 }

@@ -31,6 +31,19 @@
   <script src="<?= base_url('assets/js/main.js?v=3.5') ?>" defer></script>
   <script>
     window.BASE_URL = '<?= rtrim(base_url(), '/') . '/' ?>';
+    document.addEventListener('DOMContentLoaded', () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      const needLogin = urlParams.get('login') === '1' || <?= session()->getFlashdata('login_required') ? 'true' : 'false' ?>;
+      if (needLogin) {
+        setTimeout(() => {
+          const modalEl = document.getElementById('loginModal');
+          if (modalEl && window.bootstrap) {
+            const modalInstance = bootstrap.Modal.getInstance(modalEl) || new bootstrap.Modal(modalEl);
+            modalInstance.show();
+          }
+        }, 350);
+      }
+    });
   </script>
 </head>
 

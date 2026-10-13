@@ -122,6 +122,11 @@ class Kullanici extends BaseController
      */
     public function sinavlarim()
     {
+        $sessionUser = session()->get('ufka_user');
+        if (empty($sessionUser) || empty($sessionUser['id'])) {
+            return redirect()->to(base_url('/?login=1'))->with('login_required', 'Bu sayfayı görüntülemek için lütfen yarışmacı girişi yapınız.');
+        }
+
         $user = $this->getActiveUser();
         $exams = $this->api->getExams();
 
@@ -184,6 +189,11 @@ class Kullanici extends BaseController
      */
     public function davet()
     {
+        $sessionUser = session()->get('ufka_user');
+        if (empty($sessionUser) || empty($sessionUser['id'])) {
+            return redirect()->to(base_url('/?login=1'))->with('login_required', 'Bu sayfayı görüntülemek için lütfen yarışmacı girişi yapınız.');
+        }
+
         $user = $this->getActiveUser();
         $inviteLink = base_url('hosgeldin/' . $user['invite_code']);
 
@@ -220,6 +230,11 @@ class Kullanici extends BaseController
      */
     public function sertifikalarim()
     {
+        $sessionUser = session()->get('ufka_user');
+        if (empty($sessionUser) || empty($sessionUser['id'])) {
+            return redirect()->to(base_url('/?login=1'))->with('login_required', 'Bu sayfayı görüntülemek için lütfen yarışmacı girişi yapınız.');
+        }
+
         $user = $this->getActiveUser();
 
         // API'den gerçek sertifikaları sorgula
@@ -291,6 +306,11 @@ class Kullanici extends BaseController
      */
     public function takimLideri()
     {
+        $sessionUser = session()->get('ufka_user');
+        if (empty($sessionUser) || empty($sessionUser['id'])) {
+            return redirect()->to(base_url('/?login=1'))->with('login_required', 'Bu sayfayı görüntülemek için lütfen yarışmacı girişi yapınız.');
+        }
+
         $user = $this->getActiveUser();
 
         return view('kullanici/takim_lideri', [

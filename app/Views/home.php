@@ -504,6 +504,7 @@
     </div>
   </section>
 
+  <!-- ==========================================
        BÖLÜM 4: ÖNEMLİ TARİHLER (Takvim & Geri Sayım) & GÜNCEL DUYURULAR
        ========================================== -->
   <section class="dates-announcements-section" id="takvim">

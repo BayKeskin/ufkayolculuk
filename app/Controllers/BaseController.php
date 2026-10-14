@@ -2,6 +2,7 @@
 
 namespace App\Controllers;
 
+use App\Services\UfkaApiService;
 use CodeIgniter\Controller;
 use CodeIgniter\HTTP\RequestInterface;
 use CodeIgniter\HTTP\ResponseInterface;

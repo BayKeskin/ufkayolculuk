@@ -77,3 +77,9 @@ $routes->get('bot/knowledge', 'Bot::knowledge');
 $routes->match(['GET', 'POST'], 'bot/ask', 'Bot::ask');
 $routes->get('api/bot/knowledge', 'Bot::knowledge');
 $routes->match(['GET', 'POST'], 'api/bot/ask', 'Bot::ask');
+
+// REST API Test & Canlı Veri Laboratuvarı (Playground)
+$routes->match(['GET', 'HEAD'], 'api-test', 'ApiTest::index');
+$routes->post('api-test/execute', 'ApiTest::execute');
+$routes->post('api-test/batch', 'ApiTest::batch');
+

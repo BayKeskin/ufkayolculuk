@@ -226,7 +226,7 @@
                   <div>
                     <strong>Siz de Bu Büyük Ailenin Bir Parçası Olun!</strong>
                     <p class="mb-0 mt-1 small">
-                      12. Ufka Yolculuk yarışmasına tamamen ücretsiz olarak kaydolabilir, seviyenize uygun kitabı temin ederek büyük ödüller için yarışmaya başlayabilirsiniz.
+                      14. Ufka Yolculuk yarışmasına tamamen ücretsiz olarak kaydolabilir, seviyenize uygun kitabı temin ederek büyük ödüller için yarışmaya başlayabilirsiniz.
                     </p>
                   </div>
                 </div>
@@ -340,13 +340,13 @@
 
             <!-- 3. Hızlı Başvuru CTA Kartı -->
             <div class="sidebar-cta-card">
-              <span class="badge bg-warning text-dark fw-bold mb-2">12. YARIŞMA</span>
+              <span class="badge bg-warning text-dark fw-bold mb-2">14. YARIŞMA</span>
               <h3 class="fs-5 fw-bold text-white mb-2">Yarışmaya Şimdi Katıl!</h3>
               <p class="small text-white-50 mb-3">
                 Kitaplarını oku, online sınava katıl, binlerce liralık ödülleri kazanma şansı yakala.
               </p>
               <a href="<?= base_url('kayit-ol') ?>" class="btn-yellow w-100 justify-content-center fw-bold py-2 border-0 text-decoration-none">
-                <span>Ücretsiz Kayıt Ol</span>
+                <span>Hemen Kayıt Ol</span>
                 <span>→</span>
               </a>
             </div>

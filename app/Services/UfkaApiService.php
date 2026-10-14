@@ -431,6 +431,29 @@ class UfkaApiService
     }
 
     /**
+     * Haberleri derler (type='news')
+     */
+    public function getNews(int $limit = 0, bool $useCache = true): array
+    {
+        $news = $this->getWebContents(['type' => 'news'], $useCache);
+        if (empty($news)) {
+            $contents = $this->getWebContents([], $useCache);
+            foreach ($contents as $item) {
+                if (strtolower($item['type'] ?? '') === 'news') {
+                    $news[] = $item;
+                }
+            }
+        }
+        usort($news, function ($a, $b) {
+            return ((int) ($b['id'] ?? 0)) <=> ((int) ($a['id'] ?? 0));
+        });
+        if ($limit > 0) {
+            return array_slice($news, 0, $limit);
+        }
+        return $news;
+    }
+
+    /**
      * Sıkça Sorulan Soruları (type='sss') ve kategorilerini derler (Sunucu Filtreli)
      */
     public function getFaqList(bool $useCache = true): array
@@ -1354,7 +1377,27 @@ class UfkaApiService
     public function getSliders(int $limit = 5, bool $useCache = true): array
     {
         $result = $this->request('getSliders', ['limit' => $limit], 'GET', $useCache);
-        return is_array($result) ? $result : [];
+        if (is_array($result) && !empty($result)) {
+            return $result;
+        }
+
+        // Canlı sistemin aktif sliderları (Fallback)
+        return [
+            [
+                'name'      => 'img-20260329-wa0000_69c8410eb9432.webp',
+                'path'      => 'uploads/2026-03/',
+                'image'     => 'uploads/2026-03/img-20260329-wa0000_69c8410eb9432.webp',
+                'image_url' => base_url('uploads/2026-03/img-20260329-wa0000_69c8410eb9432.webp'),
+                'link'      => '',
+            ],
+            [
+                'name'      => 'tesekkurler_69b6cc8a7083c.webp',
+                'path'      => 'uploads/2026-03/',
+                'image'     => 'uploads/2026-03/tesekkurler_69b6cc8a7083c.webp',
+                'image_url' => base_url('uploads/2026-03/tesekkurler_69b6cc8a7083c.webp'),
+                'link'      => '',
+            ],
+        ];
     }
 
     /**
@@ -1532,21 +1575,28 @@ class UfkaApiService
             return $result;
         }
 
-        // Fallback varsayılan tema
+        // Fallback varsayılan tema ve görsel ayarları (Canlı Sistem Birebir)
         return [
-            'status'        => true,
-            'active_theme'  => 'modern',
-            'theme_id'      => 'modern',
+            'status'           => true,
+            'active_theme'     => 'classic',
+            'theme_id'         => 'classic',
             'available_themes' => [
-                'modern'  => ['name' => 'Yeni Modern Tema (v14)', 'slug' => 'modern'],
                 'classic' => ['name' => 'Klasik Tema (M2)', 'slug' => 'classic'],
+                'modern'  => ['name' => 'Yeni Modern Tema (v14)', 'slug' => 'modern'],
             ],
-            'visual_settings' => [],
+            'visual_settings'  => [
+                'logo'         => 'uploads/2025-09/uy_logo_68c445a334647_68d8ee9f98eb8.webp',
+                'site_logo'    => 'uploads/2025-09/uy_logo_68c445a334647_68d8ee9f98eb8.webp',
+                'counter_text' => '13. Ufka Yolculuk',
+                'counter_date' => '2026-03-29 09:00:00',
+                'description'  => 'İlk Sözleşmeni Hatırla!',
+                'keywords'     => 'ufka yolculuk,bilgi yarışması,inanç,ödüllü yarışma',
+            ],
         ];
     }
 
     /**
-     * Aktif tema adını döner ('modern' veya 'classic')
+     * Aktif tema adını döner ('classic' veya 'modern')
      */
     public function getActiveTheme(): string
     {
@@ -1556,15 +1606,24 @@ class UfkaApiService
             if ($req && $req->getGet('theme')) {
                 $previewTheme = strtolower(trim((string)$req->getGet('theme')));
                 if (in_array($previewTheme, ['modern', 'classic', 'm2'])) {
-                    return ($previewTheme === 'm2') ? 'classic' : $previewTheme;
+                    $selected = ($previewTheme === 'm2') ? 'classic' : $previewTheme;
+                    try {
+                        session()->set('active_theme', $selected);
+                    } catch (\Throwable $se) {}
+                    return $selected;
                 }
             }
+            try {
+                if (session() && session()->has('active_theme')) {
+                    return session()->get('active_theme');
+                }
+            } catch (\Throwable $se) {}
         } catch (\Throwable $e) {
             // sessiz devam et
         }
 
         $config = $this->getThemeConfig();
-        $theme = $config['active_theme'] ?? 'modern';
+        $theme = $config['active_theme'] ?? 'classic';
         return in_array($theme, ['classic', 'm2']) ? 'classic' : 'modern';
     }
 }

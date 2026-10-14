@@ -2,30 +2,47 @@
 
 <?= $this->section('content') ?>
 <?php
-$title = $page['title'] ?? 'Sayfa Detayı';
-$content = $page['content'] ?? ($page['body'] ?? '');
-$date = !empty($page['created_at']) ? date('d.m.Y', strtotime($page['created_at'])) : '';
+$pageTitle = $page['title'] ?? ($content['title'] ?? ($title ?? 'Sayfa Detayı'));
+$body = $page['content'] ?? ($content['body'] ?? ($content['content'] ?? ''));
+$pageImage = $page['image'] ?? ($content['image'] ?? '');
+$createTime = $page['created_at'] ?? ($content['create_time'] ?? '');
 ?>
-<div class="card shadow-sm border-0 mb-5">
-    <div class="card-header border-bottom py-4 d-flex justify-content-between align-items-center">
-        <div>
-            <nav aria-label="breadcrumb">
-                <ol class="breadcrumb mb-1 fs-8">
-                    <li class="breadcrumb-item"><a href="<?= base_url() ?>">Ana Sayfa</a></li>
-                    <li class="breadcrumb-item active"><?= esc($title) ?></li>
-                </ol>
-            </nav>
-            <h1 class="fw-bold text-gray-900 fs-3 m-0"><?= esc($title) ?></h1>
+<div class="toolbar pb-lg-5" id="kt_toolbar">
+    <div id="kt_toolbar_container" class="container-xxl d-flex flex-stack flex-wrap p-0">
+        <div class="page-title d-flex flex-column">
+            <h1 class="d-flex text-white fw-bold" style="font-size:27px;background-color: #23bad2;padding: 10px;border-radius: 10px;opacity: 0.8;"><?= esc($pageTitle); ?></h1>
         </div>
-        <?php if (!empty($date)): ?>
-            <span class="badge badge-light-secondary fs-8"><?= esc($date) ?></span>
-        <?php endif; ?>
-    </div>
-    <div class="card-body p-6 fs-6 text-gray-800 line-height-lg">
-        <?= $content ?>
-    </div>
-    <div class="card-footer border-top py-3 text-end">
-        <a href="javascript:history.back()" class="btn btn-sm btn-light">← Geri Dön</a>
     </div>
 </div>
+<div class="content flex-row-fluid" id="kt_content">
+    <div id="scrollAlert" class="alert alert-info mt-3 d-none" role="alert">
+    👉 İçeriği sağa kaydırabilirsiniz.
+    </div>
+    <div class="card shadow-sm border-0">
+        <div class="card-body" id="scrollCheck" style="font-size:18px;overflow:scroll">
+            <?php if(!empty($createTime)){ ?>
+            <div class="col-12 float-end text-end fs-6 text-muted mb-4">Oluşturma Zamanı: <?= date("d.m.Y H:i", strtotime($createTime)); ?></div>
+            <?php } ?>
+            
+            <?php
+            if(!empty($pageImage)){
+                $cImgUrl = (strpos($pageImage, 'http') === 0) ? $pageImage : (file_exists(FCPATH . ltrim($pageImage, '/')) ? base_url(ltrim($pageImage, '/')) : 'https://ufkayolculuk.com/' . ltrim($pageImage, '/'));
+                echo "<img src='".esc($cImgUrl)."' style='width:35%; float:left; margin:0 30px 20px 0; border-radius: 8px;' alt='".esc($pageTitle)."'>";
+            }
+            ?>
+            <div class="page-html-content">
+                <?= $body; ?>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+      const el = document.getElementById("scrollCheck");
+      const alertBox = document.getElementById("scrollAlert");
+      if (el && alertBox && el.scrollWidth > el.clientWidth) {
+        alertBox.classList.remove("d-none");
+      }
+    });
+</script>
 <?= $this->endSection() ?>

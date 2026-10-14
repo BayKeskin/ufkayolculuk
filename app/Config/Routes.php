@@ -57,6 +57,16 @@ $routes->match(['GET', 'HEAD'], 'lider-olmak-istiyorum', 'Kullanici::takimLideri
 
 // Hızlı Arama & Otomatik Tamamlama
 $routes->get('arama/autocomplete', 'Arama::autocomplete');
+$routes->get('arama/ajax', 'Arama::autocomplete');
+
+// Kitaplar, Takvim ve Bilgi Rotaları
+$routes->match(['GET', 'HEAD'], 'kitaplar', 'Kitaplar::index');
+$routes->match(['GET', 'HEAD'], 'kitaplar/(:segment)', 'Kitaplar::index/$1');
+$routes->match(['GET', 'HEAD'], 'takvimi', 'Sayfa::detay/takvimi');
+$routes->match(['GET', 'HEAD'], 'bilgi/(:segment)', 'Sayfa::detay/$1');
+$routes->match(['GET', 'HEAD'], 'haberler', 'Duyurular::index');
+$routes->match(['GET', 'HEAD'], 'haberler/(:num)', 'Duyurular::index');
+$routes->match(['GET', 'HEAD'], 'temin-noktalari', 'Sayfa::detay/temin-noktalari');
 
 // Ufyo AI Sohbet Botu Rotaları (REST API Destekli)
 $routes->get('bot/knowledge', 'Bot::knowledge');

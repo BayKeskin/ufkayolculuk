@@ -45,17 +45,45 @@ class Home extends BaseController
 
         $mediaList      = $this->api->getMediaContents();
         $sliders        = $this->api->getSliders(5);
+        $news           = $this->api->getNews(5);
+        $allAnnouncements = $this->api->getAnnouncements(10);
+        $themeConfig    = $this->api->getThemeConfig();
+        $visuals        = $themeConfig['visual_settings'] ?? [];
+
+        // Sayaç hesaplama
+        $counterDate = !empty($visuals['counter_date']) ? $visuals['counter_date'] : '2026-03-14 10:00:00';
+        $targetTs    = strtotime($counterDate) ?: (time() + 86400 * 14);
+        $diff        = max(0, $targetTs - time());
+        $counter     = [
+            'day'    => (int) floor($diff / 86400),
+            'hour'   => (int) floor(($diff % 86400) / 3600),
+            'minute' => (int) floor(($diff % 3600) / 60),
+            'second' => (int) ($diff % 60),
+        ];
+
+        // Sık sorulan sorular (arama açılır penceresi için)
+        $searchSss = $this->api->getFaqList();
+
+        // Header menüsü
+        $menu = $this->api->getMenu('header');
 
         $data = [
             'title'            => 'Ufka Yolculuk - Bilgi ve Kültür Yarışması',
             'meta_description' => 'Ufka Yolculuk Bilgi ve Kültür Yarışması resmi web sitesi. Kitap oku, soruları çöz, puan topla ve birbirinden değerli ödüller kazan!',
             'activePage'       => 'home',
             'announcements'    => $announcements,
+            'annoucements'     => !empty($allAnnouncements) ? array_slice($allAnnouncements, 0, 4) : [],
+            'news'             => !empty($news) ? $news : array_slice($allAnnouncements, 0, 5),
             'importantDates'   => $importantDates,
             'categories'       => $categories,
             'bookDataMap'      => $bookDataMap,
             'mediaList'        => $mediaList,
             'sliders'          => $sliders,
+            'counter'          => $counter,
+            'options'          => $visuals,
+            'menu'             => $menu,
+            'search_sss'       => $searchSss,
+            'themeConfig'      => $themeConfig,
             'api'              => $this->api,
         ];
 

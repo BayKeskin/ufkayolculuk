@@ -2192,6 +2192,8 @@
           searchInput.focus();
         }
       });
+    }
+
     // URL parametresinden arama terimi kontrolü (?q=...)
     const urlParams = new URLSearchParams(window.location.search);
     const qParam = urlParams.get('q');
@@ -2489,6 +2491,8 @@
             console.error('Search error:', err);
           });
       }, 200);
+    });
+
     // Dropdown açıldığında arama kutusuna otomatik odaklan
     const searchDropdownBtn = document.getElementById('headerSearchDropdownBtn');
     if (searchDropdownBtn) {

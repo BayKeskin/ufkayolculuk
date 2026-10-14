@@ -28,7 +28,7 @@
 
   <!-- JS Varlıkları (Defer ile PageSpeed Uyumlu) -->
   <script src="<?= base_url('assets/js/bootstrap.bundle.min.js') ?>" defer></script>
-  <script src="<?= base_url('assets/js/main.js?v=3.6') ?>" defer></script>
+  <script src="<?= base_url('assets/js/main.js?v=3.7') ?>" defer></script>
   <script>
     window.BASE_URL = '<?= rtrim(base_url(), '/') . '/' ?>';
     document.addEventListener('DOMContentLoaded', () => {

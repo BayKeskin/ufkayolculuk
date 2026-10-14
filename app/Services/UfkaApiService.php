@@ -228,6 +228,7 @@ class UfkaApiService
             'resmi-onaylar'             => ['resmi-onaylar', 'meb-onaylari', 'onaylar'],
             'biz-kimiz'                 => ['biz-kimiz', 'bizkimiz'],
             'misyon-vizyon'             => ['misyon-vizyon', 'misyonumuz-vizyonumuz'],
+            'gecmis-yillar'             => ['gecmis-yarismalar', 'gecmis-yillar'],
             'takvim'                    => ['takvimi'],
         ];
 

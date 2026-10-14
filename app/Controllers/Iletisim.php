@@ -28,8 +28,8 @@ class Iletisim extends BaseController
         }
 
         $data = [
-            'title'            => 'İletişim & İl Temsilcilikleri - Ufka Yolculuk',
-            'meta_description' => 'Ufka Yolculuk Bilgi ve Kültür Yarışması iletişim bilgileri, 81 il ve ilçe temsilcilikleri sorgulama ve mesaj gönderme formu.',
+            'title'            => 'İletişim & İl Temsilcileri - Ufka Yolculuk',
+            'meta_description' => 'Ufka Yolculuk Bilgi ve Kültür Yarışması iletişim bilgileri, 81 il ve ilçe temsilcileri sorgulama ve mesaj gönderme formu.',
             'activePage'       => 'iletisim',
             'cities'           => $cities,
             'selectedCity'     => $selectedCity,

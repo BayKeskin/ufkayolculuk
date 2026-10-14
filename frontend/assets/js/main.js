@@ -16,6 +16,7 @@
     initLanguageSelector();
     initNavActiveIndicator();
     initLoginModal();
+    initRegisterModal();
     initNewsFilter();
     initCityRepresentatives();
     initContactForm();
@@ -23,6 +24,7 @@
     initQuizSimulator();
     initGamesModal();
     initMediaModal();
+    initFaqSection();
   });
 
   /**
@@ -394,13 +396,16 @@
     };
 
     const bookModalEl = document.getElementById('bookPreviewModal');
+    let currentBookAudio = null;
+
     if (bookModalEl) {
       bookModalEl.addEventListener('show.bs.modal', function (event) {
-        const triggerBtn = event.relatedTarget;
+        const triggerBtn = event.relatedTarget ? (event.relatedTarget.closest('[data-book]') || event.relatedTarget) : null;
         if (!triggerBtn) return;
 
         const bookKey = triggerBtn.getAttribute('data-book');
-        const data = bookData[bookKey] || bookData.ilkokul;
+        const dynamicBookMap = (window.UFKA_BOOK_DATA && typeof window.UFKA_BOOK_DATA === 'object') ? window.UFKA_BOOK_DATA : {};
+        const data = dynamicBookMap[bookKey] || bookData[bookKey] || bookData.ilkokul;
 
         const modalCover = document.getElementById('modalBookCoverImg');
         const modalTitle = document.getElementById('bookPreviewModalLabel');
@@ -415,8 +420,16 @@
         const btnRead = document.getElementById('btnSubdomainRead');
         const btnListen = document.getElementById('btnSubdomainListen');
         const trackTitle = document.getElementById('audioTrackTitle');
+        const audioPlayerModule = document.getElementById('audioPlayerModule');
+        const audioBtn = document.getElementById('audioTogglePlayBtn');
+        const timeCurrentEl = document.getElementById('audioTimeCurrent');
+        const timeTotalEl = document.getElementById('audioTimeTotal');
+        const progressBarEl = audioPlayerModule ? audioPlayerModule.querySelector('.progress-bar') : null;
 
-        if (modalCover) modalCover.src = data.cover;
+        if (modalCover) {
+          modalCover.src = data.cover;
+          modalCover.alt = data.title;
+        }
         if (modalTitle) modalTitle.textContent = data.title;
         if (modalCatBadge) modalCatBadge.textContent = data.cat;
         if (modalGradeBadge) modalGradeBadge.textContent = data.grade;
@@ -425,19 +438,136 @@
         if (modalPages) modalPages.textContent = data.pages;
         if (modalQuestions) modalQuestions.textContent = data.questions;
         if (modalAge) modalAge.textContent = data.age;
-        if (modalSummary) modalSummary.textContent = data.summary;
+        if (modalSummary) {
+          // Varsa HTML yoksa düz metin göster
+          if (data.summaryHtml) {
+            modalSummary.innerHTML = data.summaryHtml;
+          } else {
+            modalSummary.textContent = data.summary;
+          }
+        }
         if (btnRead) btnRead.href = data.readUrl;
         if (btnListen) btnListen.href = data.listenUrl;
         if (trackTitle) trackTitle.textContent = data.audio;
+
+        // Önceki sesi durdur ve sıfırla
+        if (currentBookAudio) {
+          try { currentBookAudio.pause(); } catch (e) {}
+          currentBookAudio = null;
+        }
+        if (audioBtn) audioBtn.textContent = '▶';
+        if (progressBarEl) progressBarEl.style.width = '0%';
+        if (timeCurrentEl) timeCurrentEl.textContent = '00:00';
+        if (timeTotalEl) timeTotalEl.textContent = '--:--';
+
+        // Ses dosyası varsa ses modülünü yapılandır
+        if (data.audioSrc) {
+          if (audioPlayerModule) audioPlayerModule.style.display = 'block';
+          try {
+            currentBookAudio = new Audio(data.audioSrc);
+            currentBookAudio.preload = 'metadata';
+
+            currentBookAudio.addEventListener('loadedmetadata', function () {
+              if (timeTotalEl && !isNaN(currentBookAudio.duration) && isFinite(currentBookAudio.duration)) {
+                const totalMins = Math.floor(currentBookAudio.duration / 60);
+                const totalSecs = Math.floor(currentBookAudio.duration % 60);
+                timeTotalEl.textContent = `${String(totalMins).padStart(2, '0')}:${String(totalSecs).padStart(2, '0')}`;
+              }
+            });
+
+            currentBookAudio.addEventListener('play', function () {
+              if (audioBtn) audioBtn.textContent = '❚❚';
+            });
+
+            currentBookAudio.addEventListener('pause', function () {
+              if (audioBtn) audioBtn.textContent = '▶';
+            });
+
+            currentBookAudio.addEventListener('waiting', function () {
+              if (audioBtn) audioBtn.textContent = '⏳';
+            });
+
+            currentBookAudio.addEventListener('playing', function () {
+              if (audioBtn) audioBtn.textContent = '❚❚';
+            });
+
+            currentBookAudio.addEventListener('timeupdate', function () {
+              if (isNaN(currentBookAudio.duration) || currentBookAudio.duration <= 0) return;
+              const percent = (currentBookAudio.currentTime / currentBookAudio.duration) * 100;
+              if (progressBarEl) progressBarEl.style.width = percent + '%';
+              if (timeCurrentEl) {
+                const curMins = Math.floor(currentBookAudio.currentTime / 60);
+                const curSecs = Math.floor(currentBookAudio.currentTime % 60);
+                timeCurrentEl.textContent = `${String(curMins).padStart(2, '0')}:${String(curSecs).padStart(2, '0')}`;
+              }
+            });
+
+            currentBookAudio.addEventListener('ended', function () {
+              if (audioBtn) audioBtn.textContent = '▶';
+              if (progressBarEl) progressBarEl.style.width = '0%';
+              if (timeCurrentEl) timeCurrentEl.textContent = '00:00';
+            });
+
+            currentBookAudio.addEventListener('error', function (err) {
+              console.warn('Audio yükleme hatası:', err);
+              if (audioBtn) audioBtn.textContent = '▶';
+            });
+          } catch (e) {
+            console.warn('Audio nesnesi başlatma hatası:', e);
+          }
+        } else {
+          // Ses dosyası yoksa bilgilendirme yap
+          if (timeTotalEl) timeTotalEl.textContent = 'Yok';
+        }
+      });
+
+      // Modal kapandığında çalan sesi durdur
+      bookModalEl.addEventListener('hide.bs.modal', function () {
+        if (currentBookAudio) {
+          try { currentBookAudio.pause(); } catch (e) {}
+          currentBookAudio = null;
+        }
+        const audioBtn = document.getElementById('audioTogglePlayBtn');
+        if (audioBtn) audioBtn.textContent = '▶';
       });
     }
 
-    // Ses Oynat/Durdur Buton Simülasyonu
+    // Ses Oynat/Durdur Buton Tıklaması
     const audioBtn = document.getElementById('audioTogglePlayBtn');
     if (audioBtn) {
       audioBtn.addEventListener('click', function () {
-        const isPlaying = this.textContent.trim() === '❚❚';
-        this.textContent = isPlaying ? '▶' : '❚❚';
+        if (!currentBookAudio) {
+          // Audio nesnesi yoksa buton simülasyonu
+          const isPlaying = this.textContent.trim() === '❚❚';
+          this.textContent = isPlaying ? '▶' : '❚❚';
+          return;
+        }
+
+        if (currentBookAudio.paused) {
+          this.textContent = '⏳';
+          currentBookAudio.play().then(() => {
+            this.textContent = '❚❚';
+          }).catch(err => {
+            console.error('Audio çalma hatası:', err);
+            this.textContent = '▶';
+          });
+        } else {
+          currentBookAudio.pause();
+          this.textContent = '▶';
+        }
+      });
+    }
+
+    // İlerleme çubuğuna tıklanarak ses süresinde atlama
+    const progressContainer = document.querySelector('#audioPlayerModule .progress');
+    if (progressContainer) {
+      progressContainer.addEventListener('click', function (e) {
+        if (!currentBookAudio || isNaN(currentBookAudio.duration)) return;
+        const rect = this.getBoundingClientRect();
+        const clickX = e.clientX - rect.left;
+        const width = rect.width;
+        const clickPercent = Math.max(0, Math.min(1, clickX / width));
+        currentBookAudio.currentTime = clickPercent * currentBookAudio.duration;
       });
     }
   }
@@ -448,41 +578,51 @@
    * ==========================================================
    */
   function initDatesAndCountdown() {
-    const dates = [
-      {
-        title: 'Kayıt Bitiş Tarihi',
-        date: '18 Eylül 2026',
-        targetIso: '2026-09-18T23:59:59',
-        countdownLabel: 'Kayıt Bitişine Kalan Süre'
-      },
-      {
-        title: '1. Aşama Online Sınav',
-        date: '04 Ekim 2026',
-        targetIso: '2026-10-04T10:00:00',
-        countdownLabel: '1. Aşama Sınava Kalan Süre'
-      },
-      {
-        title: '2. Aşama Final Sınavı',
-        date: '25 Ekim 2026',
-        targetIso: '2026-10-25T10:00:00',
-        countdownLabel: '2. Aşama Sınava Kalan Süre'
-      },
-      {
-        title: 'Sonuçların İlanı',
-        date: '15 Kasım 2026',
-        targetIso: '2026-11-15T20:00:00',
-        countdownLabel: 'Sonuç İlanına Kalan Süre'
-      },
-      {
-        title: 'Büyük Ödül Töreni',
-        date: '05 Aralık 2026',
-        targetIso: '2026-12-05T14:00:00',
-        countdownLabel: 'Ödül Törenine Kalan Süre'
-      }
-    ];
+    const rawDates = (window.UFKA_IMPORTANT_DATES && Array.isArray(window.UFKA_IMPORTANT_DATES) && window.UFKA_IMPORTANT_DATES.length > 0)
+      ? window.UFKA_IMPORTANT_DATES
+      : [
+          {
+            title: 'Kayıt Bitiş Tarihi',
+            date_formatted: '18 Eylül 2026',
+            target_iso: '2026-09-18T23:59:59',
+            countdown_label: 'Kayıt Bitişine Kalan Süre'
+          },
+          {
+            title: '1. Aşama Online Sınav',
+            date_formatted: '04 Ekim 2026',
+            target_iso: '2026-10-04T10:00:00',
+            countdown_label: '1. Aşama Sınava Kalan Süre'
+          },
+          {
+            title: '2. Aşama Final Sınavı',
+            date_formatted: '25 Ekim 2026',
+            target_iso: '2026-10-25T10:00:00',
+            countdown_label: '2. Aşama Sınava Kalan Süre'
+          },
+          {
+            title: 'Sonuçların İlanı',
+            date_formatted: '15 Kasım 2026',
+            target_iso: '2026-11-15T20:00:00',
+            countdown_label: 'Sonuç İlanına Kalan Süre'
+          },
+          {
+            title: 'Büyük Ödül Töreni',
+            date_formatted: '05 Aralık 2026',
+            target_iso: '2026-12-05T14:00:00',
+            countdown_label: 'Ödül Törenine Kalan Süre'
+          }
+        ];
+
+    // Alan adlarını normalize et
+    const dates = rawDates.map(item => ({
+      title: item.title || '',
+      date: item.date_formatted || item.date || '',
+      targetIso: item.target_iso || item.targetIso || '',
+      countdownLabel: item.countdown_label || item.countdownLabel || (item.title ? item.title + ' Kalan Süre' : 'Geri Sayım')
+    }));
 
     let currentIndex = 0;
-    let targetTimestamp = new Date(dates[0].targetIso).getTime();
+    let targetTimestamp = dates[0] && dates[0].targetIso ? new Date(dates[0].targetIso).getTime() : 0;
 
     // DOM Elementleri
     const track = document.getElementById('dateCarouselTrack');
@@ -491,7 +631,7 @@
     const countdownGridEl = document.querySelector('.countdown-timer-grid');
     const prevBtn = document.getElementById('prevDateBtn');
     const nextBtn = document.getElementById('nextDateBtn');
-    const dots = document.querySelectorAll('#dateDotsContainer .dot');
+    let dots = document.querySelectorAll('#dateDotsContainer .dot');
 
     const daysEl = document.getElementById('timerDays');
     const hoursEl = document.getElementById('timerHours');
@@ -646,9 +786,11 @@
     const chatForm = document.getElementById('ufyoChatForm');
     const chatInput = document.getElementById('ufyoInput');
     const chatBody = document.getElementById('ufyoChatBody');
-    const quickChips = document.querySelectorAll('.ufyo-chip-btn');
 
     if (!botTrigger || !chatPanel) return;
+
+    let botConfig = null;
+    let botKnowledgeLoaded = false;
 
     // Toggle Chat Paneli
     function toggleChat(open = null) {
@@ -656,6 +798,9 @@
       if (shouldOpen) {
         chatPanel.classList.add('active');
         chatPanel.setAttribute('aria-hidden', 'false');
+        if (!botKnowledgeLoaded) {
+          loadBotKnowledge();
+        }
         if (chatInput) chatInput.focus();
       } else {
         chatPanel.classList.remove('active');
@@ -671,6 +816,17 @@
       });
     }
 
+    // Dışarıdan veya FAQ sayfasından tetikleme için global fonksiyon
+    window.openUfyoChat = function(prefillQuestion = '', autoSubmit = false) {
+      toggleChat(true);
+      if (chatInput && prefillQuestion) {
+        chatInput.value = prefillQuestion;
+        if (autoSubmit) {
+          handleUserQuestion(prefillQuestion);
+        }
+      }
+    };
+
     // Scroll to Bottom
     function scrollToBottom() {
       if (chatBody) {
@@ -682,10 +838,12 @@
     }
 
     // Mesaj Ekleme
-    function appendMessage(text, isUser = false) {
+    function appendMessage(text, isUser = false, suggestions = []) {
       if (!chatBody) return;
       const msgDiv = document.createElement('div');
       msgDiv.className = `chat-msg ${isUser ? 'user-msg' : 'bot-msg'}`;
+
+      const avatarSrc = (botConfig && botConfig.avatar_url) ? resolveMediaUrl(botConfig.avatar_url) : 'assets/images/icon6.png';
 
       if (isUser) {
         msgDiv.innerHTML = `
@@ -696,12 +854,32 @@
       } else {
         msgDiv.innerHTML = `
           <div class="chat-msg-avatar">
-            <img src="assets/images/icon6.png" alt="Ufyo">
+            <img src="${avatarSrc}" alt="Ufyo">
           </div>
           <div class="chat-msg-content">
             ${text}
           </div>
         `;
+
+        // Önerilen takip soruları varsa çip olarak ekle
+        if (suggestions && Array.isArray(suggestions) && suggestions.length > 0) {
+          const suggWrapper = document.createElement('div');
+          suggWrapper.className = 'ufyo-suggestions mt-2 pt-2 border-top border-light-subtle';
+          let suggHtml = '<small class="text-muted d-block mb-1 fw-semibold">Önerilen Sorular:</small><div class="d-flex flex-wrap gap-1">';
+          suggestions.forEach(s => {
+            suggHtml += `<button type="button" class="ufyo-chip-btn ufyo-sugg-chip" data-question="${escapeHtml(s)}">${escapeHtml(s)}</button>`;
+          });
+          suggHtml += '</div>';
+          suggWrapper.innerHTML = suggHtml;
+          msgDiv.querySelector('.chat-msg-content').appendChild(suggWrapper);
+
+          suggWrapper.querySelectorAll('.ufyo-sugg-chip').forEach(btn => {
+            btn.addEventListener('click', function() {
+              const q = this.getAttribute('data-question');
+              handleUserQuestion(q);
+            });
+          });
+        }
       }
 
       chatBody.appendChild(msgDiv);
@@ -710,12 +888,13 @@
 
     // Typing Göstergesi
     function showTypingIndicator() {
+      const avatarSrc = (botConfig && botConfig.avatar_url) ? resolveMediaUrl(botConfig.avatar_url) : 'assets/images/icon6.png';
       const typingDiv = document.createElement('div');
       typingDiv.className = 'chat-msg bot-msg typing-msg';
       typingDiv.id = 'ufyoTyping';
       typingDiv.innerHTML = `
         <div class="chat-msg-avatar">
-          <img src="assets/images/icon6.png" alt="Ufyo">
+          <img src="${avatarSrc}" alt="Ufyo">
         </div>
         <div class="typing-indicator">
           <span class="typing-dot"></span>
@@ -732,61 +911,111 @@
       if (el) el.remove();
     }
 
-    // Yapay Zeka Cevap Üretici (Keyword Matching & Semantic Context)
-    function generateBotAnswer(userMsg) {
-      const q = userMsg.toLowerCase();
-
-      if (q.includes('sınav') || q.includes('tarih') || q.includes('zaman') || q.includes('takvim')) {
-        return `<p class="mb-1">📅 <strong>12. Ufka Yolculuk Yarışma Takvimi:</strong></p>
-                <p class="mb-1">• <strong>Kayıt Dönemi:</strong> 15 Ekim 2025 - 15 Mart 2026</p>
-                <p class="mb-1">• <strong>1. Aşama Online Sınav:</strong> 18-19 Nisan 2026</p>
-                <p class="mb-0">• <strong>2. Aşama Türkiye Finali:</strong> 17 Mayıs 2026</p>`;
-      }
-
-      if (q.includes('kitap') || q.includes('temin') || q.includes('oku') || q.includes('nereden')) {
-        return `<p class="mb-1">📚 <strong>Yarışma Kitapları Temini:</strong></p>
-                <p class="mb-1">Kategorinize ait yarışma kitabını web sitemizden online sipariş edebilir, seçkin kitapçılardan veya il/ilçe temsilciliklerimizden temin edebilirsiniz.</p>
-                <p class="mb-0">Ayrıca sayfamızdaki kitap bölümünden örnek bölümleri <strong>dinleyebilir</strong> veya <strong>okuyabilirsiniz</strong>.</p>`;
-      }
-
-      if (q.includes('ödül') || q.includes('odul') || q.includes('hediye') || q.includes('kazan')) {
-        return `<p class="mb-1">🏆 <strong>12. Dönem Muhteşem Ödülleri:</strong></p>
-                <p class="mb-1">• <strong>Türkiye Dereceleri:</strong> Umre seyahatleri, tabletler, laptoplar ve para ödülleri.</p>
-                <p class="mb-1">• <strong>İl & İlçe Ödülleri:</strong> Her ilde ilk 10'a giren yarışmacılara özel ödüller.</p>
-                <p class="mb-0">• <strong>Takım Lideri Ödülleri:</strong> Danışman öğretmenlerimize özel başarı ödülleri.</p>`;
-      }
-
-      if (q.includes('oyun') || q.includes('soru') || q.includes('deneme') || q.includes('market') || q.includes('mağaza') || q.includes('subdomain') || q.includes('test')) {
-        return `<p class="mb-1">🎯 <strong>Özel Platformlarımız:</strong></p>
-                <p class="mb-1">🎮 <strong>Oyun Dünyası:</strong> <a href="https://oyun.ufkayolculuk.com" target="_blank" class="fw-bold text-primary">oyun.ufkayolculuk.com</a> adresinden mini oyunlara katılabilirsiniz.</p>
-                <p class="mb-1">📝 <strong>Online Soru Çözüm:</strong> <a href="https://soru.ufkayolculuk.com" target="_blank" class="fw-bold text-primary">soru.ufkayolculuk.com</a> üzerinden deneme sınavları çözebilirsiniz.</p>
-                <p class="mb-0">🛍️ <strong>Ufyo Market:</strong> <a href="https://market.ufkayolculuk.com" target="_blank" class="fw-bold text-primary">market.ufkayolculuk.com</a> üzerinden kitap ve ödül ürünlerine ulaşabilirsiniz.</p>`;
-      }
-
-      if (q.includes('kayıt') || q.includes('başvuru') || q.includes('nasıl katılırım')) {
-        return `<p class="mb-1">✍️ <strong>Yarışmaya Katılım Adımları:</strong></p>
-                <p class="mb-1">1. Sağ üstteki <strong>Giriş / Kayıt</strong> butonundan telefon ve doğum tarihinizle kayıt olun.</p>
-                <p class="mb-1">2. Yaş grubunuza uygun kitabı edinin.</p>
-                <p class="mb-0">3. Online soru havuzumuzla pratik yaparak sınav gününe hazırlanın!</p>`;
-      }
-
-      if (q.includes('takım') || q.includes('öğretmen') || q.includes('okul') || q.includes('lider')) {
-        return `<p class="mb-1">👥 <strong>Takım Lideri Portalı:</strong></p>
-                <p class="mb-0">Öğretmenlerimiz ve danışmanlarımız Takım Lideri Portalı üzerinden sınıflarını ve okuma gruplarını oluşturarak öğrencilerinin ilerlemelerini anlık takip edebilirler.</p>`;
-      }
-
-      // Genel Cevap
-      return `<p class="mb-1">Sorunuz için teşekkür ederim! ✨</p>
-              <p class="mb-0">Ufka Yolculuk ile ilgili merak ettiğiniz tüm detaylara ana sayfamızdaki menülerden, <strong>Rehber</strong> ve <strong>Sıkça Sorulan Sorular</strong> sayfalarımızdan veya çağrı merkezimizden dilediğiniz zaman ulaşabilirsiniz.</p>`;
+    function resolveMediaUrl(url) {
+      if (!url) return 'assets/images/icon6.png';
+      if (url.startsWith('http://') || url.startsWith('https://')) return url;
+      const base = window.BASE_URL || '/';
+      return base.replace(/\/+$/, '') + '/' + url.replace(/^\/+/, '');
     }
 
     function escapeHtml(text) {
+      if (!text) return '';
       const map = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' };
-      return text.replace(/[&<>"']/g, (m) => map[m]);
+      return String(text).replace(/[&<>"']/g, (m) => map[m]);
     }
 
-    // Soru Gönderme İşlemi
-    function handleUserQuestion(questionText) {
+    // API'den Bot Bilgi Seti ve Ayarlarını Yükle
+    async function loadBotKnowledge() {
+      try {
+        const knowledgeUrl = (window.BASE_URL || '/') + 'bot/knowledge';
+        const resp = await fetch(knowledgeUrl, {
+          headers: { 'X-Requested-With': 'XMLHttpRequest' }
+        });
+        if (!resp.ok) return;
+
+        const data = await resp.json();
+        if (!data || !data.bot) return;
+
+        botConfig = data.bot;
+        botKnowledgeLoaded = true;
+
+        // Bot pasif ise tüm arayüzü gizle
+        if (botConfig.is_active === false || botConfig.is_active === 0) {
+          botTrigger.style.display = 'none';
+          chatPanel.style.display = 'none';
+          return;
+        }
+
+        // Başlık, alt başlık ve balon metni güncelle
+        const titleEl = document.getElementById('ufyoChatTitle');
+        if (titleEl && botConfig.name) {
+          titleEl.textContent = botConfig.name;
+        }
+
+        const subEl = chatPanel.querySelector('.ufyo-subtitle');
+        if (subEl && botConfig.subtitle) {
+          subEl.textContent = botConfig.subtitle;
+        }
+
+        const bubbleEl = document.getElementById('ufyoBubble');
+        if (bubbleEl && botConfig.bubble_text) {
+          bubbleEl.innerHTML = botConfig.bubble_text;
+        }
+
+        // Avatar görselleri
+        if (botConfig.avatar_url) {
+          const avUrl = resolveMediaUrl(botConfig.avatar_url);
+          chatPanel.querySelectorAll('img[alt="Ufyo"]').forEach(img => {
+            img.src = avUrl;
+          });
+          const mascot = botTrigger.querySelector('.bot-mascot-img');
+          if (mascot) {
+            mascot.src = avUrl;
+          }
+        }
+
+        // Karşılama mesajı
+        if (botConfig.greeting_message) {
+          const firstMsg = chatBody.querySelector('.chat-msg.bot-msg:not(.typing-msg) .chat-msg-content');
+          if (firstMsg) {
+            firstMsg.innerHTML = botConfig.greeting_message;
+          }
+        }
+
+        // Hızlı Soru Çipleri (Quick Chips) Dinamik Oluşturma
+        if (data.quick_chips && Array.isArray(data.quick_chips) && data.quick_chips.length > 0) {
+          const chipsWrapper = document.getElementById('ufyoQuickChips');
+          if (chipsWrapper) {
+            let container = chipsWrapper.querySelector('.d-flex');
+            if (!container) {
+              container = document.createElement('div');
+              container.className = 'd-flex flex-wrap gap-1 mt-1';
+              chipsWrapper.appendChild(container);
+            }
+            container.innerHTML = '';
+            data.quick_chips.forEach(chip => {
+              const btn = document.createElement('button');
+              btn.type = 'button';
+              btn.className = 'ufyo-chip-btn';
+              btn.setAttribute('data-question', chip.question);
+              btn.textContent = chip.label;
+              btn.addEventListener('click', function() {
+                handleUserQuestion(chip.question);
+              });
+              container.appendChild(btn);
+            });
+          }
+        }
+      } catch (err) {
+        console.warn('Ufyo bot bilgisi yüklenirken hata:', err);
+      }
+    }
+
+    // Sayfa yüklenir yüklenmez arka planda bot ayarlarını çek
+    loadBotKnowledge();
+
+    // Soru Gönderme İşlemi (Tamamen API Üzerinden)
+    async function handleUserQuestion(questionText) {
       const q = questionText.trim();
       if (!q) return;
 
@@ -795,11 +1024,41 @@
 
       showTypingIndicator();
 
-      setTimeout(() => {
+      try {
+        const askUrl = (window.BASE_URL || '/') + 'bot/ask';
+        const formData = new URLSearchParams();
+        formData.append('question', q);
+
+        const resp = await fetch(askUrl, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'X-Requested-With': 'XMLHttpRequest'
+          },
+          body: formData.toString()
+        });
+
         removeTypingIndicator();
-        const answer = generateBotAnswer(q);
-        appendMessage(answer, false);
-      }, 600);
+
+        if (resp.ok) {
+          const data = await resp.json();
+          const answer = (data && data.answer) 
+            ? data.answer 
+            : ((botConfig && botConfig.fallback_message) ? botConfig.fallback_message : 'Sorunuz için teşekkürler!');
+          appendMessage(answer, false, data.suggestions || []);
+        } else {
+          const fallback = (botConfig && botConfig.fallback_message) 
+            ? botConfig.fallback_message 
+            : 'Sorunuz için teşekkür ederim! Detaylı bilgi için menülerimizi inceleyebilirsiniz.';
+          appendMessage(fallback, false);
+        }
+      } catch (err) {
+        removeTypingIndicator();
+        const fallback = (botConfig && botConfig.fallback_message) 
+          ? botConfig.fallback_message 
+          : 'Bağlantı hatası oluştu, lütfen internet bağlantınızı kontrol ediniz.';
+        appendMessage(fallback, false);
+      }
     }
 
     // Form Gönderimi
@@ -812,8 +1071,9 @@
       });
     }
 
-    // Hızlı Soru Çipleri Tıklaması
-    quickChips.forEach((chip) => {
+    // Mevcut statik çiplere de dinleyici ata (API yüklenmeden tıklanırsa çalışması için)
+    const existingChips = document.querySelectorAll('.ufyo-chip-btn');
+    existingChips.forEach((chip) => {
       chip.addEventListener('click', function () {
         const question = this.getAttribute('data-question') || this.textContent.trim();
         handleUserQuestion(question);
@@ -867,97 +1127,7 @@
 
   /**
    * ==========================================================
-   * 8. GİRİŞ YAP MODAL & TELEFON MASKELEME ETKİLEŞİMİ
-   * ==========================================================
-   */
-  function initLoginModal() {
-    const phoneInput = document.getElementById('loginPhone');
-    const loginForm = document.getElementById('loginForm');
-    const submitBtn = document.getElementById('btnLoginSubmit');
-
-    // Telefon Numarası Otomatik Formatlama (0 (5XX) XXX XX XX)
-    if (phoneInput) {
-      phoneInput.addEventListener('input', function () {
-        let value = this.value.replace(/\D/g, ''); // Sadece rakamları al
-        
-        if (value.startsWith('90')) {
-          value = value.substring(2);
-        }
-        if (!value.startsWith('0') && value.length > 0) {
-          value = '0' + value;
-        }
-
-        let formatted = '';
-        if (value.length > 0) {
-          formatted = value.substring(0, 1); // 0
-        }
-        if (value.length > 1) {
-          formatted += ' (' + value.substring(1, 4); // 0 (5XX
-        }
-        if (value.length >= 4) {
-          formatted += ') ' + value.substring(4, 7); // 0 (5XX) XXX
-        }
-        if (value.length >= 7) {
-          formatted += ' ' + value.substring(7, 9); // 0 (5XX) XXX XX
-        }
-        if (value.length >= 9) {
-          formatted += ' ' + value.substring(9, 11); // 0 (5XX) XXX XX XX
-        }
-
-        this.value = formatted;
-      });
-    }
-
-    // Form Gönderim İşlemi & Doğrulama
-    if (loginForm && submitBtn) {
-      loginForm.addEventListener('submit', function (e) {
-        e.preventDefault();
-        
-        const phoneVal = phoneInput ? phoneInput.value.trim() : '';
-        const birthVal = document.getElementById('loginBirthDate') ? document.getElementById('loginBirthDate').value : '';
-
-        if (!phoneVal || phoneVal.length < 17) {
-          alert('Lütfen geçerli bir cep telefonu numarası giriniz: 0 (5XX) XXX XX XX');
-          if (phoneInput) phoneInput.focus();
-          return;
-        }
-
-        if (!birthVal) {
-          alert('Lütfen doğum tarihinizi seçiniz.');
-          return;
-        }
-
-        // Başarılı Simülasyon
-        const originalText = submitBtn.innerHTML;
-        submitBtn.disabled = true;
-        submitBtn.innerHTML = '<span>Kontrol ediliyor...</span>';
-
-        setTimeout(() => {
-          submitBtn.innerHTML = '<span>Giriş Başarılı ✓</span>';
-          submitBtn.classList.remove('btn-yellow');
-          submitBtn.classList.add('btn-success');
-
-          setTimeout(() => {
-            alert('Giriş başarılı! Yarışmacı paneline yönlendiriliyorsunuz...');
-            const modalEl = document.getElementById('loginModal');
-            if (modalEl && window.bootstrap) {
-              const modalInstance = bootstrap.Modal.getInstance(modalEl);
-              if (modalInstance) modalInstance.hide();
-            }
-            submitBtn.disabled = false;
-            submitBtn.innerHTML = originalText;
-            submitBtn.classList.remove('btn-success');
-            submitBtn.classList.add('btn-yellow');
-            loginForm.reset();
-          }, 600);
-        }, 700);
-      });
-    }
-  }
-
-  /**
-   * ==========================================================
-   * 9. DUYURU & HABER LİSTELEME FİLTRE VE ARAMA ETKİLEŞİMİ
+   * 8. DUYURU & HABER LİSTELEME FİLTRE VE ARAMA ETKİLEŞİMİ
    * ==========================================================
    */
   function initNewsFilter() {
@@ -1008,7 +1178,7 @@
 
   /**
    * ==========================================================
-   * 10. İL TEMSİLCİLİKLERİ DİNAMİK SEÇİMİ VE İLETİŞİM FORMU
+   * 9. İL TEMSİLCİLİKLERİ DİNAMİK SEÇİMİ VE İLETİŞİM FORMU
    * ==========================================================
    */
   function initCityRepresentatives() {
@@ -1025,6 +1195,14 @@
     const resultBox = document.getElementById('repResultBox');
 
     if (!citySelect) return;
+
+    // İl seçeneklerinin A'dan Z'ye alfabetik sıralanmasını garanti et
+    const currentVal = citySelect.value;
+    const opts = Array.from(citySelect.options);
+    opts.sort((a, b) => a.text.localeCompare(b.text, 'tr'));
+    citySelect.innerHTML = '';
+    opts.forEach(opt => citySelect.add(opt));
+    if (currentVal) citySelect.value = currentVal;
 
     // 81 İlin İlçeleri Veri Tabanı
     const turkeyDistricts = {
@@ -1291,10 +1469,9 @@
           };
         }
 
-        if (badgeEl) badgeEl.textContent = `${city.toUpperCase()} - ${district.toUpperCase()} İLÇE TEMSİLCİLİĞİ`;
+        if (badgeEl) badgeEl.textContent = `${city} - ${district} İlçe Temsilcisi`;
         if (levelBadgeEl) {
-          levelBadgeEl.textContent = 'İlçe Temsilciliği';
-          levelBadgeEl.className = 'badge bg-warning bg-opacity-25 text-dark border border-warning small';
+          levelBadgeEl.style.display = 'none';
         }
       } else {
         // İl Merkezi Temsilcisi
@@ -1308,10 +1485,9 @@
           };
         }
 
-        if (badgeEl) badgeEl.textContent = `${city.toUpperCase()} İL TEMSİLCİLİĞİ`;
+        if (badgeEl) badgeEl.textContent = `${city} İl Temsilcisi`;
         if (levelBadgeEl) {
-          levelBadgeEl.textContent = 'Yetkili İl Temsilcisi';
-          levelBadgeEl.className = 'badge bg-light text-secondary border small';
+          levelBadgeEl.style.display = 'none';
         }
       }
 
@@ -1350,7 +1526,7 @@
       if (!districtSelect) return;
 
       const districts = turkeyDistricts[city] || ['Merkez'];
-      districtSelect.innerHTML = '<option value="__ALL__" selected>Tüm İl (İl Temsilciliği)</option>';
+      districtSelect.innerHTML = '<option value="__ALL__" selected>Tüm İl (İl Temsilcisi)</option>';
 
       districts.forEach(dist => {
         const opt = document.createElement('option');
@@ -1368,7 +1544,7 @@
         allBtn.type = 'button';
         allBtn.className = 'district-chip-btn active';
         allBtn.setAttribute('data-district', '__ALL__');
-        allBtn.textContent = '🏢 Tüm İl (Merkez)';
+        allBtn.textContent = '🏢 Tüm İl (İl Temsilcisi)';
         allBtn.addEventListener('click', () => {
           districtSelect.value = '__ALL__';
           updateRepresentative(citySelect.value, '__ALL__');
@@ -1406,7 +1582,20 @@
     }
 
     // İlk açılışta seçili ili ve ilçeleri yükle
-    const initialCity = citySelect.value || 'Konya';
+    const urlParams = new URLSearchParams(window.location.search);
+    const queryCity = urlParams.get('il');
+    let initialCity = citySelect.value || 'Konya';
+
+    if (queryCity) {
+      for (let i = 0; i < citySelect.options.length; i++) {
+        if (citySelect.options[i].value.toLowerCase() === queryCity.toLowerCase()) {
+          citySelect.selectedIndex = i;
+          initialCity = citySelect.options[i].value;
+          break;
+        }
+      }
+    }
+
     populateDistricts(initialCity);
     updateRepresentative(initialCity, '__ALL__');
   }
@@ -1414,6 +1603,7 @@
   function initContactForm() {
     const form = document.getElementById('contactForm');
     const submitBtn = document.getElementById('btnContactSubmit');
+    const alertBox = document.getElementById('contactAlertBox');
 
     if (!form || !submitBtn) return;
 
@@ -1422,31 +1612,81 @@
 
       const name = document.getElementById('contactName')?.value.trim();
       const email = document.getElementById('contactEmail')?.value.trim();
+      const phone = document.getElementById('contactPhone')?.value.trim();
       const message = document.getElementById('contactMessage')?.value.trim();
 
-      if (!name || !email || !message) {
-        alert('Lütfen zorunlu alanları eksiksiz doldurunuz.');
+      if (!name || !email || !phone || !message) {
+        if (alertBox) {
+          alertBox.className = 'alert alert-warning py-2 px-3 small rounded-3';
+          alertBox.innerHTML = '⚠️ Lütfen zorunlu alanları (Ad Soyad, E-posta, Telefon, Mesaj) eksiksiz doldurunuz.';
+          alertBox.classList.remove('d-none');
+        } else {
+          alert('Lütfen zorunlu alanları eksiksiz doldurunuz.');
+        }
         return;
       }
 
       const origText = submitBtn.innerHTML;
       submitBtn.disabled = true;
-      submitBtn.innerHTML = '<span>Gönderiliyor...</span>';
+      submitBtn.innerHTML = '<span>Gönderiliyor... ⏳</span>';
 
-      setTimeout(() => {
-        submitBtn.innerHTML = '<span>Mesajınız Alındı ✓</span>';
-        submitBtn.classList.remove('btn-yellow');
-        submitBtn.classList.add('btn-success');
+      const formData = new FormData(form);
+      const actionUrl = form.getAttribute('action') || ((window.BASE_URL || '/') + 'iletisim/gonder');
 
-        setTimeout(() => {
-          alert('Mesajınız başarıyla iletildi. En kısa sürede sizinle iletişime geçeceğiz.');
+      fetch(actionUrl, {
+        method: 'POST',
+        body: formData,
+        headers: {
+          'X-Requested-With': 'XMLHttpRequest'
+        }
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          submitBtn.innerHTML = '<span>Mesajınız Alındı ✓</span>';
+          submitBtn.classList.remove('btn-yellow');
+          submitBtn.classList.add('btn-success');
+
+          if (alertBox) {
+            alertBox.className = 'alert alert-success py-2 px-3 small rounded-3';
+            alertBox.innerHTML = '✅ ' + (data.message || 'Mesajınız başarıyla iletildi. En kısa sürede sizinle iletişime geçilecektir.');
+            alertBox.classList.remove('d-none');
+          }
+
           form.reset();
+
+          setTimeout(() => {
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = origText;
+            submitBtn.classList.remove('btn-success');
+            submitBtn.classList.add('btn-yellow');
+          }, 3500);
+        } else {
           submitBtn.disabled = false;
           submitBtn.innerHTML = origText;
-          submitBtn.classList.remove('btn-success');
-          submitBtn.classList.add('btn-yellow');
-        }, 600);
-      }, 700);
+          if (alertBox) {
+            alertBox.className = 'alert alert-danger py-2 px-3 small rounded-3';
+            let errMsg = data.message || 'Bir hata oluştu.';
+            if (data.errors) {
+              errMsg += ' ' + Object.values(data.errors).join(', ');
+            }
+            alertBox.innerHTML = '❌ ' + errMsg;
+            alertBox.classList.remove('d-none');
+          } else {
+            alert(data.message || 'Form gönderilemedi.');
+          }
+        }
+      })
+      .catch(err => {
+        console.error('Contact form error:', err);
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = origText;
+        if (alertBox) {
+          alertBox.className = 'alert alert-danger py-2 px-3 small rounded-3';
+          alertBox.innerHTML = '❌ Sunucuya bağlanırken bir sorun oluştu. Lütfen daha sonra tekrar deneyiniz.';
+          alertBox.classList.remove('d-none');
+        }
+      });
     });
   }
 
@@ -1459,64 +1699,66 @@
     const citySelect = document.getElementById('awardCitySelect');
     const localContentArea = document.getElementById('localAwardsDynamicContent');
     const cityBadge = document.getElementById('localSelectedCityName');
+    const localTabButtons = document.querySelectorAll('#localAwardsTabs .nav-link');
 
     if (!citySelect || !localContentArea) return;
 
-    // İl bazlı dinamik ödül veri havuzu
-    const cityData = {
-      'Konya': {
-        lead: 'Yarım Altın + Umre Katkı Payı (15.000₺)',
-        second: 'Çeyrek Altın (8.000₺)',
-        third: 'Gram Altın (5.000₺)',
-        honorable: '2.500₺ Kitap & Kırtasiye Çeki (4. - 10.)',
-        districts: [
-          { name: 'Selçuklu İlçesi', awards: '1. Çeyrek Altın | 2. Gram Altın | 3. 2.000₺ Hediye Çeki' },
-          { name: 'Meram İlçesi', awards: '1. Çeyrek Altın | 2. Gram Altın | 3. 2.000₺ Hediye Çeki' },
-          { name: 'Karatay İlçesi', awards: '1. Çeyrek Altın | 2. Gram Altın | 3. 2.000₺ Hediye Çeki' },
-          { name: 'Ereğli İlçesi', awards: '1. Gram Altın | 2. 1.500₺ | 3. 1.000₺ Kitap Çeki' }
-        ],
-        notes: 'Konya il ödülleri Şehristan Gençlik Spor Kulübü koordinasyonunda gerçekleştirilecek gala gecesinde takdim edilecektir.'
-      },
-      'İstanbul': {
-        lead: '1 Tam Altın (20.000₺)',
-        second: 'Yarım Altın (10.000₺)',
-        third: 'Çeyrek Altın (6.000₺)',
-        honorable: '3.000₺ Teknoloji & Kitap Çeki (4. - 10.)',
-        districts: [
-          { name: 'Üsküdar & Kadıköy', awards: '1. Yarım Altın | 2. Çeyrek Altın | 3. Gram Altın' },
-          { name: 'Fatih & Başakşehir', awards: '1. Yarım Altın | 2. Çeyrek Altın | 3. Gram Altın' },
-          { name: 'Pendik & Kartal', awards: '1. Çeyrek Altın | 2. Gram Altın | 3. 2.000₺ Çek' }
-        ],
-        notes: 'İstanbul ödül töreni Haliç Kongre Merkezi\'nde düzenlenecek görkemli kapanış programında verilecektir.'
-      },
-      'Ankara': {
-        lead: 'Yarım Altın + 12.000₺ Hediye Çeki',
-        second: 'Çeyrek Altın (8.000₺)',
-        third: 'Gram Altın (5.000₺)',
-        honorable: '2.000₺ Eğitim Bursu Desteği (4. - 10.)',
-        districts: [
-          { name: 'Keçiören & Yenimahalle', awards: '1. Çeyrek Altın | 2. Gram Altın | 3. 2.000₺ Çek' },
-          { name: 'Çankaya & Mamak', awards: '1. Çeyrek Altın | 2. Gram Altın | 3. 2.000₺ Çek' },
-          { name: 'Sincan & Etimesgut', awards: '1. Gram Altın | 2. 1.500₺ | 3. 1.000₺ Çek' }
-        ],
-        notes: 'Ankara İl Milli Eğitim Müdürlüğü ve ilgili gençlik kulüplerinin ortak organizasyonu ile takdim edilecektir.'
+    // API Veri Havuzu (Server-side pre-rendered & injected)
+    let cityAwardsCache = window.UFKA_CITY_AWARDS || {};
+    let currentCategory = 'ilkokul';
+
+    // Seçili aktif tab'ı belirle
+    const activeTab = document.querySelector('#localAwardsTabs .nav-link.active');
+    if (activeTab && activeTab.dataset.category) {
+      currentCategory = activeTab.dataset.category;
+    }
+
+    function getCategoryData(cityObj, categoryKey) {
+      if (!cityObj) return null;
+      if (cityObj.categories && cityObj.categories[categoryKey]) {
+        return {
+          lead: cityObj.categories[categoryKey].lead || cityObj.lead,
+          second: cityObj.categories[categoryKey].second || cityObj.second,
+          third: cityObj.categories[categoryKey].third || cityObj.third,
+          honorable: cityObj.categories[categoryKey].honorable || cityObj.honorable,
+          districts: cityObj.categories[categoryKey].districts || cityObj.districts || [],
+          notes: cityObj.notes,
+        };
       }
-    };
-
-    function renderLocalAwards(cityName) {
-      if (cityBadge) cityBadge.textContent = cityName || 'Tüm İller';
-
-      const data = cityData[cityName] || {
-        lead: 'Yarım Altın / 12.000₺ Değerinde Hediye',
-        second: 'Çeyrek Altın / 7.500₺ Değerinde Hediye',
-        third: 'Gram Altın / 4.500₺ Değerinde Hediye',
-        honorable: '1.500₺ Başarı Teşvik Çeki (4. - 10.)',
-        districts: [
-          { name: 'Merkez İlçe', awards: '1. Çeyrek Altın | 2. Gram Altın | 3. 1.500₺ Çek' },
-          { name: 'Diğer Tüm İlçeler', awards: '1. Gram Altın | 2. 1.000₺ Kitap Çeki' }
-        ],
-        notes: `${cityName} İl Temsilciliği ve proje paydaşlarımız tarafından sınav sonrası düzenlenecek il ödül töreninde kazanan yarışmacılara takdim edilecektir.`
+      return {
+        lead: cityObj.lead || 'Yarım Altın / 15.000₺ Değerinde Ödül',
+        second: cityObj.second || 'Çeyrek Altın / 10.000₺ Değerinde Ödül',
+        third: cityObj.third || 'Gram Altın / 5.000₺ Değerinde Ödül',
+        honorable: cityObj.honorable || '2.500₺ Başarı Teşvik Desteği (4. - 10.)',
+        districts: cityObj.districts || [],
+        notes: cityObj.notes || `${citySelect.value || ''} il ödülleri resmi törende takdim edilecektir.`,
       };
+    }
+
+    function renderLocalAwards(cityName, categoryKey) {
+      const selectedCity = cityName || citySelect.value || 'Konya';
+      if (cityBadge) cityBadge.textContent = selectedCity;
+
+      const rawCityObj = cityAwardsCache[selectedCity];
+
+      if (!rawCityObj) {
+        // Cache'te yoksa AJAX ile API'den getir
+        const baseUrl = window.BASE_URL || '/';
+        const url = `${baseUrl}oduller/get-city-awards/${encodeURIComponent(selectedCity)}`;
+
+        fetch(url)
+          .then(res => res.json())
+          .then(data => {
+            cityAwardsCache[selectedCity] = data;
+            renderLocalAwards(selectedCity, categoryKey);
+          })
+          .catch(err => {
+            console.error('İl ödülleri yüklenirken hata:', err);
+          });
+        return;
+      }
+
+      const data = getCategoryData(rawCityObj, categoryKey);
 
       let districtHtml = '';
       if (data.districts && data.districts.length > 0) {
@@ -1526,14 +1768,14 @@
               <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
               </svg>
-              <span>${cityName} İlçe & Okul Başarı Ödülleri</span>
+              <span>${selectedCity} İlçe & Okul Başarı Ödülleri</span>
             </h5>
             <div class="row g-3">
               ${data.districts.map(d => `
                 <div class="col-md-6">
                   <div class="district-item-card shadow-xs">
-                    <div class="fw-bold text-dark fs-6 mb-1">${d.name}</div>
-                    <div class="text-primary fw-semibold fs-7">${d.awards}</div>
+                    <div class="fw-bold text-dark fs-6 mb-1">${d.name || ''}</div>
+                    <div class="text-primary fw-semibold fs-7">${d.awards || ''}</div>
                   </div>
                 </div>
               `).join('')}
@@ -1583,7 +1825,7 @@
         ${districtHtml}
 
         <!-- Bilgilendirme Notu -->
-        <div class="award-notes-banner">
+        <div class="award-notes-banner mt-3">
           <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="flex-shrink-0 mt-0.5">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
           </svg>
@@ -1594,13 +1836,14 @@
         </div>
       `;
 
-      // Hafif geçiş efekti
+      // Yumuşak geçiş efekti
       localContentArea.style.opacity = '0.5';
       setTimeout(() => {
         localContentArea.style.opacity = '1';
-      }, 150);
+      }, 120);
     }
 
+    // İl Dropdown Değişimi
     citySelect.addEventListener('change', function () {
       if (!this.value) {
         localContentArea.innerHTML = `
@@ -1611,22 +1854,26 @@
         `;
         if (cityBadge) cityBadge.textContent = 'İl Seçiniz';
       } else {
-        renderLocalAwards(this.value);
+        renderLocalAwards(this.value, currentCategory);
       }
     });
 
-    // Yerel Kategori Sekmeleri Tıklama Yönetimi
-    const localTabButtons = document.querySelectorAll('#localAwardsTabs .nav-link');
+    // Kategori Sekmeleri Tıklama Yönetimi
     localTabButtons.forEach(btn => {
       btn.addEventListener('click', function () {
         localTabButtons.forEach(b => b.classList.remove('active'));
         this.classList.add('active');
-        renderLocalAwards(citySelect.value || 'Konya');
+        currentCategory = this.dataset.category || 'ilkokul';
+        renderLocalAwards(citySelect.value, currentCategory);
       });
     });
 
-    // Varsayılan olarak Konya veya ilk seçili ili göster
-    renderLocalAwards(citySelect.value || 'Konya');
+    // Başlangıç durumu
+    const initialCity = window.UFKA_INITIAL_CITY || citySelect.value || 'Konya';
+    if (citySelect.value !== initialCity) {
+      citySelect.value = initialCity;
+    }
+    renderLocalAwards(initialCity, currentCategory);
   }
 
   /**
@@ -1798,6 +2045,7 @@
     if (!mediaModalEl) return;
 
     const iframeEl = document.getElementById('mediaPlayerIframe');
+    const videoEl = document.getElementById('mediaPlayerVideo');
     const titleEl = document.getElementById('mediaPlayerModalLabel');
     const descEl = document.getElementById('mediaPlayerModalDesc');
     const tagBadgeEl = document.getElementById('mediaPlayerTagBadge');
@@ -1812,6 +2060,7 @@
       const title = triggerCard.getAttribute('data-media-title') || 'Podcast & Video';
       const duration = triggerCard.getAttribute('data-media-duration') || '00:00';
       const url = triggerCard.getAttribute('data-media-url') || '';
+      const isDirect = triggerCard.getAttribute('data-is-direct') === 'true' || url.endsWith('.mp4') || url.includes('/uploads/');
       const desc = triggerCard.getAttribute('data-media-desc') || 'Ufka Yolculuk rehber içerikleri ve sohbetler.';
 
       if (titleEl) titleEl.textContent = title;
@@ -1823,17 +2072,460 @@
         tagBadgeEl.className = `badge px-3 py-2 fw-bold fs-6 rounded-pill ${tagClass === 'podcast' ? 'bg-warning text-dark' : 'bg-primary text-white'}`;
       }
 
-      if (iframeEl && url) {
-        iframeEl.src = url;
+      if (isDirect) {
+        if (iframeEl) {
+          iframeEl.classList.add('d-none');
+          iframeEl.src = '';
+        }
+        if (videoEl) {
+          videoEl.classList.remove('d-none');
+          videoEl.src = url;
+          videoEl.play().catch(() => {});
+        }
+      } else {
+        if (videoEl) {
+          videoEl.pause();
+          videoEl.classList.add('d-none');
+          videoEl.src = '';
+        }
+        if (iframeEl) {
+          iframeEl.classList.remove('d-none');
+          iframeEl.src = url;
+        }
       }
     });
 
-    // Modal kapandığında oynatmayı durdur (iframe src temizle)
+    // Modal kapandığında oynatmayı durdur (video durdur, iframe src temizle)
     mediaModalEl.addEventListener('hidden.bs.modal', function () {
       if (iframeEl) {
         iframeEl.src = '';
       }
+      if (videoEl) {
+        videoEl.pause();
+        videoEl.src = '';
+      }
     });
   }
 
+  /**
+   * ==========================================================
+   * 15. SIKÇA SORULAN SORULAR (SSS) FİLTRELEME & CANLI ARAMA
+   * ==========================================================
+   */
+  function initFaqSection() {
+    const faqAccordion = document.getElementById('faqAccordion');
+    if (!faqAccordion) return;
+
+    const filterBtns = document.querySelectorAll('#faqCategoryFilterGroup .faq-filter-pill');
+    const searchInput = document.getElementById('faqSearchInput');
+    const clearBtn = document.getElementById('faqSearchClear');
+    const noResults = document.getElementById('faqNoResults');
+    const faqItems = document.querySelectorAll('.faq-item-card');
+    const askUfyoBtn = document.getElementById('faqAskUfyoBtn');
+    const openAiChatBtn = document.getElementById('faqOpenAiChatBtn');
+
+    let currentCategory = 'all';
+    let searchQuery = '';
+
+    function filterFaqs() {
+      let visibleCount = 0;
+      const q = searchQuery.trim().toLowerCase();
+
+      faqItems.forEach(item => {
+        const itemCat = item.getAttribute('data-faq-category') || '';
+        const itemTitle = (item.getAttribute('data-faq-title') || '').toLowerCase();
+        const itemBody = (item.getAttribute('data-faq-body') || '').toLowerCase();
+
+        const matchesCategory = (currentCategory === 'all' || itemCat === currentCategory);
+        const matchesSearch = (!q || itemTitle.includes(q) || itemBody.includes(q));
+
+        if (matchesCategory && matchesSearch) {
+          item.classList.remove('d-none');
+          visibleCount++;
+        } else {
+          item.classList.add('d-none');
+        }
+      });
+
+      if (noResults) {
+        if (visibleCount === 0) {
+          noResults.classList.remove('d-none');
+        } else {
+          noResults.classList.add('d-none');
+        }
+      }
+    }
+
+    // Kategori butonları
+    filterBtns.forEach(btn => {
+      btn.addEventListener('click', function () {
+        filterBtns.forEach(b => b.classList.remove('active'));
+        this.classList.add('active');
+        currentCategory = this.getAttribute('data-category') || 'all';
+        filterFaqs();
+      });
+    });
+
+    // Arama kutusu
+    if (searchInput) {
+      searchInput.addEventListener('input', function () {
+        searchQuery = this.value;
+        if (clearBtn) {
+          if (searchQuery.length > 0) {
+            clearBtn.classList.remove('d-none');
+          } else {
+            clearBtn.classList.add('d-none');
+          }
+        }
+        filterFaqs();
+      });
+    }
+
+    // Temizle butonu
+    if (clearBtn) {
+      clearBtn.addEventListener('click', function () {
+        if (searchInput) {
+          searchInput.value = '';
+          searchQuery = '';
+          this.classList.add('d-none');
+          filterFaqs();
+          searchInput.focus();
+        }
+      });
+    // URL parametresinden arama terimi kontrolü (?q=...)
+    const urlParams = new URLSearchParams(window.location.search);
+    const qParam = urlParams.get('q');
+    if (qParam && searchInput) {
+      searchInput.value = qParam;
+      searchQuery = qParam;
+      if (clearBtn) clearBtn.classList.remove('d-none');
+      filterFaqs();
+    }
+
+    // Ufyo AI Chat tetikleme fonksiyonu
+    function openUfyoChat(prefillQuestion = '') {
+      const panel = document.getElementById('ufyoChatPanel');
+      const input = document.getElementById('ufyoInput');
+      if (panel) {
+        panel.classList.add('active');
+        panel.setAttribute('aria-hidden', 'false');
+      }
+      if (input) {
+        input.focus();
+        if (prefillQuestion) {
+          input.value = prefillQuestion;
+        }
+      }
+    }
+
+    if (askUfyoBtn) {
+      askUfyoBtn.addEventListener('click', function () {
+        openUfyoChat(searchInput ? searchInput.value : '');
+      });
+    }
+
+    if (openAiChatBtn) {
+      openAiChatBtn.addEventListener('click', function () {
+        openUfyoChat();
+      });
+    }
+  }
+
+  /**
+   * ==========================================================
+   * 16. YARIŞMACI GİRİŞ MODALI (AJAX LOGIN)
+   * ==========================================================
+   */
+  function initLoginModal() {
+    const loginForm = document.getElementById('loginForm');
+    const phoneInput = document.getElementById('loginPhone');
+    const alertBox = document.getElementById('loginAlertBox');
+    const submitBtn = document.getElementById('btnLoginSubmit');
+
+    if (phoneInput) {
+      phoneInput.addEventListener('input', function () {
+        let val = this.value.replace(/\D/g, '');
+        if (val.startsWith('90')) val = val.substring(2);
+        if (val.startsWith('0')) val = val.substring(1);
+        val = val.substring(0, 10);
+
+        let formatted = '';
+        if (val.length > 0) {
+          formatted = '0 (' + val.substring(0, 3);
+          if (val.length >= 4) formatted += ') ' + val.substring(3, 6);
+          if (val.length >= 7) formatted += ' ' + val.substring(6, 8);
+          if (val.length >= 9) formatted += ' ' + val.substring(8, 10);
+        }
+        this.value = formatted;
+      });
+    }
+
+    if (!loginForm) return;
+
+    loginForm.addEventListener('submit', async function (e) {
+      e.preventDefault();
+
+      if (alertBox) {
+        alertBox.className = 'mb-3 d-none';
+        alertBox.innerHTML = '';
+      }
+
+      const origBtnHtml = submitBtn ? submitBtn.innerHTML : 'Giriş Yap';
+      if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<span>Kontrol Ediliyor...</span> <span class="spinner-border spinner-border-sm ms-1" role="status"></span>';
+      }
+
+      try {
+        const formData = new FormData(loginForm);
+        const response = await fetch(loginForm.action, {
+          method: 'POST',
+          headers: {
+            'X-Requested-With': 'XMLHttpRequest'
+          },
+          body: formData
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+          if (alertBox) {
+            alertBox.className = 'alert alert-success d-flex align-items-center gap-2 py-2 px-3 small mb-3 rounded-3';
+            alertBox.innerHTML = `<span>✓</span> <div>${data.message || 'Giriş başarılı!'}</div>`;
+          }
+          setTimeout(() => {
+            window.location.reload();
+          }, 1000);
+        } else {
+          let errorHtml = data.message || 'Giriş başarısız oldu.';
+          if (data.errors) {
+            errorHtml += '<ul class="mb-0 mt-1 ps-3">';
+            for (const key in data.errors) {
+              errorHtml += `<li>${data.errors[key]}</li>`;
+            }
+            errorHtml += '</ul>';
+          }
+          if (alertBox) {
+            alertBox.className = 'alert alert-danger d-flex align-items-center gap-2 py-2 px-3 small mb-3 rounded-3';
+            alertBox.innerHTML = `<span>⚠</span> <div>${errorHtml}</div>`;
+          }
+          if (submitBtn) {
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = origBtnHtml;
+          }
+        }
+      } catch (err) {
+        if (alertBox) {
+          alertBox.className = 'alert alert-danger d-flex align-items-center gap-2 py-2 px-3 small mb-3 rounded-3';
+          alertBox.innerHTML = '<span>⚠</span> <div>Sunucu ile bağlantı kurulurken bir hata oluştu. Lütfen tekrar deneyiniz.</div>';
+        }
+        if (submitBtn) {
+          submitBtn.disabled = false;
+          submitBtn.innerHTML = origBtnHtml;
+        }
+      }
+    });
+  }
+
+  /**
+   * ==========================================================
+   * 17. YARIŞMACI KAYIT MODALI (AJAX REGISTER)
+   * ==========================================================
+   */
+  function initRegisterModal() {
+    const regForm = document.getElementById('registerForm');
+    const phoneInput = document.getElementById('regPhone');
+    const alertBox = document.getElementById('registerAlertBox');
+    const submitBtn = document.getElementById('btnRegisterSubmit');
+
+    if (phoneInput) {
+      phoneInput.addEventListener('input', function () {
+        let val = this.value.replace(/\D/g, '');
+        if (val.startsWith('90')) val = val.substring(2);
+        if (val.startsWith('0')) val = val.substring(1);
+        val = val.substring(0, 10);
+
+        let formatted = '';
+        if (val.length > 0) {
+          formatted = '0 (' + val.substring(0, 3);
+          if (val.length >= 4) formatted += ') ' + val.substring(3, 6);
+          if (val.length >= 7) formatted += ' ' + val.substring(6, 8);
+          if (val.length >= 9) formatted += ' ' + val.substring(8, 10);
+        }
+        this.value = formatted;
+      });
+    }
+
+    if (!regForm) return;
+
+    regForm.addEventListener('submit', async function (e) {
+      e.preventDefault();
+
+      if (alertBox) {
+        alertBox.className = 'mb-3 d-none';
+        alertBox.innerHTML = '';
+      }
+
+      const origBtnHtml = submitBtn ? submitBtn.innerHTML : 'Kaydı Tamamla';
+      if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<span>Kaydınız Oluşturuluyor...</span> <span class="spinner-border spinner-border-sm ms-1" role="status"></span>';
+      }
+
+      try {
+        const formData = new FormData(regForm);
+        const response = await fetch(regForm.action, {
+          method: 'POST',
+          headers: {
+            'X-Requested-With': 'XMLHttpRequest'
+          },
+          body: formData
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+          if (alertBox) {
+            alertBox.className = 'alert alert-success d-flex align-items-center gap-2 py-2 px-3 small mb-3 rounded-3';
+            alertBox.innerHTML = `<span>🎉</span> <div>${data.message || 'Kaydınız başarıyla tamamlandı!'}</div>`;
+          }
+          setTimeout(() => {
+            window.location.reload();
+          }, 1200);
+        } else {
+          let errorHtml = data.message || 'Kayıt işlemi tamamlanamadı.';
+          if (data.errors) {
+            errorHtml += '<ul class="mb-0 mt-1 ps-3">';
+            for (const key in data.errors) {
+              errorHtml += `<li>${data.errors[key]}</li>`;
+            }
+            errorHtml += '</ul>';
+          }
+          if (alertBox) {
+            alertBox.className = 'alert alert-danger d-flex align-items-center gap-2 py-2 px-3 small mb-3 rounded-3';
+            alertBox.innerHTML = `<span>⚠</span> <div>${errorHtml}</div>`;
+          }
+          if (submitBtn) {
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = origBtnHtml;
+          }
+        }
+      } catch (err) {
+        if (alertBox) {
+          alertBox.className = 'alert alert-danger d-flex align-items-center gap-2 py-2 px-3 small mb-3 rounded-3';
+          alertBox.innerHTML = '<span>⚠</span> <div>Sunucu ile bağlantı kurulurken bir hata oluştu. Lütfen tekrar deneyiniz.</div>';
+        }
+        if (submitBtn) {
+          submitBtn.disabled = false;
+          submitBtn.innerHTML = origBtnHtml;
+        }
+      }
+    });
+  }
+
+  /**
+   * ==========================================================
+   * 18. HEADER HIZLI ARAMA & OTOMATİK TAMAMLAMA (Görsel 2)
+   * ==========================================================
+   */
+  function initHeaderSearchAutocomplete() {
+    const searchInput = document.getElementById('globalSearchInput');
+    const resultsContainer = document.getElementById('searchResultsContainer');
+    const headerTitle = document.getElementById('searchCategoryHeader');
+    const dropdownMenu = document.getElementById('headerSearchMenu');
+
+    if (!searchInput || !resultsContainer) return;
+
+    let debounceTimer = null;
+    const defaultHtml = resultsContainer.innerHTML;
+
+    searchInput.addEventListener('input', function () {
+      const q = this.value.trim();
+
+      clearTimeout(debounceTimer);
+
+      if (q.length === 0) {
+        if (headerTitle) headerTitle.textContent = 'Sık Sorulan Sorular:';
+        resultsContainer.innerHTML = defaultHtml;
+        return;
+      }
+
+      debounceTimer = setTimeout(() => {
+        const apiUrl = (window.BASE_URL || '/') + 'arama/autocomplete?q=' + encodeURIComponent(q);
+
+        fetch(apiUrl)
+          .then(res => res.json())
+          .then(data => {
+            if (!data.results || data.results.length === 0) {
+              if (headerTitle) headerTitle.textContent = 'Arama Sonucu:';
+              resultsContainer.innerHTML = `
+                <div class="text-muted small py-3 px-2 text-center">
+                  "<strong>${escapeHtml(q)}</strong>" ile eşleşen bir sonuç bulunamadı.
+                </div>
+              `;
+              return;
+            }
+
+            if (headerTitle) {
+              headerTitle.textContent = data.is_default ? 'Sık Sorulan Sorular:' : `Arama Sonuçları (${data.results.length}):`;
+            }
+
+            let html = '';
+            data.results.forEach(item => {
+              const icon = item.type === 'sss' ? '?' : '🔗';
+              const badge = item.badge ? `<span class="badge bg-light text-secondary ms-auto small" style="font-size: 0.68rem;">${escapeHtml(item.badge)}</span>` : '';
+              html += `
+                <a href="${item.url}" class="search-faq-item">
+                  <span class="search-faq-icon-bubble">${icon}</span>
+                  <span class="text-truncate" style="max-width: 280px;">${escapeHtml(item.title)}</span>
+                  ${badge}
+                </a>
+              `;
+            });
+
+            resultsContainer.innerHTML = html;
+          })
+          .catch(err => {
+            console.error('Search error:', err);
+          });
+      }, 200);
+    // Dropdown açıldığında arama kutusuna otomatik odaklan
+    const searchDropdownBtn = document.getElementById('headerSearchDropdownBtn');
+    if (searchDropdownBtn) {
+      searchDropdownBtn.addEventListener('shown.bs.dropdown', function () {
+        setTimeout(() => searchInput.focus(), 50);
+      });
+    }
+
+    // Enter tuşuna basıldığında ilk sonuca git veya SSS sayfasına yönlendir
+    searchInput.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        const firstResult = resultsContainer.querySelector('.search-faq-item');
+        if (firstResult && firstResult.href) {
+          window.location.href = firstResult.href;
+        } else {
+          const q = this.value.trim();
+          if (q.length > 0) {
+            window.location.href = (window.BASE_URL || '/') + 'sss?q=' + encodeURIComponent(q);
+          }
+        }
+      }
+    });
+
+    function escapeHtml(str) {
+      return (str || '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+  }
+
+  // Arama başlat
+  initHeaderSearchAutocomplete();
+
 })();
+
+

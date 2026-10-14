@@ -143,41 +143,49 @@ a:hover {
 .site-header .navbar-nav {
   display: flex;
   align-items: center;
-  gap: 0.65rem;
+  gap: 0.75rem;
 }
 
 .site-header .nav-link {
   font-size: 0.95rem;
   font-weight: 700;
-  color: #1E293B !important;
-  padding: 0.45rem 0.45rem !important;
+  color: #334155 !important;
+  padding: 0.45rem 0.65rem !important;
   border-radius: var(--radius-sm);
   white-space: nowrap;
   display: inline-flex;
   align-items: center;
-  gap: 0.3rem;
+  gap: 0.35rem;
   position: relative;
-  transition: color var(--transition-normal);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .site-header .nav-link:hover {
   color: var(--brand-blue) !important;
+  background-color: rgba(252, 198, 38, 0.08);
 }
 
+/* Aktif Menü Öğesi: Belirgin Sarı Vurgu ve Alt Çizgi Göstergesi */
 .site-header .nav-link.active {
   color: #0F172A !important;
+  font-weight: 800 !important;
+  background-color: rgba(252, 198, 38, 0.16) !important;
+  box-shadow: inset 0 0 0 1px rgba(245, 158, 11, 0.25);
 }
 
-/* Aktif Menü Öğesi Sarı Çizgi Göstergesi (Ekran görüntüsündeki gibi) */
 .site-header .nav-link.active::after {
-  content: '';
+  content: '' !important;
+  display: block !important;
   position: absolute;
-  bottom: -10px;
-  left: 0.45rem;
-  right: 0.45rem;
-  height: 3.5px;
-  background-color: var(--brand-yellow);
+  bottom: -6px;
+  left: 0.65rem;
+  right: 0.65rem;
+  height: 4px;
+  background: linear-gradient(90deg, #F59E0B, #FCC626, #F59E0B);
+  border: none !important;
   border-radius: 4px;
+  box-shadow: 0 2px 8px rgba(252, 198, 38, 0.9);
+  transform: scaleX(1) !important;
 }
 
 .site-header .dropdown-chevron {
@@ -198,11 +206,12 @@ a:hover {
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
   padding: 0.5rem;
   font-size: 0.875rem;
+  min-width: 200px;
 }
 
 .site-header .dropdown-item {
   border-radius: var(--radius-sm);
-  padding: 0.5rem 0.95rem;
+  padding: 0.55rem 0.95rem;
   font-weight: 600;
   color: var(--text-dark);
   transition: all var(--transition-normal);
@@ -211,12 +220,14 @@ a:hover {
 .site-header .dropdown-item:hover {
   background-color: #EFF6FF;
   color: var(--brand-blue);
+  padding-left: 1.15rem;
 }
 
 .site-header .dropdown-item.active {
-  background-color: var(--brand-yellow);
-  color: #0F172A;
+  background-color: #FFFBEB;
+  color: #B45309;
   font-weight: 700;
+  border-left: 3px solid #FCC626;
 }
 
 /* Sağ Eylem Butonları */
@@ -226,34 +237,81 @@ a:hover {
   gap: 0.65rem;
 }
 
-.site-header .lang-dropdown {
-  background-color: #FAFBFD;
-  border: 1px solid var(--border-light);
-  border-radius: var(--radius-sm);
-  padding: 0.55rem 0.9rem;
-  font-size: 0.875rem;
-  font-weight: 600;
-  color: var(--text-dark);
-  display: inline-flex;
-  align-items: center;
-  gap: 0.35rem;
-  white-space: nowrap;
-}
-
-.site-header .btn-yellow {
-  padding: 0.55rem 1.25rem;
+/* Giriş Yap Butonu (Solda, Şık Konturlu) */
+.site-header .btn-outline-minimal,
+.site-header .btn-header-login {
+  background-color: #F8FAFC;
+  border: 1.5px solid #CBD5E1;
+  color: #1E293B !important;
+  padding: 0.55rem 1.15rem;
   font-size: 0.9rem;
   white-space: nowrap;
   font-weight: 700;
   border-radius: var(--radius-sm);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
 }
 
-.site-header .btn-outline-minimal {
-  padding: 0.55rem 1.15rem;
-  font-size: 0.9rem;
+.site-header .btn-outline-minimal:hover,
+.site-header .btn-header-login:hover {
+  background-color: #0F172A;
+  color: #FFFFFF !important;
+  border-color: #0F172A;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.15);
+}
+
+/* Kayıt Ol Butonu (Sağda, Kurumsal Pantone Sarı Dikkat Çekici Vurgu) */
+.site-header .btn-yellow,
+.site-header .btn-header-register {
+  background: linear-gradient(135deg, #FCC626 0%, #F59E0B 100%);
+  color: #0F172A !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.2px;
+  padding: 0.55rem 1.35rem;
+  font-size: 0.92rem;
   white-space: nowrap;
-  font-weight: 600;
   border-radius: var(--radius-sm);
+  border: 1px solid rgba(245, 158, 11, 0.4);
+  box-shadow: 0 4px 14px rgba(252, 198, 38, 0.45);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.site-header .btn-yellow:hover,
+.site-header .btn-header-register:hover {
+  background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%);
+  color: #0F172A !important;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(252, 198, 38, 0.65);
+}
+
+/* Arama Butonu (Q İkonu) */
+.site-header .header-search-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #F8FAFC;
+  border: 1.5px solid #E2E8F0;
+  color: #475569;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.site-header .header-search-btn:hover {
+  background: #FFFBEB;
+  border-color: #FCD34D;
+  color: #B45309;
+  transform: translateY(-1px);
+  box-shadow: 0 3px 10px rgba(245, 158, 11, 0.2);
 }
 
 /* 1200px - 1400px Aralığında Yalnızca Sol/Sağ Padding'leri Kısarak Hizayı Koru */
@@ -501,7 +559,11 @@ a:hover {
 }
 
 .navbar-nav .nav-link.dropdown-toggle::after {
-  display: none !important;
+  display: none;
+}
+
+.site-header .navbar-nav .nav-link.dropdown-toggle.active::after {
+  display: block !important;
 }
 
 .dropdown-chevron {
@@ -3711,6 +3773,14 @@ a:hover {
   background-color: #FAFBFD;
 }
 
+.rich-content img,
+.article-body-text img {
+  max-width: 100%;
+  height: auto;
+  border-radius: var(--radius-sm);
+  margin: 1rem 0;
+}
+
 /* Paylaşım Butonları */
 .article-share-bar {
   display: flex;
@@ -4179,12 +4249,19 @@ a:hover {
   background-color: var(--bg-page);
 }
 
-/* İletişim Bilgi Kartları Gridi */
+/* İletişim Bilgi Kartları Gridi (Çağrı Merkezi & E-Posta - 2 Kolon) */
 .contact-info-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  gap: 1.25rem;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.5rem;
   margin-bottom: 2.5rem;
+}
+
+@media (max-width: 767.98px) {
+  .contact-info-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
 }
 
 .contact-info-card {
@@ -4877,4 +4954,301 @@ a:hover {
   color: #64748B !important;
   font-weight: 600 !important;
   margin-bottom: 0 !important;
+}
+
+/* ==========================================================
+   SIKÇA SORULAN SORULAR (SSS) BÖLÜM STİLLERİ
+   ========================================================== */
+.faq-section {
+  scroll-margin-top: 80px;
+}
+
+.faq-filter-pill {
+  border: 1px solid #E2E8F0 !important;
+  background: #FFFFFF !important;
+  color: #475569 !important;
+  font-weight: 600 !important;
+  font-size: 0.875rem !important;
+  border-radius: 9999px !important;
+  padding: 0.5rem 1rem !important;
+  transition: all 0.2s ease !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 0.35rem !important;
+}
+
+.faq-filter-pill:hover {
+  background: #F8FAFC !important;
+  border-color: #CBD5E1 !important;
+  color: #0F172A !important;
+  transform: translateY(-1px);
+}
+
+.faq-filter-pill.active {
+  background: #0F172A !important;
+  border-color: #0F172A !important;
+  color: #FFFFFF !important;
+}
+
+.faq-filter-pill.active .badge {
+  background: rgba(255, 255, 255, 0.2) !important;
+  color: #FFFFFF !important;
+}
+
+.custom-faq-accordion .accordion-item {
+  background: #FFFFFF !important;
+  border: 1px solid #E2E8F0 !important;
+  border-radius: 12px !important;
+  transition: all 0.2s ease;
+}
+
+.custom-faq-accordion .accordion-item:hover {
+  border-color: #CBD5E1 !important;
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.05) !important;
+}
+
+.custom-faq-accordion .accordion-button {
+  background: transparent !important;
+  color: #0F172A !important;
+  font-size: 1.05rem !important;
+  font-weight: 700 !important;
+  padding: 1.25rem 1.5rem !important;
+  border: none !important;
+  box-shadow: none !important;
+  display: flex !important;
+  align-items: center !important;
+}
+
+.custom-faq-accordion .accordion-button:not(.collapsed) {
+  background: rgba(245, 166, 35, 0.06) !important;
+  color: #D97706 !important;
+}
+
+.custom-faq-accordion .accordion-button::after {
+  background-size: 1rem !important;
+  transition: transform 0.25s ease !important;
+}
+
+.faq-cat-badge {
+  font-size: 1.25rem !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+.faq-answer-content {
+  padding: 1rem 1.5rem 1.5rem 1.5rem !important;
+  border-top: 1px dashed #E2E8F0 !important;
+  font-size: 0.95rem !important;
+  color: #475569 !important;
+}
+
+.faq-answer-content p:last-child {
+  margin-bottom: 0 !important;
+}
+
+.faq-search-wrapper .input-group:focus-within {
+  border-color: #F5A623 !important;
+  box-shadow: 0 0 0 3px rgba(245, 166, 35, 0.15) !important;
+}
+
+/* ==========================================================================
+   YENİ: HEADER KULLANICI PROFİL AÇILIR MENÜSÜ (Görsel 1 Referanslı)
+   ========================================================================== */
+.user-profile-menu-dropdown {
+  min-width: 290px;
+  border-radius: 18px !important;
+  border: 1px solid rgba(226, 232, 240, 0.9) !important;
+  padding: 1.25rem 1.15rem !important;
+  box-shadow: 0 12px 35px rgba(15, 23, 42, 0.12) !important;
+  background: #ffffff !important;
+}
+
+.profile-avatar-box {
+  width: 46px;
+  height: 46px;
+  border-radius: 12px;
+  background: #3b82f6;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-size: 1.3rem;
+}
+
+.user-badge-yarisma {
+  background: #e6f9ed;
+  color: #10b981;
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 0.2rem 0.6rem;
+  border-radius: 50rem;
+  display: inline-block;
+  line-height: 1.2;
+}
+
+.btn-profile-cert-quick {
+  background: #eff6ff;
+  color: #2563eb;
+  font-size: 0.84rem;
+  font-weight: 700;
+  padding: 0.45rem 1rem;
+  border-radius: 50rem;
+  text-decoration: none;
+  display: block;
+  text-align: center;
+  transition: all 0.2s;
+  border: 1px solid #dbeafe;
+  margin-top: 0.75rem;
+  margin-bottom: 0.5rem;
+}
+
+.btn-profile-cert-quick:hover {
+  background: #dbeafe;
+  color: #1d4ed8;
+}
+
+.profile-menu-link {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.6rem 0.5rem;
+  color: #334155;
+  font-size: 0.92rem;
+  font-weight: 600;
+  border-radius: 8px;
+  text-decoration: none;
+  transition: background 0.15s, color 0.15s;
+}
+
+.profile-menu-link:hover {
+  background: #f8fafc;
+  color: #0284c7;
+}
+
+/* ==========================================================================
+   YENİ: HEADER ARAMA AÇILIR KUTUSU (Görsel 2 Referanslı)
+   ========================================================================== */
+.header-search-btn {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  color: #334155;
+  transition: background 0.2s, color 0.2s;
+  cursor: pointer;
+}
+
+.header-search-btn:hover {
+  background: #f1f5f9;
+  color: #0284c7;
+}
+
+.header-user-btn {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #3b82f6;
+  color: #ffffff;
+  border: none;
+  box-shadow: 0 2px 6px rgba(59, 130, 246, 0.3);
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+
+.header-user-btn:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 10px rgba(59, 130, 246, 0.4);
+}
+
+.search-dropdown-menu {
+  width: 380px;
+  max-width: 90vw;
+  border-radius: 18px !important;
+  border: 1px solid rgba(226, 232, 240, 0.9) !important;
+  padding: 1.25rem !important;
+  box-shadow: 0 14px 40px rgba(15, 23, 42, 0.14) !important;
+  background: #ffffff !important;
+}
+
+.search-input-header-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  margin-bottom: 1.25rem;
+}
+
+.search-input-header-icon {
+  position: absolute;
+  left: 0.85rem;
+  color: #94a3b8;
+  pointer-events: none;
+}
+
+.search-input-header {
+  width: 100%;
+  padding: 0.65rem 1rem 0.65rem 2.4rem;
+  font-size: 0.9rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  outline: none;
+  background: #f8fafc;
+  color: #1e293b;
+  transition: border-color 0.2s, background 0.2s;
+}
+
+.search-input-header:focus {
+  border-color: #38bdf8;
+  background: #ffffff;
+  box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.15);
+}
+
+.search-sub-title {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #94a3b8;
+  margin-bottom: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.search-faq-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.65rem;
+  padding: 0.55rem 0.45rem;
+  border-radius: 8px;
+  color: #334155;
+  font-size: 0.88rem;
+  font-weight: 500;
+  text-decoration: none;
+  line-height: 1.4;
+  transition: background 0.15s, color 0.15s;
+}
+
+.search-faq-item:hover {
+  background: #f1f5f9;
+  color: #0284c7;
+}
+
+.search-faq-icon-bubble {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #e0f2fe;
+  color: #0284c7;
+  font-size: 0.72rem;
+  font-weight: 800;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-top: 1px;
 }

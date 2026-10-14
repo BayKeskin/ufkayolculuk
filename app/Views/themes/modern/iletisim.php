@@ -14,20 +14,20 @@
       </nav>
 
       <!-- Başlık ve Açıklama -->
-      <h1 class="page-hero-title">İletişim & İl Temsilcilikleri</h1>
+      <h1 class="page-hero-title">İletişim & İl Temsilcileri</h1>
       <p class="page-hero-lead">
-        Yarışma başvuruları, kitap temini veya bulunduğunuz ildeki temsilciliklerimizle irtibata geçmek için bize kolayca ulaşabilirsiniz.
+        Yarışma başvuruları, kitap temini veya bulunduğunuz ildeki il temsilcilerimizle irtibata geçmek için bize kolayca ulaşabilirsiniz.
       </p>
 
       <!-- Meta Bilgileri -->
       <div class="page-hero-meta">
         <div class="page-hero-meta-item">
           <span>📞</span>
-          <span>Çağrı Merkezi: 0850 888 00 88</span>
+          <span>Çağrı Merkezi: 444 83 17</span>
         </div>
         <div class="page-hero-meta-item">
           <span>📍</span>
-          <span>81 İl Temsilciliği Aktif</span>
+          <span>81 İl Temsilcisi Aktif</span>
         </div>
       </div>
     </div>
@@ -39,26 +39,16 @@
   <section class="contact-section">
     <div class="container">
 
-      <!-- 1. Hızlı İletişim Bilgi Kartları (4 Kolon) -->
+      <!-- 1. Hızlı İletişim Bilgi Kartları (2 Kolon: Çağrı Merkezi & E-Posta) -->
       <div class="contact-info-grid">
         
-        <!-- Telefon -->
-        <a href="tel:08508880088" class="contact-info-card">
+        <!-- Çağrı Merkezi -->
+        <a href="tel:4448317" class="contact-info-card">
           <div class="contact-icon-wrapper">📞</div>
           <div>
             <div class="contact-card-title">Çağrı Merkezi</div>
-            <div class="contact-card-value">0850 888 00 88</div>
+            <div class="contact-card-value">444 83 17</div>
             <p class="contact-card-sub">Hafta içi 09:00 - 18:00</p>
-          </div>
-        </a>
-
-        <!-- WhatsApp -->
-        <a href="https://wa.me/908508880088" target="_blank" rel="noopener" class="contact-info-card">
-          <div class="contact-icon-wrapper">💬</div>
-          <div>
-            <div class="contact-card-title">WhatsApp Destek</div>
-            <div class="contact-card-value">0850 888 00 88</div>
-            <p class="contact-card-sub">Canlı mesajlaşma hattı</p>
           </div>
         </a>
 
@@ -66,21 +56,11 @@
         <a href="mailto:bilgi@ufkayolculuk.com" class="contact-info-card">
           <div class="contact-icon-wrapper">✉️</div>
           <div>
-            <div class="contact-card-title">E-Posta Adresi</div>
+            <div class="contact-card-title">Destek ve Çözüm Merkezi</div>
             <div class="contact-card-value">bilgi@ufkayolculuk.com</div>
             <p class="contact-card-sub">Ortalama 24 saatte yanıt</p>
           </div>
         </a>
-
-        <!-- Genel Merkez -->
-        <div class="contact-info-card">
-          <div class="contact-icon-wrapper">🏢</div>
-          <div>
-            <div class="contact-card-title">Genel Merkez</div>
-            <div class="contact-card-value">Server Yaşam Vakfı</div>
-            <p class="contact-card-sub">Üsküdar, İstanbul / Türkiye</p>
-          </div>
-        </div>
 
       </div>
 
@@ -162,17 +142,17 @@
           </div>
         </div>
 
-        <!-- SAĞ KOLON: İl Temsilcilikleri Dinamik Seçim Alanı -->
+        <!-- SAĞ KOLON: İl Temsilcileri Dinamik Seçim Alanı -->
         <div class="col-lg-6">
           <div class="rep-selector-card">
             
             <div class="d-flex align-items-center gap-2 mb-2">
               <span class="fs-4">📍</span>
-              <h2 class="form-header-title mb-0">İl Temsilciliklerimiz</h2>
+              <h2 class="form-header-title mb-0">İl Temsilcileri</h2>
             </div>
             
             <p class="text-muted small mb-3">
-              Yarışma hakkında yüz yüze bilgi almak, kitap temin etmek veya yerel etkinliklere katılmak için bulunduğunuz ili seçiniz:
+              Yarışma hakkında bilgi almak, kitap temin etmek veya yerel etkinliklere katılmak için bulunduğunuz ili seçiniz:
             </p>
 
             <!-- İl ve İlçe Seçim Grubu -->
@@ -195,7 +175,7 @@
                   2. İlçe Seçiniz:
                 </label>
                 <select class="form-select rep-select-box" id="districtSelect" aria-label="İlçe Seçiniz">
-                  <option value="__ALL__" selected>Tüm İl (İl Temsilciliği)</option>
+                  <option value="__ALL__" selected>Tüm İl (İl Temsilcisi)</option>
                 </select>
               </div>
             </div>
@@ -203,11 +183,10 @@
             <!-- Popüler / Hızlı İlçe Butonları -->
             <div class="district-quick-chips mb-2" id="districtQuickChips"></div>
 
-            <!-- DİNAMİK TEMSİLCİ BİLGİ KUTUSU (İstenen Format) -->
+            <!-- DİNAMİK TEMSİLCİ BİLGİ KUTUSU (Mavi alanda '[İl Adı] İl Temsilcisi') -->
             <div class="rep-result-box" id="repResultBox">
-              <div class="d-flex align-items-center justify-content-between mb-2 flex-wrap gap-1">
-                <span class="badge bg-primary text-white" id="repCityBadge">KONYA İL TEMSİLCİLİĞİ</span>
-                <span class="badge bg-light text-secondary border small" id="repLevelBadge">Yetkili İl Temsilcisi</span>
+              <div class="mb-3">
+                <span class="badge bg-primary text-white fs-6 py-2 px-3 fw-bold rounded-2 shadow-xs" id="repCityBadge"><?= esc($selectedCity ?? 'Konya') ?> İl Temsilcisi</span>
               </div>
               
               <!-- İstenen Format: Kişi Adı, Kulüp Adı, Telefon -->
@@ -232,7 +211,7 @@
 
             <div class="mt-auto pt-3 text-center">
               <small class="text-muted">
-                İlinizde temsilcilik bulamadıysanız genel merkezimizle doğrudan irtibata geçebilirsiniz.
+                İlinizde il temsilcisi bulamadıysanız genel merkezimizle doğrudan irtibata geçebilirsiniz.
               </small>
             </div>
 

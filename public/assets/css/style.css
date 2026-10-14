@@ -143,41 +143,49 @@ a:hover {
 .site-header .navbar-nav {
   display: flex;
   align-items: center;
-  gap: 0.65rem;
+  gap: 0.75rem;
 }
 
 .site-header .nav-link {
   font-size: 0.95rem;
   font-weight: 700;
-  color: #1E293B !important;
-  padding: 0.45rem 0.45rem !important;
+  color: #334155 !important;
+  padding: 0.45rem 0.65rem !important;
   border-radius: var(--radius-sm);
   white-space: nowrap;
   display: inline-flex;
   align-items: center;
-  gap: 0.3rem;
+  gap: 0.35rem;
   position: relative;
-  transition: color var(--transition-normal);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .site-header .nav-link:hover {
   color: var(--brand-blue) !important;
+  background-color: rgba(252, 198, 38, 0.08);
 }
 
+/* Aktif Menü Öğesi: Belirgin Sarı Vurgu ve Alt Çizgi Göstergesi */
 .site-header .nav-link.active {
   color: #0F172A !important;
+  font-weight: 800 !important;
+  background-color: rgba(252, 198, 38, 0.16) !important;
+  box-shadow: inset 0 0 0 1px rgba(245, 158, 11, 0.25);
 }
 
-/* Aktif Menü Öğesi Sarı Çizgi Göstergesi (Ekran görüntüsündeki gibi) */
 .site-header .nav-link.active::after {
-  content: '';
+  content: '' !important;
+  display: block !important;
   position: absolute;
-  bottom: -10px;
-  left: 0.45rem;
-  right: 0.45rem;
-  height: 3.5px;
-  background-color: var(--brand-yellow);
+  bottom: -6px;
+  left: 0.65rem;
+  right: 0.65rem;
+  height: 4px;
+  background: linear-gradient(90deg, #F59E0B, #FCC626, #F59E0B);
+  border: none !important;
   border-radius: 4px;
+  box-shadow: 0 2px 8px rgba(252, 198, 38, 0.9);
+  transform: scaleX(1) !important;
 }
 
 .site-header .dropdown-chevron {
@@ -198,11 +206,12 @@ a:hover {
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
   padding: 0.5rem;
   font-size: 0.875rem;
+  min-width: 200px;
 }
 
 .site-header .dropdown-item {
   border-radius: var(--radius-sm);
-  padding: 0.5rem 0.95rem;
+  padding: 0.55rem 0.95rem;
   font-weight: 600;
   color: var(--text-dark);
   transition: all var(--transition-normal);
@@ -211,12 +220,14 @@ a:hover {
 .site-header .dropdown-item:hover {
   background-color: #EFF6FF;
   color: var(--brand-blue);
+  padding-left: 1.15rem;
 }
 
 .site-header .dropdown-item.active {
-  background-color: var(--brand-yellow);
-  color: #0F172A;
+  background-color: #FFFBEB;
+  color: #B45309;
   font-weight: 700;
+  border-left: 3px solid #FCC626;
 }
 
 /* Sağ Eylem Butonları */
@@ -226,34 +237,81 @@ a:hover {
   gap: 0.65rem;
 }
 
-.site-header .lang-dropdown {
-  background-color: #FAFBFD;
-  border: 1px solid var(--border-light);
-  border-radius: var(--radius-sm);
-  padding: 0.55rem 0.9rem;
-  font-size: 0.875rem;
-  font-weight: 600;
-  color: var(--text-dark);
-  display: inline-flex;
-  align-items: center;
-  gap: 0.35rem;
-  white-space: nowrap;
-}
-
-.site-header .btn-yellow {
-  padding: 0.55rem 1.25rem;
+/* Giriş Yap Butonu (Solda, Şık Konturlu) */
+.site-header .btn-outline-minimal,
+.site-header .btn-header-login {
+  background-color: #F8FAFC;
+  border: 1.5px solid #CBD5E1;
+  color: #1E293B !important;
+  padding: 0.55rem 1.15rem;
   font-size: 0.9rem;
   white-space: nowrap;
   font-weight: 700;
   border-radius: var(--radius-sm);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
 }
 
-.site-header .btn-outline-minimal {
-  padding: 0.55rem 1.15rem;
-  font-size: 0.9rem;
+.site-header .btn-outline-minimal:hover,
+.site-header .btn-header-login:hover {
+  background-color: #0F172A;
+  color: #FFFFFF !important;
+  border-color: #0F172A;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.15);
+}
+
+/* Kayıt Ol Butonu (Sağda, Kurumsal Pantone Sarı Dikkat Çekici Vurgu) */
+.site-header .btn-yellow,
+.site-header .btn-header-register {
+  background: linear-gradient(135deg, #FCC626 0%, #F59E0B 100%);
+  color: #0F172A !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.2px;
+  padding: 0.55rem 1.35rem;
+  font-size: 0.92rem;
   white-space: nowrap;
-  font-weight: 600;
   border-radius: var(--radius-sm);
+  border: 1px solid rgba(245, 158, 11, 0.4);
+  box-shadow: 0 4px 14px rgba(252, 198, 38, 0.45);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.site-header .btn-yellow:hover,
+.site-header .btn-header-register:hover {
+  background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%);
+  color: #0F172A !important;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(252, 198, 38, 0.65);
+}
+
+/* Arama Butonu (Q İkonu) */
+.site-header .header-search-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #F8FAFC;
+  border: 1.5px solid #E2E8F0;
+  color: #475569;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.site-header .header-search-btn:hover {
+  background: #FFFBEB;
+  border-color: #FCD34D;
+  color: #B45309;
+  transform: translateY(-1px);
+  box-shadow: 0 3px 10px rgba(245, 158, 11, 0.2);
 }
 
 /* 1200px - 1400px Aralığında Yalnızca Sol/Sağ Padding'leri Kısarak Hizayı Koru */
@@ -501,7 +559,11 @@ a:hover {
 }
 
 .navbar-nav .nav-link.dropdown-toggle::after {
-  display: none !important;
+  display: none;
+}
+
+.site-header .navbar-nav .nav-link.dropdown-toggle.active::after {
+  display: block !important;
 }
 
 .dropdown-chevron {
@@ -4187,12 +4249,19 @@ a:hover {
   background-color: var(--bg-page);
 }
 
-/* İletişim Bilgi Kartları Gridi */
+/* İletişim Bilgi Kartları Gridi (Çağrı Merkezi & E-Posta - 2 Kolon) */
 .contact-info-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  gap: 1.25rem;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.5rem;
   margin-bottom: 2.5rem;
+}
+
+@media (max-width: 767.98px) {
+  .contact-info-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
 }
 
 .contact-info-card {

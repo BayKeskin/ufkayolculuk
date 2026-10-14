@@ -180,9 +180,6 @@
               </div>
             </div>
 
-            <!-- Popüler / Hızlı İlçe Butonları -->
-            <div class="district-quick-chips mb-2" id="districtQuickChips"></div>
-
             <!-- DİNAMİK TEMSİLCİ BİLGİ KUTUSU (Mavi alanda '[İl Adı] İl Temsilcisi') -->
             <div class="rep-result-box" id="repResultBox">
               <div class="mb-3">
@@ -211,7 +208,7 @@
 
             <div class="mt-auto pt-3 text-center">
               <small class="text-muted">
-                İlinizde il temsilcisi bulamadıysanız genel merkezimizle doğrudan irtibata geçebilirsiniz.
+                İlinizde il temsilcisi bulamadıysanız 444 83 17 Çağrı Merkezimizle doğrudan irtibata geçebilirsiniz.
               </small>
             </div>
 

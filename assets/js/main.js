@@ -295,11 +295,31 @@
             }
           });
 
+          // Filtrelendiğinde sağdaki gereksiz boşluğu önlemek için ortala
+          if (filterVal !== 'all') {
+            track.classList.add('justify-content-center');
+          } else {
+            track.classList.remove('justify-content-center');
+          }
+
           // Kart seçildiğinde başa yumuşak kaydır
           track.scrollTo({ left: 0, behavior: 'smooth' });
         });
       });
     }
+
+    // Kitap kartına tıklandığında doğrudan detay/önizleme modalını aç
+    categoryCards.forEach((col) => {
+      const card = col.querySelector('.book-showcase-card');
+      if (card) {
+        card.style.cursor = 'pointer';
+        card.addEventListener('click', (e) => {
+          if (e.target.closest('.btn-book-inspect-single')) return;
+          const inspectBtn = card.querySelector('.btn-book-inspect-single');
+          if (inspectBtn) inspectBtn.click();
+        });
+      }
+    });
 
     // Fareyle Sürükle-Bırak (Drag to Scroll)
     let isDown = false;
@@ -1500,14 +1520,6 @@
       if (callBtn) callBtn.setAttribute('href', `tel:0${cleanPhone.replace(/^0/, '')}`);
       if (waBtn) waBtn.setAttribute('href', `https://wa.me/90${cleanPhone.replace(/^0/, '')}`);
 
-      // Hızlı İlçe Etiketlerini Senkronize Et
-      if (quickChipsContainer) {
-        const chips = quickChipsContainer.querySelectorAll('.district-chip-btn');
-        chips.forEach(chip => {
-          chip.classList.toggle('active', chip.getAttribute('data-district') === district);
-        });
-      }
-
       // Hafif geçiş animasyonu
       if (resultBox) {
         resultBox.style.opacity = '0.4';
@@ -1520,7 +1532,7 @@
     }
 
     /**
-     * Seçilen İle Göre İlçe Dropdown'ını ve Hızlı Butonları Doldur
+     * Seçilen İle Göre İlçe Dropdown'ını Doldur
      */
     function populateDistricts(city) {
       if (!districtSelect) return;
@@ -1535,36 +1547,9 @@
         districtSelect.appendChild(opt);
       });
 
-      // Hızlı Seçim Butonları (Chips)
+      // Münferit ilçe butonları kaldırıldı (kullanıcı zaten ilçe seçim kutusundan seçebilmektedir)
       if (quickChipsContainer) {
         quickChipsContainer.innerHTML = '';
-
-        // "Tüm İl" Butonu
-        const allBtn = document.createElement('button');
-        allBtn.type = 'button';
-        allBtn.className = 'district-chip-btn active';
-        allBtn.setAttribute('data-district', '__ALL__');
-        allBtn.textContent = '🏢 Tüm İl (İl Temsilcisi)';
-        allBtn.addEventListener('click', () => {
-          districtSelect.value = '__ALL__';
-          updateRepresentative(citySelect.value, '__ALL__');
-        });
-        quickChipsContainer.appendChild(allBtn);
-
-        // İlk 5 popüler ilçeyi buton olarak ekle
-        const topDistricts = districts.slice(0, 5);
-        topDistricts.forEach(dist => {
-          const chip = document.createElement('button');
-          chip.type = 'button';
-          chip.className = 'district-chip-btn';
-          chip.setAttribute('data-district', dist);
-          chip.textContent = dist;
-          chip.addEventListener('click', () => {
-            districtSelect.value = dist;
-            updateRepresentative(citySelect.value, dist);
-          });
-          quickChipsContainer.appendChild(chip);
-        });
       }
     }
 

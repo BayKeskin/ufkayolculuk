@@ -28,6 +28,10 @@ $routes->match(['GET', 'HEAD'], 'biz-kimiz', 'Sayfa::detay/biz-kimiz');
 $routes->match(['GET', 'HEAD'], 'misyon-vizyon', 'Sayfa::detay/misyon-vizyon');
 $routes->match(['GET', 'HEAD'], 'sartname', 'Sayfa::detay/sartname');
 $routes->match(['GET', 'HEAD'], 'resmi-onaylar', 'Sayfa::detay/resmi-onaylar');
+$routes->match(['GET', 'HEAD'], 'gecmis-yillar', 'Sayfa::detay/gecmis-yillar');
+$routes->match(['GET', 'HEAD'], 'sinav-kurallari', 'Sayfa::detay/sinav-kurallari');
+$routes->match(['GET', 'HEAD'], 'materyaller', 'Sayfa::detay/materyaller');
+$routes->match(['GET', 'HEAD'], 'kitap-temin-noktalari', 'Sayfa::detay/kitap-temin-noktalari');
 $routes->match(['GET', 'HEAD'], 'kvkk', 'Sayfa::detay/uy-kvkk-aydinlatma-metni');
 
 // Yarışmacı Giriş & Çıkış Sistemi (Auth)

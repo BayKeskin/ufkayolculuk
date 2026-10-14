@@ -45,115 +45,105 @@
 
         <div class="collapse navbar-collapse" id="mainNav">
           <!-- Menü Öğeleri (Açılır Dropdown Menülü) -->
-          <ul class="navbar-nav me-auto ms-xl-4 mb-2 mb-xl-0">
+          <ul class="navbar-nav me-auto ms-xl-2 mb-2 mb-xl-0">
+            <!-- 1. Ana Sayfa -->
             <li class="nav-item">
               <a class="nav-link" href="home.html">Ana Sayfa</a>
             </li>
 
-            <!-- 1. Dropdown: Yarışma Hakkında -->
+            <!-- 2. Hakkımızda (Açılır Menü) - Aktif -->
             <li class="nav-item dropdown">
-              <a class="nav-link dropdown-toggle active" href="#" id="hakkindaDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                <span>Yarışma Hakkında</span>
+              <a class="nav-link dropdown-toggle active" href="#" id="hakkimizdaDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                <span>Hakkımızda</span>
                 <svg class="dropdown-chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                   <polyline points="6 9 12 15 18 9"></polyline>
                 </svg>
               </a>
-              <ul class="dropdown-menu shadow-sm" aria-labelledby="hakkindaDropdown">
-                <li><a class="dropdown-item active" href="sayfa-detay.html">Hakkımızda</a></li>
-                <li><a class="dropdown-item" href="sayfa-detay.html">Misyon & Vizyon</a></li>
-                <li><a class="dropdown-item" href="sayfa-detay.html">Biz Kimiz?</a></li>
-                <li><hr class="dropdown-divider"></li>
-                <li><a class="dropdown-item" href="home.html#takvim">Yarışma Takvimi</a></li>
+              <ul class="dropdown-menu shadow-sm" aria-labelledby="hakkimizdaDropdown">
+                <li><a class="dropdown-item" href="sayfa-detay.html">Biz Kimiz</a></li>
+                <li><a class="dropdown-item" href="sayfa-detay.html">Misyon - Vizyon</a></li>
+                <li><a class="dropdown-item" href="sayfa-detay.html">Geçmiş Yıllar</a></li>
+                <li><a class="dropdown-item" href="duyurular.html">Haberler - Duyurular</a></li>
+              </ul>
+            </li>
+
+            <!-- 3. Yarışma (Açılır Menü) -->
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" id="yarismaDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                <span>Yarışma</span>
+                <svg class="dropdown-chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="6 9 12 15 18 9"></polyline>
+                </svg>
+              </a>
+              <ul class="dropdown-menu shadow-sm" aria-labelledby="yarismaDropdown">
+                <li><a class="dropdown-item" href="home.html#nedir">Konusu</a></li>
+                <li><a class="dropdown-item" href="home.html#kategoriler">Kategoriler</a></li>
+                <li><a class="dropdown-item" href="home.html#kategoriler">Kitaplar</a></li>
+                <li><a class="dropdown-item" href="sayfa-detay.html">Kitap Temin Noktaları</a></li>
+                <li><a class="dropdown-item" href="home.html#takvim">Takvim</a></li>
                 <li><a class="dropdown-item" href="oduller.html">Ödüller</a></li>
-                <li><a class="dropdown-item" href="home.html#sss">Sıkça Sorulan Sorular (SSS)</a></li>
               </ul>
             </li>
 
-            <!-- 2. Dropdown: Kitaplar -->
+            <!-- 4. Bilgi Merkezi (Açılır Menü) -->
             <li class="nav-item dropdown">
-              <a class="nav-link dropdown-toggle" href="#" id="kitaplarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                <span>Kitaplar</span>
+              <a class="nav-link dropdown-toggle" href="#" id="bilgiMerkeziDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                <span>Bilgi Merkezi</span>
                 <svg class="dropdown-chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                   <polyline points="6 9 12 15 18 9"></polyline>
                 </svg>
               </a>
-              <ul class="dropdown-menu shadow-sm" aria-labelledby="kitaplarDropdown">
-                <li><a class="dropdown-item" href="home.html#kategoriler">Tüm Kategoriler</a></li>
-                <li><hr class="dropdown-divider"></li>
-                <li><a class="dropdown-item" href="home.html#kategoriler">🌱 İlkokul Kategorisi</a></li>
-                <li><a class="dropdown-item" href="home.html#kategoriler">📖 Ortaokul Kategorisi</a></li>
-                <li><a class="dropdown-item" href="home.html#kategoriler">📖 Lise Kategorisi</a></li>
-                <li><a class="dropdown-item" href="home.html#kategoriler">🎓 Yetişkin Kategorisi</a></li>
+              <ul class="dropdown-menu shadow-sm" aria-labelledby="bilgiMerkeziDropdown">
+                <li><a class="dropdown-item" href="home.html#sss">SSS</a></li>
+                <li><a class="dropdown-item" href="sayfa-detay.html">Yarışma Şartnamesi</a></li>
+                <li><a class="dropdown-item" href="sayfa-detay.html">Sınav Kuralları</a></li>
+                <li><a class="dropdown-item" href="sayfa-detay.html">Materyaller</a></li>
               </ul>
             </li>
 
-            <li class="nav-item">
-              <a class="nav-link" href="home.html#soru-coz">Soru Çöz</a>
-            </li>
-
-            <!-- 3. Dropdown: Takım Lideri Portalı -->
+            <!-- 5. İletişim (Açılır Menü) -->
             <li class="nav-item dropdown">
-              <a class="nav-link dropdown-toggle" href="#" id="liderDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                <span class="text-warning">⭐</span> <span>Takım Lideri Portalı</span>
+              <a class="nav-link dropdown-toggle" href="#" id="iletisimDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                <span>İletişim</span>
                 <svg class="dropdown-chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                   <polyline points="6 9 12 15 18 9"></polyline>
                 </svg>
               </a>
-              <ul class="dropdown-menu shadow-sm" aria-labelledby="liderDropdown">
-                <li><a class="dropdown-item" href="home.html#takim-portali">Takım Lideri Girişi</a></li>
-                <li><a class="dropdown-item" href="home.html#takim-portali">Danışman Öğretmen Rehberi</a></li>
-                <li><a class="dropdown-item" href="oduller.html">Takım Lideri Ödülleri</a></li>
-                <li><a class="dropdown-item" href="home.html#kaynaklar">Materyaller ve Belgeler</a></li>
+              <ul class="dropdown-menu shadow-sm" aria-labelledby="iletisimDropdown">
+                <li><a class="dropdown-item" href="iletisim.html#temsilciler">İl Temsilcileri</a></li>
+                <li>
+                  <a class="dropdown-item d-flex flex-column py-2" href="iletisim.html">
+                    <span class="fw-bold text-dark">Destek ve Çözüm Merkezi</span>
+                    <span class="small text-muted" style="font-size: 0.78rem;">📞 444 83 17 &nbsp;•&nbsp; ✉️ bilgi@ufkayolculuk.com</span>
+                  </a>
+                </li>
               </ul>
-            </li>
-
-            <li class="nav-item">
-              <a class="nav-link" href="iletisim.html">İletişim</a>
             </li>
           </ul>
 
-          <!-- Sağ Eylemler -->
+          <!-- Sağ Eylemler: Dil butonu kaldırıldı, Arama (Q) + Giriş Yap (solda) + Kayıt Ol (sağda) -->
           <div class="header-actions d-flex align-items-center gap-2 mt-3 mt-xl-0">
-            <!-- Dil Seçici (SVG Bayraklı) -->
-            <div class="dropdown">
-              <button class="lang-dropdown dropdown-toggle d-flex align-items-center gap-1" type="button" data-bs-toggle="dropdown" aria-expanded="false" id="langDropdownBtn">
-                <img src="assets/images/flag-tr.svg" alt="Türkçe" width="20" height="14" class="rounded-1 shadow-xs">
-                <span>Türkçe</span>
-              </button>
-              <ul class="dropdown-menu dropdown-menu-end shadow-sm" aria-labelledby="langDropdownBtn">
-                <li>
-                  <a class="dropdown-item active d-flex align-items-center gap-2" href="#" data-lang="tr">
-                    <img src="assets/images/flag-tr.svg" alt="Türkçe" width="20" height="14" class="rounded-1">
-                    <span>Türkçe</span>
-                  </a>
-                </li>
-                <li>
-                  <a class="dropdown-item d-flex align-items-center gap-2" href="#" data-lang="en">
-                    <img src="assets/images/flag-en.svg" alt="English" width="20" height="14" class="rounded-1">
-                    <span>English</span>
-                  </a>
-                </li>
-                <li>
-                  <a class="dropdown-item d-flex align-items-center gap-2" href="#" data-lang="ar">
-                    <img src="assets/images/flag-ar.svg" alt="العربية" width="20" height="14" class="rounded-1">
-                    <span>العربية</span>
-                  </a>
-                </li>
-              </ul>
-            </div>
+            <!-- Arama Butonu (Q İkonu) -->
+            <button class="header-search-btn" type="button" title="Sitede Arama Yap" aria-label="Sitede Ara">
+              <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2"
+                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
+            </button>
 
-            <!-- Kayıt Ol Butonu -->
-            <a href="home.html#kayit" class="btn-yellow">
-              Ücretsiz Kayıt Ol
-            </a>
-
-            <!-- Giriş Yap Butonu (Modal Açıcı) -->
-            <button type="button" class="btn-outline-minimal" data-bs-toggle="modal" data-bs-target="#loginModal" aria-label="Giriş Yap">
-              <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+            <!-- Giriş Yap (Solda) -->
+            <button type="button" class="btn-outline-minimal btn-header-login" data-bs-toggle="modal" data-bs-target="#loginModal" aria-label="Giriş Yap">
+              <svg width="17" height="17" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
               </svg>
               <span>Giriş Yap</span>
             </button>
+
+            <!-- Kayıt Ol (Sağda, Sarı Pantone Vurgulu) -->
+            <a href="home.html#kayit" class="btn-yellow btn-header-register text-decoration-none" aria-label="Kayıt Ol">
+              <span>Kayıt Ol</span>
+            </a>
           </div>
         </div>
       </nav>

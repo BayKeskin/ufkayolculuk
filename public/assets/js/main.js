@@ -1196,6 +1196,14 @@
 
     if (!citySelect) return;
 
+    // İl seçeneklerinin A'dan Z'ye alfabetik sıralanmasını garanti et
+    const currentVal = citySelect.value;
+    const opts = Array.from(citySelect.options);
+    opts.sort((a, b) => a.text.localeCompare(b.text, 'tr'));
+    citySelect.innerHTML = '';
+    opts.forEach(opt => citySelect.add(opt));
+    if (currentVal) citySelect.value = currentVal;
+
     // 81 İlin İlçeleri Veri Tabanı
     const turkeyDistricts = {
       'Konya': ['Selçuklu', 'Meram', 'Karatay', 'Ereğli', 'Akşehir', 'Beyşehir', 'Seydişehir', 'Çumra', 'Cihanbeyli', 'Ilgın', 'Kulu', 'Kadınhanı', 'Sarayönü', 'Bozkır', 'Karapınar', 'Yunak', 'Hüyük', 'Doğanhisar', 'Hadim', 'Taşkent', 'Güneysınır', 'Emirgazi', 'Derebucak', 'Tuzlukçu', 'Çeltik', 'Derbent', 'Yalıhüyük', 'Halkapınar', 'Ahırlı'],
@@ -1461,10 +1469,9 @@
           };
         }
 
-        if (badgeEl) badgeEl.textContent = `${city.toUpperCase()} - ${district.toUpperCase()} İLÇE TEMSİLCİLİĞİ`;
+        if (badgeEl) badgeEl.textContent = `${city} - ${district} İlçe Temsilcisi`;
         if (levelBadgeEl) {
-          levelBadgeEl.textContent = 'İlçe Temsilciliği';
-          levelBadgeEl.className = 'badge bg-warning bg-opacity-25 text-dark border border-warning small';
+          levelBadgeEl.style.display = 'none';
         }
       } else {
         // İl Merkezi Temsilcisi
@@ -1478,10 +1485,9 @@
           };
         }
 
-        if (badgeEl) badgeEl.textContent = `${city.toUpperCase()} İL TEMSİLCİLİĞİ`;
+        if (badgeEl) badgeEl.textContent = `${city} İl Temsilcisi`;
         if (levelBadgeEl) {
-          levelBadgeEl.textContent = 'Yetkili İl Temsilcisi';
-          levelBadgeEl.className = 'badge bg-light text-secondary border small';
+          levelBadgeEl.style.display = 'none';
         }
       }
 
@@ -1520,7 +1526,7 @@
       if (!districtSelect) return;
 
       const districts = turkeyDistricts[city] || ['Merkez'];
-      districtSelect.innerHTML = '<option value="__ALL__" selected>Tüm İl (İl Temsilciliği)</option>';
+      districtSelect.innerHTML = '<option value="__ALL__" selected>Tüm İl (İl Temsilcisi)</option>';
 
       districts.forEach(dist => {
         const opt = document.createElement('option');
@@ -1538,7 +1544,7 @@
         allBtn.type = 'button';
         allBtn.className = 'district-chip-btn active';
         allBtn.setAttribute('data-district', '__ALL__');
-        allBtn.textContent = '🏢 Tüm İl (Merkez)';
+        allBtn.textContent = '🏢 Tüm İl (İl Temsilcisi)';
         allBtn.addEventListener('click', () => {
           districtSelect.value = '__ALL__';
           updateRepresentative(citySelect.value, '__ALL__');
@@ -2186,6 +2192,14 @@
           searchInput.focus();
         }
       });
+    // URL parametresinden arama terimi kontrolü (?q=...)
+    const urlParams = new URLSearchParams(window.location.search);
+    const qParam = urlParams.get('q');
+    if (qParam && searchInput) {
+      searchInput.value = qParam;
+      searchQuery = qParam;
+      if (clearBtn) clearBtn.classList.remove('d-none');
+      filterFaqs();
     }
 
     // Ufyo AI Chat tetikleme fonksiyonu
@@ -2475,6 +2489,28 @@
             console.error('Search error:', err);
           });
       }, 200);
+    // Dropdown açıldığında arama kutusuna otomatik odaklan
+    const searchDropdownBtn = document.getElementById('headerSearchDropdownBtn');
+    if (searchDropdownBtn) {
+      searchDropdownBtn.addEventListener('shown.bs.dropdown', function () {
+        setTimeout(() => searchInput.focus(), 50);
+      });
+    }
+
+    // Enter tuşuna basıldığında ilk sonuca git veya SSS sayfasına yönlendir
+    searchInput.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        const firstResult = resultsContainer.querySelector('.search-faq-item');
+        if (firstResult && firstResult.href) {
+          window.location.href = firstResult.href;
+        } else {
+          const q = this.value.trim();
+          if (q.length > 0) {
+            window.location.href = (window.BASE_URL || '/') + 'sss?q=' + encodeURIComponent(q);
+          }
+        }
+      }
     });
 
     function escapeHtml(str) {

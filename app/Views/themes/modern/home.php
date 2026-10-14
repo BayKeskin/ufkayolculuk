@@ -74,34 +74,68 @@
           <?php endforeach; ?>
         <?php else: ?>
 
-        <!-- Slayt 1 (Aktif Banner - 12. Yarışma - Fallback) -->
+        <!-- Slayt 1: 14. Yılın Ana Teması: Yapay Zekâ ve İnsan -->
         <div class="hero-slide active" data-slide-index="0">
           <div class="hero-banner-card">
-            <img src="<?= base_url('assets/') ?>images/banner-1.webp" alt="Ufka Yolculuk 14. Bilgi ve Kültür Yarışması"
+            <img src="<?= base_url('assets/') ?>images/banner-1.webp" alt="14. Ufka Yolculuk - Yapay Zekâ ve İnsan"
               class="hero-banner-img" width="1200" height="460">
             <div class="hero-banner-overlay">
               <div class="hero-content-wrap">
                 <div class="hero-badge-pill">
                   <span class="badge-dot"></span>
-                  <span>14. UFKA YOLCULUK YARIŞMASI</span>
+                  <span>14. UFKA YOLCULUK • YENİ SEZON BAŞLADI</span>
                 </div>
                 <h1 class="hero-main-title">
-                  Oku, Keşfet, Öğren <br>
-                  <span class="text-highlight-gold">ve Geleceğini Kazan!</span>
+                  14. Yılın Ana Teması: <br>
+                  <span class="text-highlight-gold">Yapay Zekâ ve İnsan</span>
                 </h1>
                 <p class="hero-subtext">
-                  Türkiye'nin en kapsamlı online kitap okuma yarışmasında yerini al. Bilgini sına, binlerce değerli
-                  ödülün ve eşsiz deneyimlerin sahibi ol.
+                  Teknolojinin geleceğimizi şekillendirdiği çağda; bilgi, hikmet ve erdemin ışığında insan kalabilmeyi seçkin rehber eserlerle keşfedin.
                 </p>
                 <div class="hero-action-buttons">
-                  <a href="<?= base_url('kayit-ol') ?>" class="btn-hero-primary border-0 text-decoration-none">
-                    <span>Ücretsiz Kayıt Ol</span>
+                  <a href="#nedir" class="btn-hero-primary border-0 text-decoration-none">
+                    <span>Yarışma Konusu</span>
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                       stroke-width="2.5">
                       <polyline points="9 18 15 12 9 6" />
                     </svg>
                   </a>
-                  <a href="#kategoriler" class="btn-hero-glass">
+                  <a href="<?= base_url('kayit-ol') ?>" class="btn-hero-glass text-decoration-none">
+                    <span>Hemen Kayıt Ol</span>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Slayt 2: Slogan + "Hemen Kayıt Ol" & "Yarışma Kitapları" -->
+        <div class="hero-slide" data-slide-index="1">
+          <div class="hero-banner-card">
+            <img src="<?= base_url('assets/') ?>images/banner-2.webp" alt="Oku, Keşfet, Öğren ve Geleceğini Kazan"
+              class="hero-banner-img" width="1200" height="460">
+            <div class="hero-banner-overlay">
+              <div class="hero-content-wrap">
+                <div class="hero-badge-pill badge-cyan">
+                  <span class="badge-dot cyan"></span>
+                  <span>BİLGİ, KÜLTÜR VE ERDEM YOLCULUĞU</span>
+                </div>
+                <h2 class="hero-main-title">
+                  Oku, Keşfet, Öğren <br>
+                  <span class="text-highlight-cyan">ve Geleceğini Kazan!</span>
+                </h2>
+                <p class="hero-subtext">
+                  Türkiye'nin en kapsamlı online kitap okuma yarışmasında yerini al. Kategorine ait kitabını oku, online sınava katıl ve binlerce ödülün sahibi ol.
+                </p>
+                <div class="hero-action-buttons">
+                  <a href="<?= base_url('kayit-ol') ?>" class="btn-hero-primary text-decoration-none">
+                    <span>Hemen Kayıt Ol</span>
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                      stroke-width="2.5">
+                      <polyline points="9 18 15 12 9 6" />
+                    </svg>
+                  </a>
+                  <a href="#kategoriler" class="btn-hero-glass text-decoration-none">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                       <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
                       <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
@@ -114,48 +148,7 @@
           </div>
         </div>
 
-        <!-- Slayt 2 Banner (Online Sınav Sistemi) -->
-        <div class="hero-slide" data-slide-index="1">
-          <div class="hero-banner-card">
-            <img src="<?= base_url('assets/') ?>images/banner-2.webp" alt="Online Sınav Başvuruları ve Dijital Test Portalı"
-              class="hero-banner-img" width="1200" height="460">
-            <div class="hero-banner-overlay">
-              <div class="hero-content-wrap">
-                <div class="hero-badge-pill badge-cyan">
-                  <span class="badge-dot cyan"></span>
-                  <span>DİJİTAL SINAV PORTALI</span>
-                </div>
-                <h2 class="hero-main-title">
-                  Gelişmiş Online Sınav <br>
-                  <span class="text-highlight-cyan">Sistemiyle Tanışın</span>
-                </h2>
-                <p class="hero-subtext">
-                  Dilediğin cihazdan kolayca katıl, anında performans analizini gör ve Türkiye geneli sıralamada zirveye
-                  tırman.
-                </p>
-                <div class="hero-action-buttons">
-                  <a href="#soru-coz" class="btn-hero-primary">
-                    <span>Deneme Sınavına Katıl</span>
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                      stroke-width="2.5">
-                      <polyline points="9 18 15 12 9 6" />
-                    </svg>
-                  </a>
-                  <a href="<?= base_url('sayfa-detay') ?>" class="btn-hero-glass">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                      <circle cx="12" cy="12" r="10" />
-                      <line x1="12" y1="16" x2="12" y2="12" />
-                      <line x1="12" y1="8" x2="12.01" y2="8" />
-                    </svg>
-                    <span>Sınav Kılavuzu</span>
-                  </a>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Slayt 3 Banner (Büyük Ödüller) -->
+        <!-- Slayt 3: "Ödülleri İncele" & "Yarışma Takvimi" -->
         <div class="hero-slide" data-slide-index="2">
           <div class="hero-banner-card">
             <img src="<?= base_url('assets/') ?>images/banner-3.webp" alt="Büyük Ödüller, Tabletler, Dizüstü Bilgisayarlar ve Seyahatler"
@@ -164,25 +157,24 @@
               <div class="hero-content-wrap">
                 <div class="hero-badge-pill badge-gold">
                   <span class="badge-dot gold"></span>
-                  <span>MİLYONLUK ÖDÜL HAVUZU</span>
+                  <span>MİLYONLUK BÜYÜK ÖDÜL HAVUZU</span>
                 </div>
                 <h2 class="hero-main-title">
                   Dereceye Girenleri <br>
                   <span class="text-highlight-gold">Büyük Ödüller Bekliyor!</span>
                 </h2>
                 <p class="hero-subtext">
-                  MacBook Pro, iPad, Akıllı Saatler, Umre Seyahatleri ve binlerce sürpriz ödül bu yıl sahiplerini
-                  buluyor.
+                  Umre Seyahatleri, MacBook Pro, iPad, Akıllı Saatler, Elektrikli Scooterlar ve 81 ilde yerel sponsorluk ödülleri bu yıl sahiplerini buluyor.
                 </p>
                 <div class="hero-action-buttons">
-                  <a href="<?= base_url('oduller') ?>" class="btn-hero-primary">
+                  <a href="<?= base_url('oduller') ?>" class="btn-hero-primary text-decoration-none">
                     <span>Ödülleri İncele</span>
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                       stroke-width="2.5">
                       <polyline points="9 18 15 12 9 6" />
                     </svg>
                   </a>
-                  <a href="#takvim" class="btn-hero-glass">
+                  <a href="#takvim" class="btn-hero-glass text-decoration-none">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                       <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
                       <line x1="16" y1="2" x2="16" y2="6" />
@@ -197,7 +189,7 @@
           </div>
         </div>
 
-        <!-- Slayt 4 Banner (Takım Lideri Portalı) -->
+        <!-- Slayt 4: "Takım Lideri Ol" Butonlu Liderlik Teşvik Sliderı -->
         <div class="hero-slide" data-slide-index="3">
           <div class="hero-banner-card">
             <img src="<?= base_url('assets/') ?>images/banner-4.webp" alt="Takım Liderleri, Danışman Öğretmenler ve Eğitim Rehberi"
@@ -206,32 +198,31 @@
               <div class="hero-content-wrap">
                 <div class="hero-badge-pill badge-purple">
                   <span class="badge-dot purple"></span>
-                  <span>EĞİTİMCİ & DANIŞMAN PORTALI</span>
+                  <span>EĞİTİMCİ, VELİ & GÖNÜLLÜ DANIŞMANLAR</span>
                 </div>
                 <h2 class="hero-main-title">
                   Takımını Oluştur, <br>
-                  <span class="text-highlight-gold">Geleceğe Rehberlik Et</span>
+                  <span class="text-highlight-gold">Geleceğe Rehberlik Et!</span>
                 </h2>
                 <p class="hero-subtext">
-                  Öğrencilerine ilham ver, yarışma sürecini tek panelden yönet ve takım liderlerine özel prestij
-                  ödüllerini kazan.
+                  Öğrencilerine ve çevrene rehberlik et, tek tıkla yarışmacılarını kaydet ve takım liderlerine özel Umre ve prestij ödüllerini kazan.
                 </p>
                 <div class="hero-action-buttons">
-                  <a href="#takim-portali" class="btn-hero-primary">
-                    <span>Lider Portalı Girişi</span>
+                  <a href="<?= base_url('takim-lideri') ?>" class="btn-hero-primary text-decoration-none">
+                    <span>Takım Lideri Ol</span>
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                       stroke-width="2.5">
                       <polyline points="9 18 15 12 9 6" />
                     </svg>
                   </a>
-                  <a href="<?= base_url('sayfa-detay') ?>" class="btn-hero-glass">
+                  <a href="<?= base_url('sayfa/biz-kimiz') ?>" class="btn-hero-glass text-decoration-none">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                       <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
                       <circle cx="9" cy="7" r="4" />
                       <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
                       <path d="M16 3.13a4 4 0 0 1 0 7.75" />
                     </svg>
-                    <span>Danışman Kılavuzu</span>
+                    <span>Liderlik Rehberi</span>
                   </a>
                 </div>
               </div>
@@ -259,6 +250,123 @@
         <span class="pause-btn" id="heroPauseBtn" title="Durdur / Oynat" aria-label="Durdur/Oynat">||</span>
       </div>
 
+    </div>
+  </section>
+
+  <!-- ==========================================
+       SÜREÇ İNFOGRAFİK BANDI (4 Adımda Ufka Yolculuk Süreci - Döküman Sayfa 11)
+       ========================================== -->
+  <section class="process-infographic-section" id="nasil-katilirim" aria-label="Yarışmaya Katılım Süreci">
+    <div class="container">
+      <div class="process-infographic-wrapper">
+        <div class="process-infographic-header text-center">
+          <span class="process-badge-chip">
+            <span>🚀</span>
+            <span>NASIL KATILIRIM?</span>
+          </span>
+          <h2 class="process-main-title">
+            4 Kolay Adımda <span class="text-gradient-primary">Yarışma Yolculuğu</span>
+          </h2>
+          <p class="process-lead-desc text-muted">
+            Ufka Yolculuk Bilgi ve Kültür Yarışması'na katılmak çok kolay! İşte başarıya giden 4 basit adım:
+          </p>
+        </div>
+
+        <div class="process-steps-grid">
+          <!-- 1. Adım: Kayıt Ol -->
+          <a href="<?= base_url('kayit-ol') ?>" class="process-step-card" data-step="1">
+            <div class="step-badge-number">1</div>
+            <div class="step-icon-wrapper">
+              <span>✍️</span>
+            </div>
+            <div class="step-card-content">
+              <h3 class="step-card-title">1. Kayıt Ol</h3>
+              <p class="step-card-desc">
+                Web sitemizden veya Takım Liderin aracılığıyla birkaç saniyede ücretsiz kaydını tamamla.
+              </p>
+              <span class="step-action-link">
+                <span>Hemen Kayıt Ol</span>
+                <span class="arrow">→</span>
+              </span>
+            </div>
+          </a>
+
+          <!-- Bağlantı Oku (Masaüstü) -->
+          <div class="process-step-connector d-none d-lg-flex" aria-hidden="true">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </div>
+
+          <!-- 2. Adım: Kitabını Al -->
+          <a href="<?= base_url('/#kategoriler') ?>" class="process-step-card" data-step="2">
+            <div class="step-badge-number">2</div>
+            <div class="step-icon-wrapper">
+              <span>📚</span>
+            </div>
+            <div class="step-card-content">
+              <h3 class="step-card-title">2. Kitabını Al</h3>
+              <p class="step-card-desc">
+                Kendi kategorine ait yarışma kitabını e-kitap, sesli kitap veya il temin noktalarından edin.
+              </p>
+              <span class="step-action-link">
+                <span>Kitapları İncele</span>
+                <span class="arrow">→</span>
+              </span>
+            </div>
+          </a>
+
+          <!-- Bağlantı Oku (Masaüstü) -->
+          <div class="process-step-connector d-none d-lg-flex" aria-hidden="true">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </div>
+
+          <!-- 3. Adım: Oku -->
+          <a href="<?= base_url('/#kategoriler') ?>" class="process-step-card" data-step="3">
+            <div class="step-badge-number">3</div>
+            <div class="step-icon-wrapper">
+              <span>📖</span>
+            </div>
+            <div class="step-card-content">
+              <h3 class="step-card-title">3. Oku</h3>
+              <p class="step-card-desc">
+                Kitabını özenle oku, kavramları ve değerleri öğren; online deneme sorularıyla kendini sına.
+              </p>
+              <span class="step-action-link">
+                <span>Okumaya Başla</span>
+                <span class="arrow">→</span>
+              </span>
+            </div>
+          </a>
+
+          <!-- Bağlantı Oku (Masaüstü) -->
+          <div class="process-step-connector d-none d-lg-flex" aria-hidden="true">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </div>
+
+          <!-- 4. Adım: Sınava Gir -->
+          <a href="<?= base_url('/#takvim') ?>" class="process-step-card" data-step="4">
+            <div class="step-badge-number">4</div>
+            <div class="step-icon-wrapper">
+              <span>🏆</span>
+            </div>
+            <div class="step-card-content">
+              <h3 class="step-card-title">4. Sınava Gir</h3>
+              <p class="step-card-desc">
+                Sınav günü dilediğin cihazdan online sınava katıl; büyük ödüller ve başarı belgeleri kazan!
+              </p>
+              <span class="step-action-link">
+                <span>Sınav Takvimi</span>
+                <span class="arrow">→</span>
+              </span>
+            </div>
+          </a>
+        </div>
+      </div>
     </div>
   </section>
   <!-- ==========================================

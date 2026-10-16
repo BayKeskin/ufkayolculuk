@@ -1627,5 +1627,122 @@ class UfkaApiService
         $theme = $config['active_theme'] ?? 'classic';
         return in_array($theme, ['classic', 'm2']) ? 'classic' : 'modern';
     }
+
+    // =========================================================================
+    // CANLI REST API ENTEGRASYONLARI (SINAVLAR, KULLANICI, PROFİL, BOT VE CMS)
+    // =========================================================================
+
+    /**
+     * Aktif olan sınav kategorilerini sıralı olarak döner (İlkokul, Ortaokul, Lise, Yetişkin vb.)
+     */
+    public function getExamCategories(bool $useCache = true): array
+    {
+        $res = $this->request('getExamCategories', [], 'GET', $useCache);
+        return is_array($res) ? $res : [];
+    }
+
+    /**
+     * Web sitesindeki aktif kategorileri, alt kategorileri ve içerik sayılarıyla döner
+     */
+    public function getWebCategories(?int $parentId = null, ?string $slug = null, int $tree = 1, bool $useCache = true): array
+    {
+        $endpoint = ($parentId !== null && $parentId !== '')
+            ? 'getWebCategories/' . $parentId
+            : 'getWebCategories';
+
+        $params = ['tree' => $tree];
+        if (!empty($slug)) {
+            $params['slug'] = $slug;
+        }
+
+        $res = $this->request($endpoint, $params, 'GET', $useCache);
+        return is_array($res) ? $res : [];
+    }
+
+    /**
+     * Kullanıcı ve sınav ID değerleriyle yeni bir question_forms oturum kaydı oluşturur
+     */
+    public function createQuestionForm(int $userId, int $examId): ?array
+    {
+        return $this->request('createQuestionForm', [
+            'user_id' => $userId,
+            'exam_id' => $examId,
+        ], 'POST', false);
+    }
+
+    /**
+     * Kullanıcının tek bir soruya verdiği yanıtı sunucuya kaydeder
+     */
+    public function postAnswer(int $userId, int $formId, int $questionId, string $answer, ?int $isCorrect = null): ?array
+    {
+        $params = [
+            'user_id'     => $userId,
+            'form_id'     => $formId,
+            'question_id' => $questionId,
+            'answer'      => $answer,
+        ];
+        if ($isCorrect !== null) {
+            $params['is_correct'] = $isCorrect;
+        }
+
+        return $this->request('postAnswer', $params, 'POST', false);
+    }
+
+    /**
+     * Telefon numarası ve doğum tarihi ile kayıtlı yarışmacı profilini sorgular
+     */
+    public function getUfkaYolculukUser(string $mobile, string $birthdate): ?array
+    {
+        $params = [
+            'mobile'    => $mobile,
+            'birthdate' => $birthdate,
+        ];
+        return $this->request('getUfkaYolculukUser', $params, 'POST', false);
+    }
+
+    /**
+     * Kullanıcının girdiği sınavları, puanlarını ve derecelerini döner
+     */
+    public function getUserExams(int $userId, bool $useCache = false): ?array
+    {
+        return $this->request('getUserExams/' . $userId, [], 'GET', $useCache);
+    }
+
+    /**
+     * Sınav oturumundaki tüm soruları, şıkları, kullanıcının cevabını ve doğru cevabı döner
+     */
+    public function getUserExamDetail(int $formId, ?int $userId = null, bool $useCache = false): ?array
+    {
+        $params = [];
+        if ($userId !== null) {
+            $params['user_id'] = $userId;
+        }
+        return $this->request('getUserExamDetail/' . $formId, $params, 'GET', $useCache);
+    }
+
+    /**
+     * Liderlik durumu, davet linki, puanlar ve çekiliş haklarını döner
+     */
+    public function getUserLeaderData(int $userId, bool $useCache = true): ?array
+    {
+        return $this->request('getUserLeaderData/' . $userId, [], 'GET', $useCache);
+    }
+
+    /**
+     * Profil, sertifika sayısı, sınav sayısı, son sınav sonucu ve liderlik özetini tek bir çağrıda döner
+     */
+    public function getUserDashboard(int $userId, bool $useCache = false): ?array
+    {
+        return $this->request('getUserDashboard/' . $userId, [], 'GET', $useCache);
+    }
+
+    /**
+     * CMS Statik Sayfa Detayını döner (Şartname, Yönerge vb.)
+     */
+    public function getPage(int|string $pageId, bool $useCache = true): ?array
+    {
+        return $this->request('getPage/' . $pageId, [], 'GET', $useCache);
+    }
 }
+
 

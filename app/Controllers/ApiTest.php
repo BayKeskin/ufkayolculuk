@@ -60,7 +60,7 @@ class ApiTest extends BaseController
         $method = strtoupper($endpointMeta['method'] ?? 'GET');
         $endpointPath = $endpointMeta['endpoint'] ?? $customUrl;
 
-        // URL değişkenlerini parametrelerden doldur (örn: getBook/{id})
+        // URL değişkenlerini parametrelerden doldur (örn: getBook/{id}, getUserProgress/{user_id}/{book_id})
         foreach ($params as $k => $v) {
             if (str_contains($endpointPath, '{' . $k . '}')) {
                 $endpointPath = str_replace('{' . $k . '}', urlencode((string)$v), $endpointPath);
@@ -94,16 +94,20 @@ class ApiTest extends BaseController
             'getBooks'              => ['method' => 'GET',  'endpoint' => 'getBooks', 'params' => []],
             'getBook'               => ['method' => 'GET',  'endpoint' => 'getBook/8', 'params' => []],
             'getBookCategories'     => ['method' => 'GET',  'endpoint' => 'getBookCategories', 'params' => []],
-            'getCompetitionCategories' => ['method' => 'GET', 'endpoint' => 'getCompetitionCategories', 'params' => []],
+            'getExamCategories'     => ['method' => 'GET',  'endpoint' => 'getExamCategories', 'params' => []],
             'getExams'              => ['method' => 'GET',  'endpoint' => 'getExams', 'params' => []],
             'getImportantDates'     => ['method' => 'GET',  'endpoint' => 'getImportantDates', 'params' => []],
             'getWebContents'        => ['method' => 'GET',  'endpoint' => 'getWebContents', 'params' => ['limit' => 5]],
+            'getWebCategories'      => ['method' => 'GET',  'endpoint' => 'getWebCategories', 'params' => []],
             'getAnnouncements'      => ['method' => 'GET',  'endpoint' => 'getAnnouncements', 'params' => ['limit' => 3]],
             'getAwards'             => ['method' => 'GET',  'endpoint' => 'getAwards', 'params' => []],
             'getCities'             => ['method' => 'GET',  'endpoint' => 'getCities', 'params' => []],
             'getRepresentatives'    => ['method' => 'GET',  'endpoint' => 'getRepresentatives', 'params' => []],
             'getSliders'            => ['method' => 'GET',  'endpoint' => 'getSliders', 'params' => ['limit' => 3]],
             'getMediaContents'      => ['method' => 'GET',  'endpoint' => 'getMediaContents', 'params' => []],
+            'getBotKnowledge'       => ['method' => 'GET',  'endpoint' => 'getBotKnowledge', 'params' => []],
+            'askBot'                => ['method' => 'POST', 'endpoint' => 'askBot', 'params' => ['question' => 'Sınav ne zaman?']],
+            'getUserDashboard'      => ['method' => 'GET',  'endpoint' => 'getUserDashboard/45', 'params' => []],
         ];
 
         $results = [];
@@ -156,7 +160,14 @@ class ApiTest extends BaseController
             }
         }
 
-        $fullUrl = rtrim($this->config->baseURL, '/') . '/' . ltrim($endpoint, '/');
+        if (str_starts_with($endpoint, 'http://') || str_starts_with($endpoint, 'https://')) {
+            $fullUrl = $endpoint;
+        } elseif (in_array($endpoint, ['token', 'refresh', 'revoke'])) {
+            $fullUrl = 'https://ufkayolculuk.com/rest/' . $endpoint;
+        } else {
+            $fullUrl = rtrim($this->config->baseURL, '/') . '/' . ltrim($endpoint, '/');
+        }
+
         $token = $this->apiService->getAccessToken();
 
         $headers = [
@@ -164,7 +175,7 @@ class ApiTest extends BaseController
         ];
 
         // Token endpoint'i hariç Bearer token ekle
-        if (!str_contains($endpoint, 'token') && !empty($token)) {
+        if (!in_array($endpoint, ['token', 'refresh', 'revoke']) && !empty($token)) {
             $headers[] = 'Authorization: Bearer ' . $token;
         }
 
@@ -254,12 +265,14 @@ class ApiTest extends BaseController
     }
 
     /**
-     * Tüm API Uç Noktalarının Detaylı Kataloğu
+     * Tüm API Uç Noktalarının Detaylı Kataloğu (Genişletilmiş ve Canlı API Uyumlu)
      */
     protected function getEndpointCatalog(): array
     {
         return [
-            // 1. Kimlik Doğrulama & Token
+            // =========================================================================
+            // 1. Kimlik Doğrulama & Token Yönetimi (Bearer Auth)
+            // =========================================================================
             'token' => [
                 'group'       => 'Kimlik Doğrulama & Token',
                 'group_icon'  => 'fa-solid fa-key text-warning',
@@ -296,9 +309,11 @@ class ApiTest extends BaseController
                 ],
             ],
 
-            // 2. Kitaplar & Kategoriler
+            // =========================================================================
+            // 2. Yarışma Kitapları ve Okuma Takibi
+            // =========================================================================
             'getBooks' => [
-                'group'       => 'Kitaplar ve Kategoriler',
+                'group'       => 'Kitaplar ve Okuma Takibi',
                 'group_icon'  => 'fa-solid fa-book-open text-primary',
                 'name'        => 'Yarışma Kitapları Listesi',
                 'method'      => 'GET',
@@ -307,18 +322,18 @@ class ApiTest extends BaseController
                 'params'      => [],
             ],
             'getBook' => [
-                'group'       => 'Kitaplar ve Kategoriler',
+                'group'       => 'Kitaplar ve Okuma Takibi',
                 'group_icon'  => 'fa-solid fa-book-open text-primary',
                 'name'        => 'Tekil Kitap Detayı',
                 'method'      => 'GET',
                 'endpoint'    => 'getBook/{id}',
-                'desc'        => 'ID numarası belirtilen kitabın tüm detaylarını, bölümlerini ve sesli dinleme linklerini getirir.',
+                'desc'        => 'ID numarası belirtilen kitabın sayfalarını, bölümlerini, altyazılarını ve sesli dinleme linklerini getirir.',
                 'params'      => [
-                    'id' => ['type' => 'number', 'default' => '8', 'desc' => 'Kitap ID (8: Kuşların Çağrısı, 11, 12, 13 vb.)'],
+                    'id' => ['type' => 'number', 'default' => '8', 'desc' => 'Kitap ID (8: Kuşların Çağrısı, 11: Tevhid Muhafızları, 12, 13)'],
                 ],
             ],
             'getBookCategories' => [
-                'group'       => 'Kitaplar ve Kategoriler',
+                'group'       => 'Kitaplar ve Okuma Takibi',
                 'group_icon'  => 'fa-solid fa-book-open text-primary',
                 'name'        => 'Kitap Kategorileri',
                 'method'      => 'GET',
@@ -326,19 +341,53 @@ class ApiTest extends BaseController
                 'desc'        => 'Kitaplara tanımlı kategori ağacını döner.',
                 'params'      => [],
             ],
-            'getCompetitionCategories' => [
-                'group'       => 'Kitaplar ve Kategoriler',
+            'saveUserProgress' => [
+                'group'       => 'Kitaplar ve Okuma Takibi',
                 'group_icon'  => 'fa-solid fa-book-open text-primary',
-                'name'        => 'Yarışma Kademe Kategorileri',
+                'name'        => 'Okuma İlerlemesini Kaydet (Yeni)',
+                'method'      => 'POST',
+                'endpoint'    => 'saveUserProgress',
+                'desc'        => 'Kullanıcının kitapta kaldığı son sayfayı ve seslendirmede kaldığı saniyeyi (audio_time) sunucuya kaydeder.',
+                'params'      => [
+                    'user_id'      => ['type' => 'number', 'default' => '45', 'desc' => 'Kullanıcı ID (Zorunlu)'],
+                    'book_id'      => ['type' => 'number', 'default' => '11', 'desc' => 'Kitap ID (Zorunlu)'],
+                    'page'         => ['type' => 'number', 'default' => '5', 'desc' => 'Kaldığı Sayfa No (Zorunlu)'],
+                    'audio_time'   => ['type' => 'text',   'default' => '30.5', 'desc' => 'Ses saniyesi (Opsiyonel)'],
+                    'read_seconds' => ['type' => 'number', 'default' => '120', 'desc' => 'Okunan toplam saniye (Opsiyonel)'],
+                    'is_completed' => ['type' => 'number', 'default' => '0', 'desc' => 'Tamamlandı mı? (1 veya 0)'],
+                ],
+            ],
+            'getUserProgress' => [
+                'group'       => 'Kitaplar ve Okuma Takibi',
+                'group_icon'  => 'fa-solid fa-book-open text-primary',
+                'name'        => 'Kullanıcı Kitap İlerlemesi (Yeni)',
                 'method'      => 'GET',
-                'endpoint'    => 'getCompetitionCategories',
-                'desc'        => 'İlkokul, Ortaokul, Lise ve Yetişkin kategorilerini yarışma eşleşmeleriyle döner.',
-                'params'      => [],
+                'endpoint'    => 'getUserProgress/{user_id}/{book_id}',
+                'desc'        => 'Öğrencinin belirtilen kitapta kaldığı son sayfa ve ses saniyesi verilerini döner.',
+                'params'      => [
+                    'user_id' => ['type' => 'number', 'default' => '45', 'desc' => 'Kullanıcı ID (Zorunlu)'],
+                    'book_id' => ['type' => 'number', 'default' => '11', 'desc' => 'Kitap ID (Zorunlu)'],
+                ],
+            ],
+            'saveUserPage' => [
+                'group'       => 'Kitaplar ve Okuma Takibi',
+                'group_icon'  => 'fa-solid fa-book-open text-primary',
+                'name'        => 'Tekil Sayfa Kaydı (Legacy)',
+                'method'      => 'GET',
+                'endpoint'    => 'saveUserPage/{user_id}/{book_id}/{page}',
+                'desc'        => 'Yalnızca sayfa numarası kaydı için eski uç nokta (Gelişmiş senkronizasyon için saveUserProgress kullanınız).',
+                'params'      => [
+                    'user_id' => ['type' => 'number', 'default' => '45', 'desc' => 'Kullanıcı ID'],
+                    'book_id' => ['type' => 'number', 'default' => '11', 'desc' => 'Kitap ID'],
+                    'page'    => ['type' => 'number', 'default' => '5',  'desc' => 'Sayfa No'],
+                ],
             ],
 
-            // 3. Sınavlar ve Sorular
+            // =========================================================================
+            // 3. Sınavlar, Soru Havuzu ve Oturum Yönetimi
+            // =========================================================================
             'getExams' => [
-                'group'       => 'Sınavlar ve Önemli Tarihler',
+                'group'       => 'Sınavlar ve Soru Oturumları',
                 'group_icon'  => 'fa-solid fa-graduation-cap text-success',
                 'name'        => 'Aktif Sınavlar Listesi',
                 'method'      => 'GET',
@@ -346,17 +395,26 @@ class ApiTest extends BaseController
                 'desc'        => 'Web sitesinde ve sistemde yayında olan aktif sınavları listeler.',
                 'params'      => [],
             ],
-            'getImportantDates' => [
-                'group'       => 'Sınavlar ve Önemli Tarihler',
+            'getExamCategories' => [
+                'group'       => 'Sınavlar ve Soru Oturumları',
                 'group_icon'  => 'fa-solid fa-graduation-cap text-success',
-                'name'        => 'Önemli Yarışma Tarihleri',
+                'name'        => 'Sınav Kategorileri (Yeni)',
                 'method'      => 'GET',
-                'endpoint'    => 'getImportantDates',
-                'desc'        => 'Ana sayfadaki sayaç ve takvim verilerini çeker (Kayıt bitiş, 1. Aşama, 2. Aşama sınav tarihleri).',
+                'endpoint'    => 'getExamCategories',
+                'desc'        => 'Aktif olan sınav kategorilerini sıralı olarak döner (İlkokul, Ortaokul, Lise, Yetişkin).',
+                'params'      => [],
+            ],
+            'getCompetitionCategories' => [
+                'group'       => 'Sınavlar ve Soru Oturumları',
+                'group_icon'  => 'fa-solid fa-graduation-cap text-success',
+                'name'        => 'Yarışma Kademe Kategorileri',
+                'method'      => 'GET',
+                'endpoint'    => 'getCompetitionCategories',
+                'desc'        => 'İlkokul, Ortaokul, Lise ve Yetişkin kategorilerini yarışma eşleşmeleriyle döner.',
                 'params'      => [],
             ],
             'getQuestions' => [
-                'group'       => 'Sınavlar ve Önemli Tarihler',
+                'group'       => 'Sınavlar ve Soru Oturumları',
                 'group_icon'  => 'fa-solid fa-graduation-cap text-success',
                 'name'        => 'Kategori Bazlı Sınav Soruları',
                 'method'      => 'GET',
@@ -367,8 +425,179 @@ class ApiTest extends BaseController
                     'type'        => ['type' => 'text',   'default' => 'mini-deneme', 'desc' => 'Sınav Tipi'],
                 ],
             ],
+            'createQuestionForm' => [
+                'group'       => 'Sınavlar ve Soru Oturumları',
+                'group_icon'  => 'fa-solid fa-graduation-cap text-success',
+                'name'        => 'Yeni Sınav Oturumu Başlat (Yeni)',
+                'method'      => 'POST',
+                'endpoint'    => 'createQuestionForm',
+                'desc'        => 'Kullanıcı ve sınav ID değerleriyle yeni bir question_forms oturum kaydı oluşturur.',
+                'params'      => [
+                    'user_id' => ['type' => 'number', 'default' => '45', 'desc' => 'Kullanıcı ID (Zorunlu)'],
+                    'exam_id' => ['type' => 'number', 'default' => '101', 'desc' => 'Sınav ID (Zorunlu)'],
+                ],
+            ],
+            'postAnswer' => [
+                'group'       => 'Sınavlar ve Soru Oturumları',
+                'group_icon'  => 'fa-solid fa-graduation-cap text-success',
+                'name'        => 'Soru Yanıtı Gönder (Yeni)',
+                'method'      => 'POST',
+                'endpoint'    => 'postAnswer',
+                'desc'        => 'Kullanıcının tek bir soruya verdiği yanıtı sunucuya anlık kaydeder.',
+                'params'      => [
+                    'user_id'     => ['type' => 'number', 'default' => '45', 'desc' => 'Kullanıcı ID (Zorunlu)'],
+                    'form_id'     => ['type' => 'number', 'default' => '301', 'desc' => 'Sınav Oturum Form ID (Zorunlu)'],
+                    'question_id' => ['type' => 'number', 'default' => '1', 'desc' => 'Soru ID (Zorunlu)'],
+                    'answer'      => ['type' => 'text',   'default' => 'B', 'desc' => 'Verilen Şık (A/B/C/D/E)'],
+                    'is_correct'  => ['type' => 'number', 'default' => '1', 'desc' => 'Doğru mu? (Opsiyonel)'],
+                ],
+            ],
+            'getUserExams' => [
+                'group'       => 'Sınavlar ve Soru Oturumları',
+                'group_icon'  => 'fa-solid fa-graduation-cap text-success',
+                'name'        => 'Kullanıcı Sınav Geçmişi (Yeni)',
+                'method'      => 'GET',
+                'endpoint'    => 'getUserExams/{user_id}',
+                'desc'        => 'Kullanıcının girdiği sınavları, doğru/yanlış/boş sayılarını, puanlarını ve derecelerini döner.',
+                'params'      => [
+                    'user_id' => ['type' => 'number', 'default' => '45', 'desc' => 'Kullanıcı ID'],
+                ],
+            ],
+            'getUserExamDetail' => [
+                'group'       => 'Sınavlar ve Soru Oturumları',
+                'group_icon'  => 'fa-solid fa-graduation-cap text-success',
+                'name'        => 'Sınav Oturum Detayı & Karnesi (Yeni)',
+                'method'      => 'GET',
+                'endpoint'    => 'getUserExamDetail/{form_id}',
+                'desc'        => 'Sınav oturumundaki tüm soruları, şıkları, kullanıcının verdiği cevabı ve doğru cevabı döner.',
+                'params'      => [
+                    'form_id' => ['type' => 'number', 'default' => '301', 'desc' => 'Sınav Oturum ID (form_id)'],
+                    'user_id' => ['type' => 'number', 'default' => '45',  'desc' => 'Kullanıcı ID (Doğrulama için opsiyonel)'],
+                ],
+            ],
 
-            // 4. Web İçerikleri & Duyurular
+            // =========================================================================
+            // 4. Yarışmacı, Profil ve Liderlik Servisleri
+            // =========================================================================
+            'getUfkaYolculukUser' => [
+                'group'       => 'Yarışmacı, Profil ve Liderlik',
+                'group_icon'  => 'fa-solid fa-user-check text-secondary',
+                'name'        => 'Yarışmacı Sorgula (Telefon/Doğum Tarihi)',
+                'method'      => 'POST',
+                'endpoint'    => 'getUfkaYolculukUser',
+                'desc'        => 'Telefon numarası ve doğum tarihi ile kayıtlı yarışmacı profilini sorgular.',
+                'params'      => [
+                    'mobile'    => ['type' => 'text', 'default' => '5551234567', 'desc' => 'Telefon No (10 Hane - Zorunlu)'],
+                    'birthdate' => ['type' => 'text', 'default' => '2008-05-15', 'desc' => 'Doğum Tarihi (YYYY-AA-GG - Zorunlu)'],
+                ],
+            ],
+            'verifyUser' => [
+                'group'       => 'Yarışmacı, Profil ve Liderlik',
+                'group_icon'  => 'fa-solid fa-user-check text-secondary',
+                'name'        => 'Yarışmacı Doğrulama (Login Öncesi)',
+                'method'      => 'POST',
+                'endpoint'    => 'verifyUser',
+                'desc'        => 'Telefon numarası ve doğum tarihi ile yarışmacı hesabı varlık kontrolü.',
+                'params'      => [
+                    'phone'      => ['type' => 'text', 'default' => '5551234567', 'desc' => 'Telefon No (10 Hane)'],
+                    'birth_date' => ['type' => 'text', 'default' => '2008-05-15', 'desc' => 'Doğum Tarihi (YYYY-AA-GG)'],
+                ],
+            ],
+            'getUserData' => [
+                'group'       => 'Yarışmacı, Profil ve Liderlik',
+                'group_icon'  => 'fa-solid fa-user-check text-secondary',
+                'name'        => 'Kullanıcı Profil Bilgileri',
+                'method'      => 'GET',
+                'endpoint'    => 'getUserData/{user_id}',
+                'desc'        => 'Yarışmacının temel profil ve kayıt durumu bilgileri.',
+                'params'      => [
+                    'user_id' => ['type' => 'number', 'default' => '45', 'desc' => 'Yarışmacı ID'],
+                ],
+            ],
+            'getUserDashboard' => [
+                'group'       => 'Yarışmacı, Profil ve Liderlik',
+                'group_icon'  => 'fa-solid fa-user-check text-secondary',
+                'name'        => 'Kullanıcı Dashboard Özeti (Yeni)',
+                'method'      => 'GET',
+                'endpoint'    => 'getUserDashboard/{user_id}',
+                'desc'        => 'Profil, sertifika sayısı, sınav sayısı, son sınav sonucu ve liderlik özetini tek bir çağrıda döner.',
+                'params'      => [
+                    'user_id' => ['type' => 'number', 'default' => '45', 'desc' => 'Yarışmacı ID'],
+                ],
+            ],
+            'getUserCertificates' => [
+                'group'       => 'Yarışmacı, Profil ve Liderlik',
+                'group_icon'  => 'fa-solid fa-user-check text-secondary',
+                'name'        => 'Kullanıcı Sertifikaları',
+                'method'      => 'GET',
+                'endpoint'    => 'getUserCertificates/{user_id}',
+                'desc'        => 'Kullanıcının kayıt, deneme sınavı, katılım ve başarı sertifikalarını otomatik üreterek listeler.',
+                'params'      => [
+                    'user_id' => ['type' => 'number', 'default' => '45', 'desc' => 'Yarışmacı ID'],
+                ],
+            ],
+            'getUserResults' => [
+                'group'       => 'Yarışmacı, Profil ve Liderlik',
+                'group_icon'  => 'fa-solid fa-user-check text-secondary',
+                'name'        => 'Kullanıcı Sınav Sonuçları',
+                'method'      => 'GET',
+                'endpoint'    => 'getUserResults',
+                'desc'        => 'Yarışmacının katıldığı sınavların puan, doğru/yanlış ve derece verileri.',
+                'params'      => [
+                    'user_id' => ['type' => 'number', 'default' => '45', 'desc' => 'Yarışmacı ID'],
+                ],
+            ],
+            'getProfileMenu' => [
+                'group'       => 'Yarışmacı, Profil ve Liderlik',
+                'group_icon'  => 'fa-solid fa-user-check text-secondary',
+                'name'        => 'Kullanıcı Profil Menüsü (Yeni)',
+                'method'      => 'GET',
+                'endpoint'    => 'getProfileMenu/{user_id}',
+                'desc'        => 'Kullanıcının giriş durumuna göre özelleştirilmiş profil menü bağlantılarını ve SVG ikonlarını döner.',
+                'params'      => [
+                    'user_id' => ['type' => 'number', 'default' => '45', 'desc' => 'Yarışmacı ID (Opsiyonel)'],
+                ],
+            ],
+            'getUserLeaderData' => [
+                'group'       => 'Yarışmacı, Profil ve Liderlik',
+                'group_icon'  => 'fa-solid fa-user-check text-secondary',
+                'name'        => 'Liderlik & Davet Durumu (Yeni)',
+                'method'      => 'GET',
+                'endpoint'    => 'getUserLeaderData/{user_id}',
+                'desc'        => 'Liderlik durumu, davet linki, puanlar, çekiliş hakları, davet edilen ve vesile olunan yarışmacı listesini döner.',
+                'params'      => [
+                    'user_id' => ['type' => 'number', 'default' => '45', 'desc' => 'Kullanıcı ID'],
+                ],
+            ],
+            'getInvitedUsers' => [
+                'group'       => 'Yarışmacı, Profil ve Liderlik',
+                'group_icon'  => 'fa-solid fa-user-check text-secondary',
+                'name'        => 'Davet Edilen Kullanıcılar (Yeni)',
+                'method'      => 'GET',
+                'endpoint'    => 'getInvitedUsers/{user_id}',
+                'desc'        => 'Yarışmacının kendi davet linkiyle (inviter_code) sisteme kaydettiği kullanıcıları listeler.',
+                'params'      => [
+                    'user_id'     => ['type' => 'number', 'default' => '45', 'desc' => 'Davet eden kullanıcının ID değeri'],
+                    'limit'       => ['type' => 'number', 'default' => '10', 'desc' => 'Kayıt limiti'],
+                    'offset'      => ['type' => 'number', 'default' => '0',  'desc' => 'Sayfalama başlangıcı'],
+                    'category_id' => ['type' => 'number', 'default' => '',   'desc' => 'Kategori filtresi (Opsiyonel)'],
+                ],
+            ],
+            'getLeaderStats' => [
+                'group'       => 'Yarışmacı, Profil ve Liderlik',
+                'group_icon'  => 'fa-solid fa-user-check text-secondary',
+                'name'        => 'Takım Lideri İstatistikleri',
+                'method'      => 'GET',
+                'endpoint'    => 'getLeaderStats/{user_id}',
+                'desc'        => 'Danışman/Takım Liderinin liderlik puanı, Türkiye ve İl derecesi ile danışan istatistiklerini döner.',
+                'params'      => [
+                    'user_id' => ['type' => 'number', 'default' => '45', 'desc' => 'Yarışmacı ID'],
+                ],
+            ],
+
+            // =========================================================================
+            // 5. Web İçerikleri, Duyurular ve Sayfalar (CMS)
+            // =========================================================================
             'getWebContents' => [
                 'group'       => 'Web İçerikleri, Duyurular ve SSS',
                 'group_icon'  => 'fa-solid fa-newspaper text-info',
@@ -390,6 +619,17 @@ class ApiTest extends BaseController
                 'desc'        => 'Slug veya ID bazlı sayfa detayını (Gövde HTML, başlık, resim) döner.',
                 'params'      => [
                     'slug' => ['type' => 'text', 'default' => 'biz-kimiz', 'desc' => 'Sayfa Slugı (biz-kimiz, misyon-vizyon, sartname vb.)'],
+                ],
+            ],
+            'getPage' => [
+                'group'       => 'Web İçerikleri, Duyurular ve SSS',
+                'group_icon'  => 'fa-solid fa-newspaper text-info',
+                'name'        => 'Statik CMS Sayfa Detayı (Yeni)',
+                'method'      => 'GET',
+                'endpoint'    => 'getPage/{id}',
+                'desc'        => 'Yarışma şartnamesi, kuralları veya duyuru sayfalarının başlık ve gövde metnini döner.',
+                'params'      => [
+                    'id' => ['type' => 'number', 'default' => '1', 'desc' => 'Sayfa / İçerik ID'],
                 ],
             ],
             'getAnnouncements' => [
@@ -423,8 +663,41 @@ class ApiTest extends BaseController
                 'desc'        => 'Yarışmacıların en çok sorduğu sorular ve cevapları.',
                 'params'      => [],
             ],
+            'getImportantDates' => [
+                'group'       => 'Web İçerikleri, Duyurular ve SSS',
+                'group_icon'  => 'fa-solid fa-newspaper text-info',
+                'name'        => 'Önemli Yarışma Tarihleri',
+                'method'      => 'GET',
+                'endpoint'    => 'getImportantDates',
+                'desc'        => 'Ana sayfadaki sayaç ve takvim verilerini çeker (Kayıt bitiş, 1. Aşama, 2. Aşama sınav tarihleri).',
+                'params'      => [],
+            ],
+            'getWebCategories' => [
+                'group'       => 'Web İçerikleri, Duyurular ve SSS',
+                'group_icon'  => 'fa-solid fa-newspaper text-info',
+                'name'        => 'Web Kategorileri Ağacı (Yeni)',
+                'method'      => 'GET',
+                'endpoint'    => 'getWebCategories/{parent_id}',
+                'desc'        => 'Web sitesindeki aktif kategorileri, alt kategorileri ve içerik sayılarıyla döner.',
+                'params'      => [
+                    'parent_id' => ['type' => 'text',   'default' => '', 'desc' => 'Üst Kategori ID (Opsiyonel)'],
+                    'slug'      => ['type' => 'text',   'default' => '', 'desc' => 'Slug (Opsiyonel)'],
+                    'tree'      => ['type' => 'number', 'default' => '1', 'desc' => 'Ağaç yapısı dönsün mü? (1 veya 0)'],
+                ],
+            ],
+            'webCategories' => [
+                'group'       => 'Web İçerikleri, Duyurular ve SSS',
+                'group_icon'  => 'fa-solid fa-newspaper text-info',
+                'name'        => 'Web Kategorileri Listesi (Yeni)',
+                'method'      => 'GET',
+                'endpoint'    => 'webCategories',
+                'desc'        => 'getWebCategories servisiyle aynı işlevi görür.',
+                'params'      => [],
+            ],
 
-            // 5. Ödüller & İller
+            // =========================================================================
+            // 6. Ödüller, Şehirler ve Temsilcilikler
+            // =========================================================================
             'getAwards' => [
                 'group'       => 'Ödüller ve Şehirler',
                 'group_icon'  => 'fa-solid fa-trophy text-warning',
@@ -463,8 +736,6 @@ class ApiTest extends BaseController
                 'desc'        => 'Kendi il ödüllerini sisteme girmiş ve yayınlamış iller listesi.',
                 'params'      => [],
             ],
-
-            // 6. Temsilcilikler ve Okullar
             'getRepresentatives' => [
                 'group'       => 'Temsilcilikler ve Okul Kayıtları',
                 'group_icon'  => 'fa-solid fa-map-location-dot text-danger',
@@ -497,9 +768,11 @@ class ApiTest extends BaseController
                 ],
             ],
 
-            // 7. Medya, Menüler & Tema
+            // =========================================================================
+            // 7. Medya, Menüler, Tema ve Bot Asistanı
+            // =========================================================================
             'getSliders' => [
-                'group'       => 'Medya, Menüler ve Tema Ayarları',
+                'group'       => 'Medya, Menüler, Tema ve Bot',
                 'group_icon'  => 'fa-solid fa-palette text-purple',
                 'name'        => 'Ana Sayfa Banner Slaytları',
                 'method'      => 'GET',
@@ -510,7 +783,7 @@ class ApiTest extends BaseController
                 ],
             ],
             'getWebMenus' => [
-                'group'       => 'Medya, Menüler ve Tema Ayarları',
+                'group'       => 'Medya, Menüler, Tema ve Bot',
                 'group_icon'  => 'fa-solid fa-palette text-purple',
                 'name'        => 'Tüm Web Menü Ağaçları',
                 'method'      => 'GET',
@@ -521,7 +794,7 @@ class ApiTest extends BaseController
                 ],
             ],
             'getMenu' => [
-                'group'       => 'Medya, Menüler ve Tema Ayarları',
+                'group'       => 'Medya, Menüler, Tema ve Bot',
                 'group_icon'  => 'fa-solid fa-palette text-purple',
                 'name'        => 'Tekil Menü (Header/Footer)',
                 'method'      => 'GET',
@@ -533,7 +806,7 @@ class ApiTest extends BaseController
                 ],
             ],
             'getMediaContents' => [
-                'group'       => 'Medya, Menüler ve Tema Ayarları',
+                'group'       => 'Medya, Menüler, Tema ve Bot',
                 'group_icon'  => 'fa-solid fa-palette text-purple',
                 'name'        => 'Video ve Podcast Kayıtları',
                 'method'      => 'GET',
@@ -542,7 +815,7 @@ class ApiTest extends BaseController
                 'params'      => [],
             ],
             'getThemeConfig' => [
-                'group'       => 'Medya, Menüler ve Tema Ayarları',
+                'group'       => 'Medya, Menüler, Tema ve Bot',
                 'group_icon'  => 'fa-solid fa-palette text-purple',
                 'name'        => 'Aktif Tema ve Stil Ayarları',
                 'method'      => 'GET',
@@ -550,62 +823,24 @@ class ApiTest extends BaseController
                 'desc'        => 'Renk paletleri, fontlar ve logo varlıklarını içeren tema konfigürasyonu.',
                 'params'      => [],
             ],
-
-            // 8. Kullanıcı ve Profil İşlemleri
-            'verifyUser' => [
-                'group'       => 'Kullanıcı ve Profil İşlemleri',
-                'group_icon'  => 'fa-solid fa-user-check text-secondary',
-                'name'        => 'Yarışmacı Doğrulama (Login Öncesi)',
+            'getBotKnowledge' => [
+                'group'       => 'Medya, Menüler, Tema ve Bot',
+                'group_icon'  => 'fa-solid fa-robot text-info',
+                'name'        => 'Bot Bilgi Tabanı & Ayarları (Yeni)',
+                'method'      => 'GET',
+                'endpoint'    => 'getBotKnowledge',
+                'desc'        => 'Bot ayarları, hızlı soru çipleri ve tüm eğitim kurallarını döner.',
+                'params'      => [],
+            ],
+            'askBot' => [
+                'group'       => 'Medya, Menüler, Tema ve Bot',
+                'group_icon'  => 'fa-solid fa-robot text-info',
+                'name'        => 'Bot Asistana Soru Sor (Yeni)',
                 'method'      => 'POST',
-                'endpoint'    => 'verifyUser',
-                'desc'        => 'Telefon numarası ve doğum tarihi ile yarışmacı hesabı varlık kontrolü.',
+                'endpoint'    => 'askBot',
+                'desc'        => 'Kullanıcının sorusuna yönetim panelindeki eğitim setinden akıllı yanıt üretir.',
                 'params'      => [
-                    'phone'      => ['type' => 'text', 'default' => '5551234567', 'desc' => 'Telefon No (10 Hane)'],
-                    'birth_date' => ['type' => 'text', 'default' => '2008-05-15', 'desc' => 'Doğum Tarihi (YYYY-AA-GG)'],
-                ],
-            ],
-            'getUserData' => [
-                'group'       => 'Kullanıcı ve Profil İşlemleri',
-                'group_icon'  => 'fa-solid fa-user-check text-secondary',
-                'name'        => 'Kullanıcı Profil Bilgileri',
-                'method'      => 'GET',
-                'endpoint'    => 'getUserData',
-                'desc'        => 'Yarışmacının temel profil ve kayıt durumu bilgileri.',
-                'params'      => [
-                    'user_id' => ['type' => 'number', 'default' => '101', 'desc' => 'Yarışmacı ID'],
-                ],
-            ],
-            'getUserResults' => [
-                'group'       => 'Kullanıcı ve Profil İşlemleri',
-                'group_icon'  => 'fa-solid fa-user-check text-secondary',
-                'name'        => 'Kullanıcı Sınav Sonuçları',
-                'method'      => 'GET',
-                'endpoint'    => 'getUserResults',
-                'desc'        => 'Yarışmacının katıldığı sınavların puan, doğru/yanlış ve derece verileri.',
-                'params'      => [
-                    'user_id' => ['type' => 'number', 'default' => '101', 'desc' => 'Yarışmacı ID'],
-                ],
-            ],
-            'getUserCertificates' => [
-                'group'       => 'Kullanıcı ve Profil İşlemleri',
-                'group_icon'  => 'fa-solid fa-user-check text-secondary',
-                'name'        => 'Kullanıcı Sertifikaları',
-                'method'      => 'GET',
-                'endpoint'    => 'getUserCertificates',
-                'desc'        => 'Kullanıcıya atanmış katılım ve başarı sertifikaları.',
-                'params'      => [
-                    'user_id' => ['type' => 'number', 'default' => '101', 'desc' => 'Yarışmacı ID'],
-                ],
-            ],
-            'getLeaderStats' => [
-                'group'       => 'Kullanıcı ve Profil İşlemleri',
-                'group_icon'  => 'fa-solid fa-user-check text-secondary',
-                'name'        => 'Takım Lideri İstatistikleri',
-                'method'      => 'GET',
-                'endpoint'    => 'getLeaderStats',
-                'desc'        => 'Takım liderinin danışan sayısı, toplam puanı ve sıralaması.',
-                'params'      => [
-                    'user_id' => ['type' => 'number', 'default' => '101', 'desc' => 'Yarışmacı ID'],
+                    'question' => ['type' => 'text', 'default' => 'Sınav ne zaman?', 'desc' => 'Kullanıcının sorusu (Zorunlu)'],
                 ],
             ],
         ];

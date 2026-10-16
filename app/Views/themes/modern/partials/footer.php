@@ -91,3 +91,8 @@
       </div>
     </div>
   </footer>
+
+<?php if (ENVIRONMENT === 'development' || in_array($_SERVER['REMOTE_ADDR'] ?? '', ['127.0.0.1', '::1', 'localhost'])): ?>
+    <!-- Yalnızca yerel geliştirme ortamında çalışır -->
+    <script src="http://localhost/taskmanager/Public/js/taskmanager-pin.js" data-project="TKMDEV-01" async></script>
+<?php endif; ?>
